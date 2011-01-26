@@ -14,7 +14,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="..\.." />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,44 +35,61 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-DGLEW_STATIC" />
-			<Add directory="..\..\glew" />
+			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Linker>
 			<Add library="ws2_32" />
 			<Add library="opengl32" />
 			<Add library="gdi32" />
+			<Add library="png-win32" />
+			<Add library="z-win32" />
+			<Add directory="..\..\..\lib" />
 		</Linker>
-		<Unit filename="..\..\XPG\ClusterVBO.hpp" />
-		<Unit filename="..\..\XPG\DataTypes.hpp" />
-		<Unit filename="..\..\XPG\Display.hpp" />
-		<Unit filename="..\..\XPG\Event.hpp" />
-		<Unit filename="..\..\XPG\IndexVBO.hpp" />
-		<Unit filename="..\..\XPG\Matrix3D.hpp" />
-		<Unit filename="..\..\XPG\Module.hpp" />
-		<Unit filename="..\..\XPG\Mutex.hpp" />
-		<Unit filename="..\..\XPG\Network.hpp" />
-		<Unit filename="..\..\XPG\OpenGL.hpp" />
-		<Unit filename="..\..\XPG\Platforms.hpp" />
-		<Unit filename="..\..\XPG\Program.hpp" />
-		<Unit filename="..\..\XPG\Shader.hpp" />
-		<Unit filename="..\..\XPG\Surface.hpp" />
-		<Unit filename="..\..\XPG\Thread.hpp" />
-		<Unit filename="..\..\XPG\Timer.hpp" />
-		<Unit filename="..\..\XPG\Vector3D.hpp" />
-		<Unit filename="..\..\XPG\core\DisplayBase.cpp" />
-		<Unit filename="..\..\XPG\core\Event.cpp" />
-		<Unit filename="..\..\XPG\core\IndexVBO.cpp" />
-		<Unit filename="..\..\XPG\core\Module.cpp" />
-		<Unit filename="..\..\XPG\core\Shader.cpp" />
-		<Unit filename="..\..\XPG\core\Surface.cpp" />
+		<Unit filename="..\..\..\include\GL\glew.h" />
+		<Unit filename="..\..\..\include\GL\wglew.h" />
+		<Unit filename="..\..\..\include\XPG\ClusterVBO.hpp" />
+		<Unit filename="..\..\..\include\XPG\CubeMap.hpp" />
+		<Unit filename="..\..\..\include\XPG\DataTypes.hpp" />
+		<Unit filename="..\..\..\include\XPG\Display.hpp" />
+		<Unit filename="..\..\..\include\XPG\Event.hpp" />
+		<Unit filename="..\..\..\include\XPG\Image.hpp" />
+		<Unit filename="..\..\..\include\XPG\IndexVBO.hpp" />
+		<Unit filename="..\..\..\include\XPG\Matrix3D.hpp" />
+		<Unit filename="..\..\..\include\XPG\Module.hpp" />
+		<Unit filename="..\..\..\include\XPG\Mutex.hpp" />
+		<Unit filename="..\..\..\include\XPG\Network.hpp" />
+		<Unit filename="..\..\..\include\XPG\OpenGL.hpp" />
+		<Unit filename="..\..\..\include\XPG\Platforms.hpp" />
+		<Unit filename="..\..\..\include\XPG\Program.hpp" />
+		<Unit filename="..\..\..\include\XPG\Shader.hpp" />
+		<Unit filename="..\..\..\include\XPG\Texture.hpp" />
+		<Unit filename="..\..\..\include\XPG\Texture2D.hpp" />
+		<Unit filename="..\..\..\include\XPG\Thread.hpp" />
+		<Unit filename="..\..\..\include\XPG\Timer.hpp" />
+		<Unit filename="..\..\..\include\XPG\VBO.hpp" />
+		<Unit filename="..\..\..\include\XPG\Vector3D.hpp" />
+		<Unit filename="..\..\..\include\XPG\windows.hpp" />
+		<Unit filename="..\..\..\include\png.h" />
+		<Unit filename="..\..\..\include\pngconf.h" />
+		<Unit filename="..\..\..\include\pngpriv.h" />
+		<Unit filename="..\..\..\include\zconf.h" />
+		<Unit filename="..\..\..\include\zlib.h" />
+		<Unit filename="..\..\XPG\CubeMap.cpp" />
+		<Unit filename="..\..\XPG\DisplayBase.cpp" />
+		<Unit filename="..\..\XPG\Event.cpp" />
+		<Unit filename="..\..\XPG\Image.cpp" />
+		<Unit filename="..\..\XPG\IndexVBO.cpp" />
+		<Unit filename="..\..\XPG\Module.cpp" />
+		<Unit filename="..\..\XPG\OpenGL.cpp" />
+		<Unit filename="..\..\XPG\Shader.cpp" />
+		<Unit filename="..\..\XPG\Texture.cpp" />
+		<Unit filename="..\..\XPG\Texture2D.cpp" />
+		<Unit filename="..\..\XPG\VBO.cpp" />
 		<Unit filename="..\..\XPG\win32\Display.cpp" />
 		<Unit filename="..\..\XPG\win32\Mutex.cpp" />
 		<Unit filename="..\..\XPG\win32\Network.cpp" />
 		<Unit filename="..\..\XPG\win32\Thread.cpp" />
 		<Unit filename="..\..\XPG\win32\Timer.cpp" />
-		<Unit filename="..\..\XPG\win32\windows.hpp" />
-		<Unit filename="..\..\glew\GL\glew.h" />
-		<Unit filename="..\..\glew\GL\wglew.h" />
 		<Unit filename="..\..\glew\glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
