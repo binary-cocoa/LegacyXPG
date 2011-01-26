@@ -5,9 +5,16 @@ namespace XPG
 {
     DWORD WINAPI createThread(LPVOID inData)
     {
-        Thread* t = static_cast<Thread*>(inData);
-        t->launch();
+        Thread::Data* data = static_cast<Thread::Data*>(inData);
+        (*data->launcher)(data->thread);
         return 0;
+    }
+
+    void Thread::startThread(Thread* inThread)
+    {
+        inThread->mRunning = true;
+        inThread->run();
+        inThread->mRunning = false;
     }
 
     struct Thread::PrivateData
@@ -16,7 +23,7 @@ namespace XPG
         HANDLE thread;
     };
 
-    Thread::Thread() : mTask(NULL), mReady(false), mRunning(false), mStop(false)
+    Thread::Thread() : mRunning(false), mStop(false)
     {
         mData = new PrivateData;
     }
@@ -28,34 +35,24 @@ namespace XPG
         delete mData;
     }
 
-    void Thread::start(Task* inTask)
+    void Thread::start()
     {
         if (mRunning) return;
 
-        if (inTask)
-            mTask = inTask;
-        else if (!mTask)
-            return;
-
-        mReady = true;
         mRunning = true;
-        mData->thread = CreateThread(NULL, 0, createThread, this, 0,
+        Data d;
+        d.thread = this;
+        d.launcher = &startThread;
+        mData->thread = CreateThread(NULL, 0, createThread, &d, 0,
             &mData->ID);
-    }
-
-    void Thread::launch()
-    {
-        // This function may only ever be called from createThread (which is
-        // called from Thread::start).
-        if (!mReady) return;
-        mReady = false;
-        mStop = false;
-        mTask->run(mStop);
-        mRunning = false;
     }
 
     void Thread::wait()
     {
         WaitForSingleObject(mData->thread, INFINITE);
+    }
+
+    void Thread::run()
+    {
     }
 }
