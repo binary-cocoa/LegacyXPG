@@ -85,6 +85,7 @@
 		<Unit filename="..\..\XPG\Texture.cpp" />
 		<Unit filename="..\..\XPG\Texture2D.cpp" />
 		<Unit filename="..\..\XPG\VBO.cpp" />
+		<Unit filename="..\..\XPG\image\png.cpp" />
 		<Unit filename="..\..\XPG\win32\Display.cpp" />
 		<Unit filename="..\..\XPG\win32\Mutex.cpp" />
 		<Unit filename="..\..\XPG\win32\Network.cpp" />

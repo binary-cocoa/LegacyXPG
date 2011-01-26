@@ -1,4 +1,4 @@
-#include "../Network.hpp"
+#include <XPG/Network.hpp>
 
 namespace XPG
 {

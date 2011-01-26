@@ -1,6 +1,5 @@
-#include "../Thread.hpp"
-
-#include "windows.hpp"
+#include <XPG/Thread.hpp>
+#include <XPG/windows.hpp>
 
 namespace XPG
 {

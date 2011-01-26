@@ -1,4 +1,4 @@
-#include "../Mutex.hpp"
+#include <XPG/Mutex.hpp>
 
 namespace XPG
 {

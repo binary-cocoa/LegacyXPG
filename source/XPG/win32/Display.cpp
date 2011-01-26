@@ -1,7 +1,7 @@
-#include "../Display.hpp"
-#include "../Platforms.hpp"
-#include "../Timer.hpp"
-#include "windows.hpp"
+#include <XPG/Display.hpp>
+#include <XPG/Platforms.hpp>
+#include <XPG/Timer.hpp>
+#include <XPG/windows.hpp>
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
