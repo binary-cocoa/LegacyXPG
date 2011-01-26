@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="XPG (win32)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\..\test-xpg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\.." />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="..\.." />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\..\xpg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\.." />
+				<Option object_output="obj\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-DGLEW_STATIC" />
+			<Add directory="..\..\glew" />
+		</Compiler>
+		<Linker>
+			<Add library="ws2_32" />
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+		</Linker>
+		<Unit filename="..\..\XPG\ClusterVBO.hpp" />
+		<Unit filename="..\..\XPG\DataTypes.hpp" />
+		<Unit filename="..\..\XPG\Display.hpp" />
+		<Unit filename="..\..\XPG\Event.hpp" />
+		<Unit filename="..\..\XPG\IndexVBO.hpp" />
+		<Unit filename="..\..\XPG\Matrix3D.hpp" />
+		<Unit filename="..\..\XPG\Module.hpp" />
+		<Unit filename="..\..\XPG\Mutex.hpp" />
+		<Unit filename="..\..\XPG\Network.hpp" />
+		<Unit filename="..\..\XPG\OpenGL.hpp" />
+		<Unit filename="..\..\XPG\Platforms.hpp" />
+		<Unit filename="..\..\XPG\Program.hpp" />
+		<Unit filename="..\..\XPG\Shader.hpp" />
+		<Unit filename="..\..\XPG\Surface.hpp" />
+		<Unit filename="..\..\XPG\Thread.hpp" />
+		<Unit filename="..\..\XPG\Timer.hpp" />
+		<Unit filename="..\..\XPG\Vector3D.hpp" />
+		<Unit filename="..\..\XPG\core\DisplayBase.cpp" />
+		<Unit filename="..\..\XPG\core\Event.cpp" />
+		<Unit filename="..\..\XPG\core\IndexVBO.cpp" />
+		<Unit filename="..\..\XPG\core\Module.cpp" />
+		<Unit filename="..\..\XPG\core\Shader.cpp" />
+		<Unit filename="..\..\XPG\core\Surface.cpp" />
+		<Unit filename="..\..\XPG\win32\Display.cpp" />
+		<Unit filename="..\..\XPG\win32\Mutex.cpp" />
+		<Unit filename="..\..\XPG\win32\Network.cpp" />
+		<Unit filename="..\..\XPG\win32\Thread.cpp" />
+		<Unit filename="..\..\XPG\win32\Timer.cpp" />
+		<Unit filename="..\..\XPG\win32\windows.hpp" />
+		<Unit filename="..\..\glew\GL\glew.h" />
+		<Unit filename="..\..\glew\GL\wglew.h" />
+		<Unit filename="..\..\glew\glew.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\test\FancyTestModule.cpp" />
+		<Unit filename="..\..\test\FancyTestModule.h" />
+		<Unit filename="..\..\test\TSphere.cpp" />
+		<Unit filename="..\..\test\TSphere.h" />
+		<Unit filename="..\..\test\main.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

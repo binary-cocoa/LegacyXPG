@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="XPG (ubu64)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../../test-xpg-ubu64" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../.." />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../../../libxpg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../.." />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../../../include" />
+		</Compiler>
+		<Linker>
+			<Add option="-pthread" />
+			<Add library="GL" />
+			<Add library="X11" />
+			<Add library="png-ubu64" />
+			<Add library="z-ubu64" />
+			<Add directory="../../../lib" />
+		</Linker>
+		<Unit filename="../../../include/GL/glew.h" />
+		<Unit filename="../../../include/GL/glxew.h" />
+		<Unit filename="../../../include/XPG/ClusterVBO.hpp" />
+		<Unit filename="../../../include/XPG/CubeMap.hpp" />
+		<Unit filename="../../../include/XPG/DataTypes.hpp" />
+		<Unit filename="../../../include/XPG/Display.hpp" />
+		<Unit filename="../../../include/XPG/Event.hpp" />
+		<Unit filename="../../../include/XPG/Exception.hpp" />
+		<Unit filename="../../../include/XPG/Image.hpp" />
+		<Unit filename="../../../include/XPG/IndexVBO.hpp" />
+		<Unit filename="../../../include/XPG/Matrix3D.hpp" />
+		<Unit filename="../../../include/XPG/Module.hpp" />
+		<Unit filename="../../../include/XPG/Mutex.hpp" />
+		<Unit filename="../../../include/XPG/Network.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL.hpp" />
+		<Unit filename="../../../include/XPG/Platforms.hpp" />
+		<Unit filename="../../../include/XPG/Program.hpp" />
+		<Unit filename="../../../include/XPG/Shader.hpp" />
+		<Unit filename="../../../include/XPG/Texture.hpp" />
+		<Unit filename="../../../include/XPG/Texture2D.hpp" />
+		<Unit filename="../../../include/XPG/Thread.hpp" />
+		<Unit filename="../../../include/XPG/Timer.hpp" />
+		<Unit filename="../../../include/XPG/VBO.hpp" />
+		<Unit filename="../../../include/XPG/Vector3D.hpp" />
+		<Unit filename="../../../include/png.h" />
+		<Unit filename="../../../include/pngconf.h" />
+		<Unit filename="../../../include/pngpriv.h" />
+		<Unit filename="../../XPG/CubeMap.cpp" />
+		<Unit filename="../../XPG/DisplayBase.cpp" />
+		<Unit filename="../../XPG/Event.cpp" />
+		<Unit filename="../../XPG/Image.cpp" />
+		<Unit filename="../../XPG/IndexVBO.cpp" />
+		<Unit filename="../../XPG/Module.cpp" />
+		<Unit filename="../../XPG/OpenGL.cpp" />
+		<Unit filename="../../XPG/Shader.cpp" />
+		<Unit filename="../../XPG/Texture.cpp" />
+		<Unit filename="../../XPG/Texture2D.cpp" />
+		<Unit filename="../../XPG/VBO.cpp" />
+		<Unit filename="../../XPG/image/png.cpp" />
+		<Unit filename="../../XPG/linux/Display.cpp" />
+		<Unit filename="../../XPG/unix/Mutex.cpp" />
+		<Unit filename="../../XPG/unix/Network.cpp" />
+		<Unit filename="../../XPG/unix/Thread.cpp" />
+		<Unit filename="../../XPG/unix/Timer.cpp" />
+		<Unit filename="../../glew/glew.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../test/FancyTestModule.cpp" />
+		<Unit filename="../../test/FancyTestModule.h" />
+		<Unit filename="../../test/TSphere.cpp" />
+		<Unit filename="../../test/TSphere.h" />
+		<Unit filename="../../test/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
