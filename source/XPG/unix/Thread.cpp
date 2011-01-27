@@ -6,20 +6,31 @@ namespace XPG
 {
     void* createThread(void* inData)
     {
-        Thread* t = static_cast<Thread*>(inData);
-        t->launch();
+        Thread::Data* data = static_cast<Thread::Data*>(inData);
+        (*data->launcher)(data->thread);
         pthread_exit(NULL);
         return NULL;
     }
 
+    void Thread::startThread(Thread* inThread)
+    {
+        inThread->mStop = false;
+        inThread->mRunning = true;
+        inThread->run();
+        inThread->mRunning = false;
+    }
+
     struct Thread::PrivateData
     {
+        Data data;
         pthread_t thread;
     };
 
-    Thread::Thread() : mTask(NULL), mReady(false), mRunning(false), mStop(false)
+    Thread::Thread() : mRunning(false), mStop(false)
     {
         mData = new PrivateData;
+        mData->data.thread = this;
+        mData->data.launcher = &startThread;
     }
 
     Thread::~Thread()
@@ -27,18 +38,13 @@ namespace XPG
         delete mData;
     }
 
-    void Thread::start(Task* inTask)
+    void Thread::start()
     {
         if (mRunning) return;
 
-        if (inTask)
-            mTask = inTask;
-        else if (!mTask)
-            return;
-
-        mReady = true;
         mRunning = true;
-        switch (pthread_create(&mData->thread, NULL, createThread, this))
+        switch (pthread_create(&mData->thread, NULL, createThread,
+            &mData->data))
         {
             case 0: break; // no error
 
@@ -52,17 +58,6 @@ namespace XPG
         }
     }
 
-    void Thread::launch()
-    {
-        // This function may only ever be called from createThread (which is
-        // called from Thread::start).
-        if (!mReady) return;
-        mReady = false;
-        mStop = false;
-        mTask->run(mStop);
-        mRunning = false;
-    }
-
     void Thread::wait()
     {
         switch (pthread_join(mData->thread, NULL))
@@ -74,5 +69,9 @@ namespace XPG
             case EDEADLK: break; // A deadlock was detected.
             default: {} // something else went wrong
         }
+    }
+
+    void Thread::run()
+    {
     }
 }
