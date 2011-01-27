@@ -21,6 +21,12 @@ namespace XPG
         private:
             Image(const Image& inImage) {} // disallowed
 
+            Image& operator=(const Image& inImage)
+            {
+                // disallowed
+                return *this;
+            }
+
             void loadPNG(FILE* inFile);
 
             void* mData;

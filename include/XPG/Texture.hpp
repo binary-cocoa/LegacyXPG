@@ -5,8 +5,6 @@
 
 namespace XPG
 {
-    void setTexParams(GLenum inTarget, const GLenum inParameters[]);
-
     class Texture
     {
         public:
@@ -16,7 +14,11 @@ namespace XPG
             inline void bind() { glBindTexture(mTarget, mHandle); }
 
         protected:
+            void setTexParams(const GLenum inParameters[]);
+
             GLenum mTarget;
+
+        private:
             GLuint mHandle;
     };
 }

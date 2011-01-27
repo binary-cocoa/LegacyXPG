@@ -2,10 +2,10 @@
 
 namespace XPG
 {
-    void setTexParams(GLenum inTarget, const GLenum inParameters[])
+    void Texture::setTexParams(const GLenum inParameters[])
     {
         for (const GLenum* i = inParameters; *i; i += 2)
-            glTexParameteri(inTarget, i[0], i[1]);
+            glTexParameteri(mTarget, i[0], i[1]);
     }
 
     Texture::Texture(GLenum inTarget) : mTarget(inTarget), mHandle(0)

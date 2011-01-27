@@ -2,18 +2,6 @@
 
 namespace XPG
 {
-    const GLenum defaultCubeMapTexParam[] = {
-        GL_TEXTURE_MAG_FILTER, GL_LINEAR,
-        GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE,
-        GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE,
-        GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE,
-        0 };
-
-    const GLenum defaultCubeMapTexParam2[] = {
-        //GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR,
-        GL_TEXTURE_MIN_FILTER, GL_LINEAR,
-        0 };
-
     CubeMap::CubeMap() : Texture(GL_TEXTURE_CUBE_MAP)
     {
     }
@@ -32,17 +20,28 @@ namespace XPG
             GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
             GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
+        const GLenum params1[] = {
+            GL_TEXTURE_MAG_FILTER, GL_LINEAR,
+            GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE,
+            GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE,
+            GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE,
+            0 };
+
+        const GLenum params2[] = {
+            GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR,
+            0 };
+
         for (size_t i = 0; i < 6; ++i)
             if (!inImages[i] || !inImages[i]->isValid())
                 return;
 
         bind();
-        setTexParams(mTarget, defaultCubeMapTexParam);
+        setTexParams(params1);
 
         for (size_t i = 0; i < 6; ++i)
             inImages[i]->loadIntoTexture(cubeFaces[i]);
 
          glGenerateMipmap(mTarget);
-         setTexParams(mTarget, defaultCubeMapTexParam2);
+         setTexParams(params2);
     }
 }
