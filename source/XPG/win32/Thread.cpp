@@ -12,6 +12,7 @@ namespace XPG
 
     void Thread::startThread(Thread* inThread)
     {
+        inThread->mStop = false;
         inThread->mRunning = true;
         inThread->run();
         inThread->mRunning = false;
