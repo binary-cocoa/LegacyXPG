@@ -66,9 +66,6 @@
 		<Unit filename="../../../include/XPG/Timer.hpp" />
 		<Unit filename="../../../include/XPG/VBO.hpp" />
 		<Unit filename="../../../include/XPG/Vector3D.hpp" />
-		<Unit filename="../../../include/png.h" />
-		<Unit filename="../../../include/pngconf.h" />
-		<Unit filename="../../../include/pngpriv.h" />
 		<Unit filename="../../XPG/CubeMap.cpp" />
 		<Unit filename="../../XPG/DisplayBase.cpp" />
 		<Unit filename="../../XPG/Event.cpp" />
