@@ -19,6 +19,7 @@ namespace XPG
 
     struct Thread::PrivateData
     {
+        Data data;
         DWORD ID;
         HANDLE thread;
     };
@@ -40,10 +41,9 @@ namespace XPG
         if (mRunning) return;
 
         mRunning = true;
-        Data d;
-        d.thread = this;
-        d.launcher = &startThread;
-        mData->thread = CreateThread(NULL, 0, createThread, &d, 0,
+        mData->data.thread = this;
+        mData->data.launcher = &startThread;
+        mData->thread = CreateThread(NULL, 0, createThread, &mData->data, 0,
             &mData->ID);
     }
 

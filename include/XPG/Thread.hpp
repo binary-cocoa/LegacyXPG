@@ -15,7 +15,7 @@ namespace XPG
             };
 
             Thread();
-            ~Thread();
+            virtual ~Thread();
 
             void start();
             void wait();
