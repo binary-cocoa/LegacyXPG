@@ -284,7 +284,7 @@ namespace XPG
                 if (lparam & 0x40000000) break;
 
                 unsigned int key = (unsigned int)wparam;
-                cout << "key down -- " << key << endl;
+                //cout << "key down -- " << key << endl;
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::PRESS;
                 inEvent.keyboard.key = convertKeyCode(key);
@@ -294,7 +294,7 @@ namespace XPG
             case WM_KEYUP:
             {
                 unsigned int key = (unsigned int)wparam;
-                cout << "key up -- " << key << endl;
+                //cout << "key up -- " << key << endl;
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::RELEASE;
                 inEvent.keyboard.key = convertKeyCode(key);
@@ -474,14 +474,14 @@ namespace XPG
                 {
                     case SIZE_MAXIMIZED:
                     {
-                        cout << "maximize" << endl;
+                        //cout << "maximize" << endl;
                         activeEvent->window.resize = WindowEvent::MAXIMIZE;
                         break;
                     }
 
                     case SIZE_MINIMIZED:
                     {
-                        cout << "minimize" << endl;
+                        //cout << "minimize" << endl;
                         activeEvent->window.resize = WindowEvent::MINIMIZE;
                         break;
                     }
