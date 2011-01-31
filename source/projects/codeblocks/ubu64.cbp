@@ -64,8 +64,9 @@
 		<Unit filename="../../../include/XPG/Texture2D.hpp" />
 		<Unit filename="../../../include/XPG/Thread.hpp" />
 		<Unit filename="../../../include/XPG/Timer.hpp" />
-		<Unit filename="../../../include/XPG/VBO.hpp" />
 		<Unit filename="../../../include/XPG/Vector3D.hpp" />
+		<Unit filename="../../../include/XPG/VertexArrayObject.hpp" />
+		<Unit filename="../../../include/XPG/VertexBufferObject.hpp" />
 		<Unit filename="../../XPG/CubeMap.cpp" />
 		<Unit filename="../../XPG/DisplayBase.cpp" />
 		<Unit filename="../../XPG/Event.cpp" />
@@ -76,7 +77,8 @@
 		<Unit filename="../../XPG/Shader.cpp" />
 		<Unit filename="../../XPG/Texture.cpp" />
 		<Unit filename="../../XPG/Texture2D.cpp" />
-		<Unit filename="../../XPG/VBO.cpp" />
+		<Unit filename="../../XPG/VertexArrayObject.cpp" />
+		<Unit filename="../../XPG/VertexBufferObject.cpp" />
 		<Unit filename="../../XPG/image/png.cpp" />
 		<Unit filename="../../XPG/linux/Display.cpp" />
 		<Unit filename="../../XPG/unix/Mutex.cpp" />

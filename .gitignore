@@ -1,3 +1,5 @@
 test-xpg*
 source/projects/codeblocks/obj/
-source/projects/codeblocks/
+source/projects/codeblocks/*.html
+source/projects/codeblocks/*.depend
+source/projects/codeblocks/*.layout
