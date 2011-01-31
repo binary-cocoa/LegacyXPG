@@ -1,11 +1,10 @@
 #ifndef FANCYTESTMODULE_H
 #define FANCYTESTMODULE_H
 
-#include <XPG/ClusterVBO.hpp>
-#include <XPG/IndexVBO.hpp>
 #include <XPG/Module.hpp>
 #include <XPG/Program.hpp>
 #include <XPG/CubeMap.hpp>
+#include <XPG/VertexArrayObject.hpp>
 
 #include "TSphere.h"
 
@@ -27,9 +26,12 @@ class FancyTestModule : public XPG::Module
         XPG::Program<2> mProgram;
         XPG::Shader mVS;
         XPG::Shader mFS;
-        XPG::ClusterVBO<3> mVBO;
-        XPG::IndexVBO mIVBO;
         XPG::CubeMap mCubeMap;
+        XPG::VertexArrayObject mVAO;
+        XPG::VertexBufferObject mVertexVBO;
+        XPG::VertexBufferObject mColorVBO;
+        XPG::VertexBufferObject mNormalVBO;
+        XPG::VertexBufferObject mIndexVBO;
 
         TSphere mTS;
         GLint mUniMVPM;

@@ -174,11 +174,23 @@ namespace XPG
 
         glGetError(); // for some reason, a GL_INVALID_ENUM strikes here
 
-        // Somehow, glGenerateMipmap gets lost in the OpenGL 3.x setup. This
-        // updates the pointer to the right function.
+        // Somehow, functions get lost in the OpenGL 3.x setup. This
+        // updates the pointers to the right functions.
         if (!glGenerateMipmap)
             glGenerateMipmap = (void(*)(GLenum))
                 glXGetProcAddressARB((GLubyte*)"glGenerateMipmap");
+
+        if (!glGenVertexArrays)
+            glGenVertexArrays = (void(*)(GLsizei, GLuint*))
+                glXGetProcAddressARB((GLubyte*)"glGenVertexArrays");
+
+        if (!glDeleteVertexArrays)
+            glDeleteVertexArrays = (void(*)(GLsizei, const GLuint*))
+                glXGetProcAddressARB((GLubyte*)"glDeleteVertexArrays");
+
+        if (!glBindVertexArray)
+            glBindVertexArray = (void(*)(GLuint))
+                glXGetProcAddressARB((GLubyte*)"glBindVertexArray");
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;

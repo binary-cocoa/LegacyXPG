@@ -8,6 +8,8 @@ namespace XPG
     class VertexBufferObject
     {
         public:
+            friend class VertexArrayObject;
+
             VertexBufferObject(GLenum inTarget = GL_ARRAY_BUFFER,
                 GLenum inType = GL_FLOAT, GLenum inUsage = GL_STATIC_DRAW);
             ~VertexBufferObject();
@@ -22,6 +24,7 @@ namespace XPG
             GLenum mType;
             GLenum mUsage;
             GLuint mTypeSize;
+            GLuint mValuesPerUnit;
     };
 }
 

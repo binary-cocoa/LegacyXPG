@@ -3,7 +3,8 @@
 namespace XPG
 {
     VertexBufferObject::VertexBufferObject(GLenum inTarget, GLenum inType,
-        GLenum inUsage) : mTarget(inTarget), mType(inType), mUsage(inUsage)
+        GLenum inUsage) : mTarget(inTarget), mType(inType), mUsage(inUsage),
+        mValuesPerUnit(1)
     {
         glGenBuffers(1, &mHandle);
 
@@ -29,5 +30,7 @@ namespace XPG
         bind();
         glBufferData(mTarget, inSize * inValuesPerUnit * mTypeSize, inData,
             mUsage);
+
+        mValuesPerUnit = inValuesPerUnit;
     }
 }

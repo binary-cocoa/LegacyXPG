@@ -50,7 +50,8 @@ GLfloat normals[24] = {
     -a, a, -a,
     };
 
-FancyTestModule::FancyTestModule(int16u inMajorVersion) : mTS(1), mRotate(0.0f)
+FancyTestModule::FancyTestModule(int16u inMajorVersion)
+    : mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT), mTS(1), mRotate(0.0f)
 {
     mNextFrame = XPG::GetTicks();
     glEnable(GL_DEPTH_TEST);
@@ -105,13 +106,24 @@ FancyTestModule::FancyTestModule(int16u inMajorVersion) : mTS(1), mRotate(0.0f)
         v[2] = 100.0f;
         glUniform3fv(u, 1, v.array());
 
-        mVBO.loadVAA(0, 3, 8, points);
+        //mVBO.loadVAA(0, 3, 8, points);
+        mVertexVBO.loadData(points, 8, 3);
 
-        mVBO.loadVAA(1, 4, 8, colors);
+        //mVBO.loadVAA(1, 4, 8, colors);
+        mColorVBO.loadData(colors, 8, 4);
 
-        mVBO.loadVAA(2, 3, 8, normals);
+        //mVBO.loadVAA(2, 3, 8, normals);
+        mNormalVBO.loadData(normals, 8, 3);
 
-        mIVBO.loadData(GL_TRIANGLES, 36, indices);
+        //mIVBO.loadData(GL_TRIANGLES, 36, indices);
+        mIndexVBO.loadData(indices, 36);
+
+        mVAO.bind();
+        mVAO.mount(mVertexVBO, 0);
+        mVAO.mount(mColorVBO, 1);
+        mVAO.mount(mNormalVBO, 2);
+        mIndexVBO.bind();
+        XPG::VertexArrayObject::unbind();
 
         glActiveTexture(GL_TEXTURE0);
         u = mProgram.getUniformLocation("cubeMap");
@@ -216,7 +228,10 @@ void FancyTestModule::onDisplay()
         glUniformMatrix4fv(mUniMVPM, 1, GL_FALSE, mvp);
         glUniformMatrix4fv(mUniMVM, 1, GL_FALSE, mModelView);
         glUniformMatrix4fv(mUniNM, 1, GL_FALSE, mNormalView);
-        mVBO.display(mIVBO);
+        //mVBO.display(mIVBO);
+        mVAO.bind();
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        XPG::VertexArrayObject::unbind();
     }
 }
 
