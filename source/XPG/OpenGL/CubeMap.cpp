@@ -22,9 +22,9 @@ namespace XPG
 
         const GLenum params1[] = {
             GL_TEXTURE_MAG_FILTER, GL_LINEAR,
+            GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE,
             GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE,
             GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE,
-            GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE,
             0 };
 
         const GLenum params2[] = {

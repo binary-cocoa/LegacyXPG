@@ -1,7 +1,13 @@
 #include <XPG/Image.hpp>
-#include <cstdlib>
+#include <XPG/Platforms.hpp>
 
-using namespace std;
+#ifdef XPG_PLATFORM_ANDROID
+#   include <stdlib.h>
+#else
+#   include <cstdlib>
+#endif
+
+//using namespace std;
 
 namespace XPG
 {
@@ -24,7 +30,7 @@ namespace XPG
         FILE* f = fopen(inFile, "rb");
         if (!f)
         {
-            cout << "failed to open " << inFile << endl;
+            //cout << "failed to open " << inFile << endl;
             return;
         }
 

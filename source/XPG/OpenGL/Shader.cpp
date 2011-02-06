@@ -1,5 +1,6 @@
 #include <XPG/OpenGL/Shader.hpp>
 
+#include <XPG/Platforms.hpp>
 #ifdef XPG_PLATFORM_ANDROID
 #   include <stdio.h>
 #else
@@ -8,23 +9,19 @@
 
 namespace XPG
 {
-    Shader::Shader() : mHandle(0)
+    Shader::Shader(GLenum inType) : mType(inType)
     {
-    }
-
-    Shader::Shader(const char* inFile, GLenum inType) : mHandle(0)
-    {
-        loadFromFile(inFile, inType);
+        mHandle = glCreateShader(inType);
     }
 
     Shader::~Shader()
     {
-        unload();
+        if (mHandle) glDeleteShader(mHandle);
     }
 
-    void Shader::loadFromFile(const char* inFile, GLenum inType)
+    void Shader::loadFromFile(const char* inFile)
     {
-        if (mHandle || !inFile) return;
+        if (!inFile || !*inFile) return;
 
         char* source = fileToBuffer(inFile);
         if (!source)
@@ -33,15 +30,13 @@ namespace XPG
             return;
         }
 
-        loadFromBuffer(source, inType);
+        loadFromBuffer(source);
 
         delete [] source;
     }
 
-    void Shader::loadFromBuffer(const char* inBuffer, GLenum inType)
+    void Shader::loadFromBuffer(const char* inBuffer)
     {
-        if (!mHandle) mHandle = glCreateShader(inType);
-
         if (!mHandle)
         {
             // TODO: report error
@@ -64,11 +59,6 @@ namespace XPG
             glDeleteShader(mHandle);
             mHandle = 0;
         }
-    }
-
-    void Shader::unload()
-    {
-        if (mHandle) glDeleteShader(mHandle);
     }
 
     char* Shader::fileToBuffer(const char* inFile)

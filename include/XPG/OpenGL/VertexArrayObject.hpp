@@ -13,6 +13,7 @@ namespace XPG
 
             inline void bind() const { glBindVertexArray(mHandle); }
             void mount(const VertexBufferObject& inVBO, GLuint inIndex);
+            void mount(const VertexBufferObject& inVBO);
 
             static inline void unbind() { glBindVertexArray(0); }
 

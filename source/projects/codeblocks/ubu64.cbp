@@ -70,6 +70,7 @@
 		<Unit filename="../../XPG/Module.cpp" />
 		<Unit filename="../../XPG/OpenGL/Base.cpp" />
 		<Unit filename="../../XPG/OpenGL/CubeMap.cpp" />
+		<Unit filename="../../XPG/OpenGL/Program.cpp" />
 		<Unit filename="../../XPG/OpenGL/Shader.cpp" />
 		<Unit filename="../../XPG/OpenGL/Texture.cpp" />
 		<Unit filename="../../XPG/OpenGL/Texture2D.cpp" />

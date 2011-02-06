@@ -1,6 +1,12 @@
 #include <XPG/Mutex.hpp>
 #include <pthread.h>
-#include <cstdlib>
+
+#include <XPG/Platforms.hpp>
+#ifdef XPG_PLATFORM_ANDROID
+#   include <stdlib.h>
+#else
+#   include <cstdlib>
+#endif
 
 namespace XPG
 {

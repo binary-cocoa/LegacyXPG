@@ -20,4 +20,9 @@ namespace XPG
         glVertexAttribPointer(inIndex, inVBO.mValuesPerUnit, inVBO.mType,
             GL_FALSE, 0, 0);
     }
+
+    void VertexArrayObject::mount(const VertexBufferObject& inVBO)
+    {
+        inVBO.bind();
+    }
 }

@@ -51,7 +51,8 @@ GLfloat normals[24] = {
     };
 
 FancyTestModule::FancyTestModule(int16u inMajorVersion)
-    : mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT), mTS(1), mRotate(0.0f)
+    : mVS(GL_VERTEX_SHADER), mFS(GL_FRAGMENT_SHADER),
+    mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT), mTS(1), mRotate(0.0f)
 {
     mNextFrame = XPG::GetTicks();
     glEnable(GL_DEPTH_TEST);
@@ -71,8 +72,8 @@ FancyTestModule::FancyTestModule(int16u inMajorVersion)
     }
     else
     {
-        mVS.loadFromFile("test.vs", GL_VERTEX_SHADER);
-        mFS.loadFromFile("test.fs", GL_FRAGMENT_SHADER);
+        mVS.loadFromFile("test.vs");
+        mFS.loadFromFile("test.fs");
         mProgram.attachShader(mVS);
         mProgram.attachShader(mFS);
         mProgram.bindAttribLocation(0, "in_Position");
@@ -122,7 +123,7 @@ FancyTestModule::FancyTestModule(int16u inMajorVersion)
         mVAO.mount(mVertexVBO, 0);
         mVAO.mount(mColorVBO, 1);
         mVAO.mount(mNormalVBO, 2);
-        mIndexVBO.bind();
+        mVAO.mount(mIndexVBO);
         XPG::VertexArrayObject::unbind();
 
         glActiveTexture(GL_TEXTURE0);

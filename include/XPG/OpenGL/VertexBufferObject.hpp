@@ -2,13 +2,16 @@
 #define XPGH_VERTEXBUFFEROBJECT
 
 #include "Base.hpp"
+#include "../Platforms.hpp"
 
 namespace XPG
 {
     class VertexBufferObject
     {
         public:
+#ifndef XPG_OPENGL_ES
             friend class VertexArrayObject;
+#endif
 
             VertexBufferObject(GLenum inTarget = GL_ARRAY_BUFFER,
                 GLenum inType = GL_FLOAT, GLenum inUsage = GL_STATIC_DRAW);

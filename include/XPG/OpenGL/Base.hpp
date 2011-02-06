@@ -18,7 +18,8 @@
 
 #ifndef XPG_PLATFORM_ANDROID
 #   include <iostream>
-#   define LDB std::cout << __FILE__ << " : " << __LINE__ << " -- " << XPG::OpenGLErrorString() << std::endl
+#   define LDB std::cout << __FILE__ << "\n\t" << __LINE__ << " -- " \
+                         << XPG::OpenGLErrorString() << std::endl
 #else
 #   define LDB
 #endif
