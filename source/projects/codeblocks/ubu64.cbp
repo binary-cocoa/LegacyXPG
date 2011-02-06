@@ -38,7 +38,6 @@
 			<Add option="-pthread" />
 			<Add library="GL" />
 			<Add library="X11" />
-			<Add directory="../../../lib" />
 		</Linker>
 		<Unit filename="../../../include/GL/glew.h" />
 		<Unit filename="../../../include/GL/glxew.h" />
