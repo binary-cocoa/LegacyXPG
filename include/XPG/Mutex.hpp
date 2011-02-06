@@ -1,14 +1,6 @@
 #ifndef XPGH_MUTEX
 #define XPGH_MUTEX
 
-#include "Platforms.hpp"
-
-#ifdef XPG_PLATFORM_UNIX
-#   include <pthread.h>
-#elif defined(XPG_PLATFORM_WINDOWS)
-#   include <XPG/windows.hpp>
-#endif
-
 namespace XPG
 {
     class Mutex
@@ -21,11 +13,7 @@ namespace XPG
             void unlock();
 
         private:
-#ifdef XPG_PLATFORM_WINDOWS
-            HANDLE mMutex;
-#elif defined(XPG_PLATFORM_UNIX)
-            pthread_mutex_t mMutex;
-#endif
+            void* mData;
     };
 }
 

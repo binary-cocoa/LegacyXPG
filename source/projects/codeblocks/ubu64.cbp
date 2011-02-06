@@ -39,8 +39,6 @@
 			<Add library="GL" />
 			<Add library="X11" />
 		</Linker>
-		<Unit filename="../../../include/GL/glew.h" />
-		<Unit filename="../../../include/GL/glxew.h" />
 		<Unit filename="../../../include/XPG/DataTypes.hpp" />
 		<Unit filename="../../../include/XPG/Display.hpp" />
 		<Unit filename="../../../include/XPG/Event.hpp" />
@@ -62,6 +60,10 @@
 		<Unit filename="../../../include/XPG/Thread.hpp" />
 		<Unit filename="../../../include/XPG/Timer.hpp" />
 		<Unit filename="../../../include/XPG/Vector3D.hpp" />
+		<Unit filename="../../../include/XPG/private/glew.h" />
+		<Unit filename="../../../include/XPG/private/glxew.h" />
+		<Unit filename="../../../include/XPG/private/wglew.h" />
+		<Unit filename="../../../include/XPG/private/windows.hpp" />
 		<Unit filename="../../XPG/DisplayBase.cpp" />
 		<Unit filename="../../XPG/Event.cpp" />
 		<Unit filename="../../XPG/Image.cpp" />

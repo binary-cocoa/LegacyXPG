@@ -1,8 +1,8 @@
 #include <XPG/Display.hpp>
 #include <XPG/Timer.hpp>
 
-#include <GL/glew.h>
-#include <GL/glxew.h>
+#include <XPG/private/glew.h>
+#include <XPG/private/glxew.h>
 #include <X11/Xatom.h>
 
 #include <cmath>

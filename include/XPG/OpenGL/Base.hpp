@@ -11,7 +11,7 @@
     typedef GLushort OGLI; // abstraction of an "OpenGL Index"
     typedef char GLchar; // small fix to keep tools consistent
 #else
-#   include <GL/glew.h>
+#   include "../private/glew.h"
     const GLenum OGLIT = GL_UNSIGNED_INT;
     typedef GLuint OGLI;
 #endif

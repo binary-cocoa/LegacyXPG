@@ -4,24 +4,24 @@
 ** Copyright (C) 2002-2008, Marcelo E. Magallon <mmagallo[]debian org>
 ** Copyright (C) 2002, Lev Povalahev
 ** All rights reserved.
-** 
-** Redistribution and use in source and binary forms, with or without 
+**
+** Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are met:
-** 
-** * Redistributions of source code must retain the above copyright notice, 
+**
+** * Redistributions of source code must retain the above copyright notice,
 **   this list of conditions and the following disclaimer.
-** * Redistributions in binary form must reproduce the above copyright notice, 
-**   this list of conditions and the following disclaimer in the documentation 
+** * Redistributions in binary form must reproduce the above copyright notice,
+**   this list of conditions and the following disclaimer in the documentation
 **   and/or other materials provided with the distribution.
-** * The name of the author may be used to endorse or promote products 
+** * The name of the author may be used to endorse or promote products
 **   derived from this software without specific prior written permission.
 **
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 ** SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 ** INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 ** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
@@ -29,11 +29,11 @@
 ** THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <GL/glew.h>
+#include <XPG/private/glew.h>
 #if defined(_WIN32)
-#  include <GL/wglew.h>
+#  include <XPG/private/wglew.h>
 #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
-#  include <GL/glxew.h>
+#  include <XPG/private/glxew.h>
 #endif
 
 /*
@@ -65,6 +65,29 @@
 #  define GLXEW_CONTEXT_ARG_DEF_LIST void
 #endif /* GLEW_MX */
 
+#if defined(__sgi) || defined (__sun) || defined(GLEW_APPLE_GLX)
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void* dlGetProcAddress (const GLubyte* name)
+{
+  static void* h = NULL;
+  static void* gpa;
+
+  if (h == NULL)
+  {
+    if ((h = dlopen(NULL, RTLD_LAZY | RTLD_LOCAL)) == NULL) return NULL;
+    gpa = dlsym(h, "glXGetProcAddress");
+  }
+
+  if (gpa != NULL)
+    return ((void*(*)(const GLubyte*))gpa)(name);
+  else
+    return dlsym(h, (const char*)name);
+}
+#endif /* __sgi || __sun || GLEW_APPLE_GLX */
+
 #if defined(__APPLE__)
 #include <stdlib.h>
 #include <string.h>
@@ -77,11 +100,18 @@
 void* NSGLGetProcAddress (const GLubyte *name)
 {
   static void* image = NULL;
-  if (NULL == image) 
+  if (NULL == image)
   {
     image = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
   }
-  return image ? dlsym(image, (const char*)name) : NULL;
+  if( !image ) return NULL;
+  void* addr = dlsym(image, (const char*)name);
+  if( addr ) return addr;
+#ifdef GLEW_APPLE_GLX
+  return dlGetProcAddress( name ); // try next for glx symbols
+#else
+  return NULL;
+#endif
 }
 #else
 
@@ -105,33 +135,15 @@ void* NSGLGetProcAddress (const GLubyte *name)
 	 symbol = NSLookupAndBindSymbol(symbolName); */
   symbol = image ? NSLookupSymbolInImage(image, symbolName, NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR) : NULL;
   free(symbolName);
-  return symbol ? NSAddressOfSymbol(symbol) : NULL;
+  if( symbol ) return NSAddressOfSymbol(symbol);
+#ifdef GLEW_APPLE_GLX
+  return dlGetProcAddress( name ); // try next for glx symbols
+#else
+  return NULL;
+#endif
 }
 #endif /* MAC_OS_X_VERSION_10_3 */
 #endif /* __APPLE__ */
-
-#if defined(__sgi) || defined (__sun)
-#include <dlfcn.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-void* dlGetProcAddress (const GLubyte* name)
-{
-  static void* h = NULL;
-  static void* gpa;
-
-  if (h == NULL)
-  {
-    if ((h = dlopen(NULL, RTLD_LAZY | RTLD_LOCAL)) == NULL) return NULL;
-    gpa = dlsym(h, "glXGetProcAddress");
-  }
-
-  if (gpa != NULL)
-    return ((void*(*)(const GLubyte*))gpa)(name);
-  else
-    return dlsym(h, (const char*)name);
-}
-#endif /* __sgi || __sun */
 
 /*
  * Define glewGetProcAddress.
@@ -195,12 +207,12 @@ static GLboolean _glewStrSame1 (GLubyte** a, GLuint* na, const GLubyte* b, GLuin
   {
     GLuint i=0;
     while (i < nb && (*a)+i != NULL && b+i != NULL && (*a)[i] == b[i]) i++;
-	if(i == nb)
-	{
-		*a = *a + nb;
-		*na = *na - nb;
-		return GL_TRUE;
-	}
+    if(i == nb)
+    {
+      *a = *a + nb;
+      *na = *na - nb;
+      return GL_TRUE;
+    }
   }
   return GL_FALSE;
 }
@@ -211,12 +223,12 @@ static GLboolean _glewStrSame2 (GLubyte** a, GLuint* na, const GLubyte* b, GLuin
   {
     GLuint i=0;
     while (i < nb && (*a)+i != NULL && b+i != NULL && (*a)[i] == b[i]) i++;
-	if(i == nb)
-	{
-		*a = *a + nb;
-		*na = *na - nb;
-		return GL_TRUE;
-	}
+    if(i == nb)
+    {
+      *a = *a + nb;
+      *na = *na - nb;
+      return GL_TRUE;
+    }
   }
   return GL_FALSE;
 }
@@ -2376,6 +2388,7 @@ GLboolean __GLEW_3DFX_tbuffer = GL_FALSE;
 GLboolean __GLEW_3DFX_texture_compression_FXT1 = GL_FALSE;
 GLboolean __GLEW_AMD_conservative_depth = GL_FALSE;
 GLboolean __GLEW_AMD_debug_output = GL_FALSE;
+GLboolean __GLEW_AMD_depth_clamp_separate = GL_FALSE;
 GLboolean __GLEW_AMD_draw_buffers_blend = GL_FALSE;
 GLboolean __GLEW_AMD_name_gen_delete = GL_FALSE;
 GLboolean __GLEW_AMD_performance_monitor = GL_FALSE;
@@ -2602,6 +2615,7 @@ GLboolean __GLEW_EXT_texture_object = GL_FALSE;
 GLboolean __GLEW_EXT_texture_perturb_normal = GL_FALSE;
 GLboolean __GLEW_EXT_texture_rectangle = GL_FALSE;
 GLboolean __GLEW_EXT_texture_sRGB = GL_FALSE;
+GLboolean __GLEW_EXT_texture_sRGB_decode = GL_FALSE;
 GLboolean __GLEW_EXT_texture_shared_exponent = GL_FALSE;
 GLboolean __GLEW_EXT_texture_snorm = GL_FALSE;
 GLboolean __GLEW_EXT_texture_swizzle = GL_FALSE;
@@ -3234,6 +3248,10 @@ static GLboolean _glewInit_GL_AMD_debug_output (GLEW_CONTEXT_ARG_DEF_INIT)
 }
 
 #endif /* GL_AMD_debug_output */
+
+#ifdef GL_AMD_depth_clamp_separate
+
+#endif /* GL_AMD_depth_clamp_separate */
 
 #ifdef GL_AMD_draw_buffers_blend
 
@@ -6167,6 +6185,10 @@ static GLboolean _glewInit_GL_EXT_texture_perturb_normal (GLEW_CONTEXT_ARG_DEF_I
 
 #endif /* GL_EXT_texture_sRGB */
 
+#ifdef GL_EXT_texture_sRGB_decode
+
+#endif /* GL_EXT_texture_sRGB_decode */
+
 #ifdef GL_EXT_texture_shared_exponent
 
 #endif /* GL_EXT_texture_shared_exponent */
@@ -7921,14 +7943,14 @@ static GLboolean _glewInit_GL_WIN_swap_hint (GLEW_CONTEXT_ARG_DEF_INIT)
 
 /* ------------------------------------------------------------------------- */
 
-/* 
+/*
  * Search for name in the extensions string. Use of strstr()
  * is not sufficient because extension names can be prefixes of
  * other extension names. Could use strtok() but the constant
  * string returned by glGetString might be in read-only memory.
  */
 GLboolean glewGetExtension (const char* name)
-{    
+{
   GLubyte* p;
   GLubyte* end;
   GLuint len = _glewStrLen((const GLubyte*)name);
@@ -7959,7 +7981,7 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
   dot = _glewStrCLen(s, '.');
   if (dot == 0)
     return GLEW_ERROR_NO_GL_VERSION;
-  
+
   major = s[dot-1]-'0';
   minor = s[dot+1]-'0';
 
@@ -7967,7 +7989,7 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
     minor = 0;
   if (major<0 || major>9)
     return GLEW_ERROR_NO_GL_VERSION;
-  
+
 
   if (major == 1 && minor == 0)
   {
@@ -7981,12 +8003,12 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
     CONST_CAST(GLEW_VERSION_3_2)   = GLEW_VERSION_3_3   == GL_TRUE || ( major == 3 && minor >= 2 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_3_1)   = GLEW_VERSION_3_2   == GL_TRUE || ( major == 3 && minor >= 1 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_3_0)   = GLEW_VERSION_3_1   == GL_TRUE || ( major == 3               ) ? GL_TRUE : GL_FALSE;
-    CONST_CAST(GLEW_VERSION_2_1)   = GLEW_VERSION_3_0   == GL_TRUE || ( major == 2 && minor >= 1 ) ? GL_TRUE : GL_FALSE;    
+    CONST_CAST(GLEW_VERSION_2_1)   = GLEW_VERSION_3_0   == GL_TRUE || ( major == 2 && minor >= 1 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_2_0)   = GLEW_VERSION_2_1   == GL_TRUE || ( major == 2               ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_1_5)   = GLEW_VERSION_2_0   == GL_TRUE || ( major == 1 && minor >= 5 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_1_4)   = GLEW_VERSION_1_5   == GL_TRUE || ( major == 1 && minor >= 4 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_1_3)   = GLEW_VERSION_1_4   == GL_TRUE || ( major == 1 && minor >= 3 ) ? GL_TRUE : GL_FALSE;
-    CONST_CAST(GLEW_VERSION_1_2_1) = GLEW_VERSION_1_3   == GL_TRUE                                 ? GL_TRUE : GL_FALSE; 
+    CONST_CAST(GLEW_VERSION_1_2_1) = GLEW_VERSION_1_3   == GL_TRUE                                 ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_1_2)   = GLEW_VERSION_1_2_1 == GL_TRUE || ( major == 1 && minor >= 2 ) ? GL_TRUE : GL_FALSE;
     CONST_CAST(GLEW_VERSION_1_1)   = GLEW_VERSION_1_2   == GL_TRUE || ( major == 1 && minor >= 1 ) ? GL_TRUE : GL_FALSE;
   }
@@ -8045,6 +8067,9 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
   CONST_CAST(GLEW_AMD_debug_output) = glewGetExtension("GL_AMD_debug_output");
   if (glewExperimental || GLEW_AMD_debug_output) CONST_CAST(GLEW_AMD_debug_output) = !_glewInit_GL_AMD_debug_output(GLEW_CONTEXT_ARG_VAR_INIT);
 #endif /* GL_AMD_debug_output */
+#ifdef GL_AMD_depth_clamp_separate
+  CONST_CAST(GLEW_AMD_depth_clamp_separate) = glewGetExtension("GL_AMD_depth_clamp_separate");
+#endif /* GL_AMD_depth_clamp_separate */
 #ifdef GL_AMD_draw_buffers_blend
   CONST_CAST(GLEW_AMD_draw_buffers_blend) = glewGetExtension("GL_AMD_draw_buffers_blend");
   if (glewExperimental || GLEW_AMD_draw_buffers_blend) CONST_CAST(GLEW_AMD_draw_buffers_blend) = !_glewInit_GL_AMD_draw_buffers_blend(GLEW_CONTEXT_ARG_VAR_INIT);
@@ -8841,6 +8866,9 @@ GLenum glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
 #ifdef GL_EXT_texture_sRGB
   CONST_CAST(GLEW_EXT_texture_sRGB) = glewGetExtension("GL_EXT_texture_sRGB");
 #endif /* GL_EXT_texture_sRGB */
+#ifdef GL_EXT_texture_sRGB_decode
+  CONST_CAST(GLEW_EXT_texture_sRGB_decode) = glewGetExtension("GL_EXT_texture_sRGB_decode");
+#endif /* GL_EXT_texture_sRGB_decode */
 #ifdef GL_EXT_texture_shared_exponent
   CONST_CAST(GLEW_EXT_texture_shared_exponent) = glewGetExtension("GL_EXT_texture_shared_exponent");
 #endif /* GL_EXT_texture_shared_exponent */
@@ -10111,7 +10139,7 @@ static PFNWGLGETEXTENSIONSSTRINGARBPROC _wglewGetExtensionsStringARB = NULL;
 static PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglewGetExtensionsStringEXT = NULL;
 
 GLboolean wglewGetExtension (const char* name)
-{    
+{
   GLubyte* p;
   GLubyte* end;
   GLuint len = _glewStrLen((const GLubyte*)name);
@@ -11059,7 +11087,7 @@ static GLboolean _glewInit_GLX_SUN_video_resize (GLXEW_CONTEXT_ARG_DEF_INIT)
 /* ------------------------------------------------------------------------ */
 
 GLboolean glxewGetExtension (const char* name)
-{    
+{
   GLubyte* p;
   GLubyte* end;
   GLuint len;
@@ -11326,10 +11354,10 @@ const GLubyte* glewGetString (GLenum name)
   static const GLubyte* _glewString[] =
   {
     (const GLubyte*)NULL,
-    (const GLubyte*)"1.5.7",
+    (const GLubyte*)"1.5.8",
     (const GLubyte*)"1",
     (const GLubyte*)"5",
-    (const GLubyte*)"7"
+    (const GLubyte*)"8"
   };
   const int max_string = sizeof(_glewString)/sizeof(*_glewString) - 1;
   return _glewString[(int)name > max_string ? 0 : (int)name];
@@ -11362,7 +11390,7 @@ GLenum glewInit ()
 
 #endif /* !GLEW_MX */
 #ifdef GLEW_MX
-GLboolean glewContextIsSupported (GLEWContext* ctx, const char* name)
+GLboolean glewContextIsSupported (const GLEWContext* ctx, const char* name)
 #else
 GLboolean glewIsSupported (const char* name)
 #endif
@@ -11505,6 +11533,13 @@ GLboolean glewIsSupported (const char* name)
         if (_glewStrSame3(&pos, &len, (const GLubyte*)"debug_output", 12))
         {
           ret = GLEW_AMD_debug_output;
+          continue;
+        }
+#endif
+#ifdef GL_AMD_depth_clamp_separate
+        if (_glewStrSame3(&pos, &len, (const GLubyte*)"depth_clamp_separate", 20))
+        {
+          ret = GLEW_AMD_depth_clamp_separate;
           continue;
         }
 #endif
@@ -13105,6 +13140,13 @@ GLboolean glewIsSupported (const char* name)
           continue;
         }
 #endif
+#ifdef GL_EXT_texture_sRGB_decode
+        if (_glewStrSame3(&pos, &len, (const GLubyte*)"texture_sRGB_decode", 19))
+        {
+          ret = GLEW_EXT_texture_sRGB_decode;
+          continue;
+        }
+#endif
 #ifdef GL_EXT_texture_shared_exponent
         if (_glewStrSame3(&pos, &len, (const GLubyte*)"texture_shared_exponent", 23))
         {
@@ -14340,7 +14382,7 @@ GLboolean glewIsSupported (const char* name)
 #if defined(_WIN32)
 
 #if defined(GLEW_MX)
-GLboolean wglewContextIsSupported (WGLEWContext* ctx, const char* name)
+GLboolean wglewContextIsSupported (const WGLEWContext* ctx, const char* name)
 #else
 GLboolean wglewIsSupported (const char* name)
 #endif
@@ -14703,7 +14745,7 @@ GLboolean wglewIsSupported (const char* name)
 #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
 
 #if defined(GLEW_MX)
-GLboolean glxewContextIsSupported (GLXEWContext* ctx, const char* name)
+GLboolean glxewContextIsSupported (const GLXEWContext* ctx, const char* name)
 #else
 GLboolean glxewIsSupported (const char* name)
 #endif
