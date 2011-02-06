@@ -134,6 +134,8 @@
 		<Unit filename="../../test/FancyTestModule.h" />
 		<Unit filename="../../test/TSphere.cpp" />
 		<Unit filename="../../test/TSphere.h" />
+		<Unit filename="../../test/TestModule.cpp" />
+		<Unit filename="../../test/TestModule.hpp" />
 		<Unit filename="../../test/main.cpp" />
 		<Unit filename="../../zlib/adler32.c">
 			<Option compilerVar="CC" />

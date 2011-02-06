@@ -33,4 +33,3 @@ class TestModule : public XPG::Module
 };
 
 #endif
-

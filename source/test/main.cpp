@@ -1,7 +1,7 @@
 #include <XPG/Display.hpp>
 #include <XPG/Image.hpp>
 
-#include "FancyTestModule.h"
+#include "TestModule.hpp"
 
 #include <iostream>
 using namespace std;
@@ -24,15 +24,14 @@ int main(int argc, char** argv)
         << c.details.shader.vMinor << endl;
 
     {
-        FancyTestModule ftm(c.details.context.vMajor);
-
         const char* title = c.details.legacyContext ?
             "XPG OpenGL Legacy" : "XPG OpenGL 3";
 
         c.setWindowTitle(title);
         c.setIconTitle(title);
 
-        c.runModule(&ftm);
+        TestModule tm;
+        c.runModule(tm);
 
         // ftm dies here, properly disposing of various OpenGL resources
     }

@@ -167,4 +167,3 @@ void TestModule::onResize(int32u inWidth, int32u inHeight)
     mProjection.perspective(30.0f, ratio, 1.0f, 100.0f, true);
     glViewport(0, 0, inWidth, inHeight);
 }
-

@@ -431,22 +431,22 @@ namespace XPG
         return true;
     }
 
-    void Context::runModule(Module* inModule)
+    void Context::runModule(Module& inModule)
     {
-        if (!mData->active || !inModule) return;
+        if (!mData->active) return;
 
         Event event;
         event.type = Event::WINDOW;
         event.window.event = WindowEvent::RESIZE;
         event.window.width = mDetails.width;
         event.window.height = mDetails.height;
-        inModule->handleEvent(event);
-        inModule->startRunning();
+        inModule.handleEvent(event);
+        inModule.startRunning();
 
-        while (inModule->isRunning())
+        while (inModule.isRunning())
         {
-            while (getEvent(event)) inModule->handleEvent(event);
-            inModule->onDisplay();
+            while (getEvent(event)) inModule.handleEvent(event);
+            inModule.onDisplay();
             swapBuffers();
             Idle(1);
         }
