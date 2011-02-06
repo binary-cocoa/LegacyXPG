@@ -38,8 +38,6 @@
 			<Add option="-pthread" />
 			<Add library="GL" />
 			<Add library="X11" />
-			<Add library="png-ubu64" />
-			<Add library="z-ubu64" />
 			<Add directory="../../../lib" />
 		</Linker>
 		<Unit filename="../../../include/GL/glew.h" />
@@ -85,11 +83,101 @@
 		<Unit filename="../../glew/glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../png/png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngerror.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngget.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngpread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrtran.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngtrans.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwtran.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../../test/FancyTestModule.cpp" />
 		<Unit filename="../../test/FancyTestModule.h" />
 		<Unit filename="../../test/TSphere.cpp" />
 		<Unit filename="../../test/TSphere.h" />
 		<Unit filename="../../test/main.cpp" />
+		<Unit filename="../../zlib/adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/compress.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/deflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzclose.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/infback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inffast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inftrees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/trees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/uncompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/zutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />
