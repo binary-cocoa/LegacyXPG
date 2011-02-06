@@ -182,15 +182,13 @@ namespace XPG
 
         if (!glGenVertexArrays)
             glGenVertexArrays = (void(*)(GLsizei, GLuint*))
-                glXGetProcAddressARB((GLubyte*)"glGenVertexArrays");
+                glGenVertexArraysAPPLE;
 
         if (!glDeleteVertexArrays)
-            glDeleteVertexArrays = (void(*)(GLsizei, const GLuint*))
-                glXGetProcAddressARB((GLubyte*)"glDeleteVertexArrays");
+            glDeleteVertexArrays = glDeleteVertexArraysAPPLE;
 
         if (!glBindVertexArray)
-            glBindVertexArray = (void(*)(GLuint))
-                glXGetProcAddressARB((GLubyte*)"glBindVertexArray");
+            glBindVertexArray = glBindVertexArrayAPPLE;
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;

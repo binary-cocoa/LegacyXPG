@@ -2,9 +2,9 @@
 #define FANCYTESTMODULE_H
 
 #include <XPG/Module.hpp>
-#include <XPG/Program.hpp>
-#include <XPG/CubeMap.hpp>
-#include <XPG/VertexArrayObject.hpp>
+#include <XPG/OpenGL/Program.hpp>
+#include <XPG/OpenGL/CubeMap.hpp>
+#include <XPG/OpenGL/VertexArrayObject.hpp>
 
 #include "TSphere.h"
 

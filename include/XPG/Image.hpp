@@ -2,7 +2,7 @@
 #define XPGH_IMAGE
 
 #include <XPG/DataTypes.hpp>
-#include <XPG/OpenGL.hpp>
+#include <XPG/OpenGL/Base.hpp>
 #include <cstdio>
 
 namespace XPG

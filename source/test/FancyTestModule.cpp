@@ -1,6 +1,6 @@
 #include "FancyTestModule.h"
 #include <XPG/Timer.hpp>
-#include <XPG/OpenGL.hpp>
+#include <XPG/OpenGL/Base.hpp>
 
 #define FOV 30.0f
 #define NCC 1.0f

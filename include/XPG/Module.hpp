@@ -1,7 +1,7 @@
 #ifndef XPGH_MODULE
 #define XPGH_MODULE
 
-#include "OpenGL.hpp"
+#include "OpenGL/Base.hpp"
 #include "DataTypes.hpp"
 #include "Event.hpp"
 
