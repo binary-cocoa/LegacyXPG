@@ -38,47 +38,44 @@
 			<Add option="-pthread" />
 			<Add library="GL" />
 			<Add library="X11" />
-			<Add library="png-ubu64" />
-			<Add library="z-ubu64" />
-			<Add directory="../../../lib" />
 		</Linker>
-		<Unit filename="../../../include/GL/glew.h" />
-		<Unit filename="../../../include/GL/glxew.h" />
-		<Unit filename="../../../include/XPG/ClusterVBO.hpp" />
-		<Unit filename="../../../include/XPG/CubeMap.hpp" />
 		<Unit filename="../../../include/XPG/DataTypes.hpp" />
 		<Unit filename="../../../include/XPG/Display.hpp" />
 		<Unit filename="../../../include/XPG/Event.hpp" />
 		<Unit filename="../../../include/XPG/Exception.hpp" />
 		<Unit filename="../../../include/XPG/Image.hpp" />
-		<Unit filename="../../../include/XPG/IndexVBO.hpp" />
 		<Unit filename="../../../include/XPG/Matrix3D.hpp" />
 		<Unit filename="../../../include/XPG/Module.hpp" />
 		<Unit filename="../../../include/XPG/Mutex.hpp" />
 		<Unit filename="../../../include/XPG/Network.hpp" />
-		<Unit filename="../../../include/XPG/OpenGL.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/Base.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/CubeMap.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/Program.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/Shader.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/Texture.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/Texture2D.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/VertexArrayObject.hpp" />
+		<Unit filename="../../../include/XPG/OpenGL/VertexBufferObject.hpp" />
 		<Unit filename="../../../include/XPG/Platforms.hpp" />
-		<Unit filename="../../../include/XPG/Program.hpp" />
-		<Unit filename="../../../include/XPG/Shader.hpp" />
-		<Unit filename="../../../include/XPG/Texture.hpp" />
-		<Unit filename="../../../include/XPG/Texture2D.hpp" />
 		<Unit filename="../../../include/XPG/Thread.hpp" />
 		<Unit filename="../../../include/XPG/Timer.hpp" />
 		<Unit filename="../../../include/XPG/Vector3D.hpp" />
-		<Unit filename="../../../include/XPG/VertexArrayObject.hpp" />
-		<Unit filename="../../../include/XPG/VertexBufferObject.hpp" />
-		<Unit filename="../../XPG/CubeMap.cpp" />
+		<Unit filename="../../../include/XPG/private/glew.h" />
+		<Unit filename="../../../include/XPG/private/glxew.h" />
+		<Unit filename="../../../include/XPG/private/wglew.h" />
+		<Unit filename="../../../include/XPG/private/windows.hpp" />
 		<Unit filename="../../XPG/DisplayBase.cpp" />
 		<Unit filename="../../XPG/Event.cpp" />
 		<Unit filename="../../XPG/Image.cpp" />
-		<Unit filename="../../XPG/IndexVBO.cpp" />
 		<Unit filename="../../XPG/Module.cpp" />
-		<Unit filename="../../XPG/OpenGL.cpp" />
-		<Unit filename="../../XPG/Shader.cpp" />
-		<Unit filename="../../XPG/Texture.cpp" />
-		<Unit filename="../../XPG/Texture2D.cpp" />
-		<Unit filename="../../XPG/VertexArrayObject.cpp" />
-		<Unit filename="../../XPG/VertexBufferObject.cpp" />
+		<Unit filename="../../XPG/OpenGL/Base.cpp" />
+		<Unit filename="../../XPG/OpenGL/CubeMap.cpp" />
+		<Unit filename="../../XPG/OpenGL/Program.cpp" />
+		<Unit filename="../../XPG/OpenGL/Shader.cpp" />
+		<Unit filename="../../XPG/OpenGL/Texture.cpp" />
+		<Unit filename="../../XPG/OpenGL/Texture2D.cpp" />
+		<Unit filename="../../XPG/OpenGL/VertexArrayObject.cpp" />
+		<Unit filename="../../XPG/OpenGL/VertexBufferObject.cpp" />
 		<Unit filename="../../XPG/image/png.cpp" />
 		<Unit filename="../../XPG/linux/Display.cpp" />
 		<Unit filename="../../XPG/unix/Mutex.cpp" />
@@ -88,11 +85,103 @@
 		<Unit filename="../../glew/glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../png/png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngerror.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngget.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngpread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrtran.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngrutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngtrans.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwtran.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../png/pngwutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../../test/FancyTestModule.cpp" />
 		<Unit filename="../../test/FancyTestModule.h" />
 		<Unit filename="../../test/TSphere.cpp" />
 		<Unit filename="../../test/TSphere.h" />
+		<Unit filename="../../test/TestModule.cpp" />
+		<Unit filename="../../test/TestModule.hpp" />
 		<Unit filename="../../test/main.cpp" />
+		<Unit filename="../../zlib/adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/compress.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/deflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzclose.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/gzwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/infback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inffast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/inftrees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/trees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/uncompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../zlib/zutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

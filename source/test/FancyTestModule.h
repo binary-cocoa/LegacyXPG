@@ -2,9 +2,10 @@
 #define FANCYTESTMODULE_H
 
 #include <XPG/Module.hpp>
-#include <XPG/Program.hpp>
-#include <XPG/CubeMap.hpp>
-#include <XPG/VertexArrayObject.hpp>
+#include <XPG/OpenGL/Shader.hpp>
+#include <XPG/OpenGL/Program.hpp>
+#include <XPG/OpenGL/CubeMap.hpp>
+#include <XPG/OpenGL/VertexArrayObject.hpp>
 
 #include "TSphere.h"
 
@@ -23,7 +24,7 @@ class FancyTestModule : public XPG::Module
         virtual void onDisplay();
 
     private:
-        XPG::Program<2> mProgram;
+        XPG::Program mProgram;
         XPG::Shader mVS;
         XPG::Shader mFS;
         XPG::CubeMap mCubeMap;
