@@ -1,10 +1,10 @@
 #include <XPG/Display.hpp>
 #include <XPG/Platforms.hpp>
 #include <XPG/Timer.hpp>
-#include <XPG/windows.hpp>
+#include <XPG/private/windows.hpp>
 
-#include <GL/glew.h>
-#include <GL/wglew.h>
+#include <XPG/private/glew.h>
+#include <XPG/private/wglew.h>
 
 #include <iostream>
 using namespace std;
@@ -334,9 +334,9 @@ namespace XPG
         return true;
     }
 
-    void Context::runModule(Module* inModule)
+    void Context::runModule(Module& inModule)
     {
-        if (!mDetails.width || !inModule) return;
+        if (!mDetails.width) return;
 
         //mData->module = inModule;
 
@@ -345,13 +345,13 @@ namespace XPG
         event.window.event = WindowEvent::RESIZE;
         event.window.width = mDetails.width;
         event.window.height = mDetails.height;
-        inModule->handleEvent(event);
-        inModule->startRunning();
+        inModule.handleEvent(event);
+        inModule.startRunning();
 
-        while (inModule->isRunning())
+        while (inModule.isRunning())
         {
-            while (getEvent(event)) inModule->handleEvent(event);
-            inModule->onDisplay();
+            while (getEvent(event)) inModule.handleEvent(event);
+            inModule.onDisplay();
             swapBuffers();
             Idle(1);
         }

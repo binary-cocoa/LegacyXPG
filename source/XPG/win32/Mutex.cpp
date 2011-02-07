@@ -1,27 +1,31 @@
 #include <XPG/Mutex.hpp>
+#include <XPG/private/windows.hpp>
+#include <cstdlib>
 
 namespace XPG
 {
     Mutex::Mutex()
     {
-        mMutex = CreateMutex(NULL, FALSE, NULL);
+        mData = malloc(sizeof(HANDLE));
+        *((HANDLE*)mData) = CreateMutex(NULL, FALSE, NULL);
     }
 
     Mutex::~Mutex()
     {
-        CloseHandle(mMutex);
+        CloseHandle(*((HANDLE*)mData));
+        free(mData);
     }
 
     void Mutex::lock()
     {
         //DWORD waitResult =
-        WaitForSingleObject(mMutex, INFINITE);
+        WaitForSingleObject(*((HANDLE*)mData), INFINITE);
         /// TODO: add error checking
     }
 
     void Mutex::unlock()
     {
-        if (!ReleaseMutex(mMutex))
+        if (!ReleaseMutex(*((HANDLE*)mData)))
         {
             /// TODO: add error checking
         }

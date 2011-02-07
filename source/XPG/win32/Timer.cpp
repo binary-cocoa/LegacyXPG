@@ -1,5 +1,5 @@
 #include <XPG/Timer.hpp>
-#include <XPG/windows.hpp>
+#include <XPG/private/windows.hpp>
 
 namespace XPG
 {
