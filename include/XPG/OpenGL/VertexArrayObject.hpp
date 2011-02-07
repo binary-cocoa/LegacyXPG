@@ -3,6 +3,10 @@
 
 #include "VertexBufferObject.hpp"
 
+#ifdef XPG_OPENGL_ES
+#error Vertex Array Objects are not supported in OpenGL ES.
+#endif
+
 namespace XPG
 {
     class VertexArrayObject

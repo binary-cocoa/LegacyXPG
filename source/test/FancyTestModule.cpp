@@ -28,7 +28,7 @@ GLfloat colors[32] = {
     0.0f, 0.0f, 0.0f, 1.0f
     };
 
-OGLI indices[36] = {
+GLushort indices[36] = {
     0, 1, 2, 0, 2, 3, // top
     7, 6, 5, 7, 5, 4, // bottom
     1, 0, 4, 1, 4, 5, // right
@@ -52,7 +52,7 @@ GLfloat normals[24] = {
 
 FancyTestModule::FancyTestModule(int16u inMajorVersion)
     : mVS(GL_VERTEX_SHADER), mFS(GL_FRAGMENT_SHADER),
-    mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT), mTS(1), mRotate(0.0f)
+    mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_SHORT), mTS(1), mRotate(0.0f)
 {
     mNextFrame = XPG::GetTicks();
     glEnable(GL_DEPTH_TEST);

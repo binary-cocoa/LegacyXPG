@@ -32,8 +32,6 @@ int main(int argc, char** argv)
 
         TestModule tm;
         c.runModule(tm);
-
-        // ftm dies here, properly disposing of various OpenGL resources
     }
 
     c.destroy();
