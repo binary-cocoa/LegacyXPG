@@ -8,7 +8,8 @@ namespace XPG
         FILE* f = inFile;
 
         int8u buffer[8];
-        fread(buffer, 1, 8, f);
+        size_t r = fread(buffer, 1, 8, f);
+        ++r;
 
         bool isPNG = !png_sig_cmp(buffer, 0, 8);
         if (!isPNG)
