@@ -31,10 +31,13 @@ namespace XPG
             inline void use() { glUseProgram(mHandle); }
 
         private:
+            void create();
+
             GLuint mHandle;
             GLuint mShaders[MaxShaders];
             size_t mSize;
             bool mLinked;
+            int16u mContextVersion;
     };
 }
 

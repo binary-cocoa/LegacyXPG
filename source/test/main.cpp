@@ -31,6 +31,7 @@ int main(int argc, char** argv)
         c.setIconTitle(title);
 
         TestModule tm;
+        tm.onLoad();
         c.runModule(tm);
     }
 

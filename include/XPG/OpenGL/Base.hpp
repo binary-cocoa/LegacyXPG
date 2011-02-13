@@ -2,6 +2,7 @@
 #define XPGH_OPENGL
 
 #include "../Platforms.hpp"
+#include "../DataTypes.hpp"
 
 #ifdef XPG_PLATFORM_ANDROID
 #   define XPG_OPENGL_ES
@@ -22,6 +23,9 @@
 
 namespace XPG
 {
+    int16u getContextVersion();
+    void newContext();
+
     const char* OpenGLErrorString();
 }
 

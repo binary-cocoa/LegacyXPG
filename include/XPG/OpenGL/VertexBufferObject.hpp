@@ -22,12 +22,15 @@ namespace XPG
                 GLuint inValuesPerUnit = 1);
 
         private:
+            void create();
+
             GLuint mHandle;
             GLenum mTarget;
             GLenum mType;
             GLenum mUsage;
             GLuint mTypeSize;
             GLuint mValuesPerUnit;
+            int16u mContextVersion;
     };
 }
 

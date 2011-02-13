@@ -25,8 +25,11 @@ namespace XPG
                 return *this;
             }
 
+            void create();
+
             GLuint mHandle;
             GLenum mType;
+            int16u mContextVersion;
 
             static char* fileToBuffer(const char* inFile);
     };

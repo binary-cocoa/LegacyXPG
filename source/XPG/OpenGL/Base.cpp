@@ -4,6 +4,18 @@
 
 namespace XPG
 {
+    static int16u contextVersion = 1;
+
+    int16u getContextVersion()
+    {
+        return contextVersion;
+    }
+
+    void newContext()
+    {
+        ++contextVersion;
+    }
+
     const char* OpenGLErrorString()
     {
         switch (glGetError())

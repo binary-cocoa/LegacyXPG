@@ -9,14 +9,23 @@
 
 namespace XPG
 {
-    Shader::Shader(GLenum inType) : mType(inType)
+    Shader::Shader(GLenum inType) : mHandle(0), mType(inType),
+        mContextVersion(0)
     {
-        mHandle = glCreateShader(inType);
     }
 
     Shader::~Shader()
     {
         if (mHandle) glDeleteShader(mHandle);
+    }
+
+    void Shader::create()
+    {
+        if (mContextVersion < getContextVersion())
+        {
+            mContextVersion = getContextVersion();
+            mHandle = glCreateShader(mType);
+        }
     }
 
     void Shader::loadFromFile(const char* inFile)
@@ -37,6 +46,8 @@ namespace XPG
 
     void Shader::loadFromBuffer(const char* inBuffer)
     {
+        create();
+
         if (!mHandle)
         {
             // TODO: report error
@@ -54,7 +65,7 @@ namespace XPG
             GLchar log[2048];
             GLsizei length;
             glGetShaderInfoLog(mHandle, 2048, &length, log);
-            printf("-- shader compiler errors --\n%s\n", log);
+            //printf("-- shader compiler errors --\n%s\n", log);
 
             glDeleteShader(mHandle);
             mHandle = 0;

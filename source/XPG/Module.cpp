@@ -9,4 +9,8 @@ namespace XPG
     Module::~Module()
     {
     }
+
+    void Module::onLoad()
+    {
+    }
 }

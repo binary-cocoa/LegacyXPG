@@ -17,6 +17,7 @@ namespace XPG
             inline void startRunning() { mRunning = true; }
             inline void stopRunning() { mRunning = false; }
 
+            virtual void onLoad();
             virtual void onDisplay() = 0;
             virtual void handleEvent(const Event& inEvent) = 0;
 

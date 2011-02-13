@@ -26,10 +26,4 @@
 #   endif
 #endif
 
-#ifdef XPG_PLATFORM_ANDROID
-#   include <stdlib.h>
-#else
-#   include <cstdlib>
-#endif
-
 #endif

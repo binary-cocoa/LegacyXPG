@@ -3,11 +3,9 @@
 namespace XPG
 {
     VertexBufferObject::VertexBufferObject(GLenum inTarget, GLenum inType,
-        GLenum inUsage) : mTarget(inTarget), mType(inType), mUsage(inUsage),
-        mValuesPerUnit(1)
+        GLenum inUsage) : mHandle(0), mTarget(inTarget), mType(inType),
+        mUsage(inUsage), mValuesPerUnit(1), mContextVersion(0)
     {
-        glGenBuffers(1, &mHandle);
-
         switch (mType)
         {
             case GL_FLOAT:          mTypeSize = sizeof(GLfloat);  break;
@@ -21,12 +19,22 @@ namespace XPG
 
     VertexBufferObject::~VertexBufferObject()
     {
-        glDeleteBuffers(1, &mHandle);
+        if (mHandle) glDeleteBuffers(1, &mHandle);
+    }
+
+    void VertexBufferObject::create()
+    {
+        if (mContextVersion < getContextVersion())
+        {
+            mContextVersion = getContextVersion();
+            glGenBuffers(1, &mHandle);
+        }
     }
 
     void VertexBufferObject::loadData(const GLvoid* inData, GLuint inSize,
         GLuint inValuesPerUnit)
     {
+        create();
         bind();
         glBufferData(mTarget, inSize * inValuesPerUnit * mTypeSize, inData,
             mUsage);

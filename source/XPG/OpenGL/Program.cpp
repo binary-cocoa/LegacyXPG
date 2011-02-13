@@ -3,9 +3,9 @@
 
 namespace XPG
 {
-    Program::Program() : mHandle(0), mSize(0), mLinked(false)
+    Program::Program() : mHandle(0), mSize(0), mLinked(false),
+        mContextVersion(0)
     {
-        mHandle = glCreateProgram();
     }
 
     Program::~Program()
@@ -13,8 +13,21 @@ namespace XPG
         clear();
     }
 
+    void Program::create()
+    {
+        if (mContextVersion < getContextVersion())
+        {
+            mContextVersion = getContextVersion();
+            mHandle = glCreateProgram();
+            mSize = 0;
+            mLinked = false;
+        }
+    }
+
     void Program::attachShader(const Shader& inShader)
     {
+        create();
+
         if (mLinked)
         {
             // More shaders cannot be attached if the program is already linked.
@@ -34,6 +47,7 @@ namespace XPG
 
     void Program::bindAttribLocation(GLuint inIndex, const GLchar* inName)
     {
+        create();
         glBindAttribLocation(mHandle, inIndex, inName);
     }
 
