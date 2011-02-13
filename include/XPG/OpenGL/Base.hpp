@@ -23,10 +23,26 @@
 
 namespace XPG
 {
-    int16u getContextVersion();
-    void newContext();
-
     const char* OpenGLErrorString();
+
+    namespace OpenGL
+    {
+        class Context
+        {
+            public:
+                static void destroy();
+
+                Context();
+
+                bool isOutdated() const;
+                void update();
+
+            private:
+                static int32u mMasterVersion;
+
+                int32u mVersion;
+        };
+    }
 }
 
 #endif

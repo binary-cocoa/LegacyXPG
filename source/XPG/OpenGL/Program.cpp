@@ -3,8 +3,7 @@
 
 namespace XPG
 {
-    Program::Program() : mHandle(0), mSize(0), mLinked(false),
-        mContextVersion(0)
+    Program::Program() : mHandle(0), mSize(0), mLinked(false)
     {
     }
 
@@ -15,9 +14,9 @@ namespace XPG
 
     void Program::create()
     {
-        if (mContextVersion < getContextVersion())
+        if (mContext.isOutdated())
         {
-            mContextVersion = getContextVersion();
+            mContext.update();
             mHandle = glCreateProgram();
             mSize = 0;
             mLinked = false;
@@ -87,6 +86,8 @@ namespace XPG
 
     void Program::clear()
     {
+        if (mContext.isOutdated()) return;
+
         for (size_t i = 0; i < mSize; ++i)
             glDetachShader(mHandle, mShaders[i]);
 

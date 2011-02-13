@@ -2,28 +2,30 @@
 
 #include <XPG/Platforms.hpp>
 #ifdef XPG_PLATFORM_ANDROID
+#   include <stdlib.h>
 #   include <stdio.h>
 #else
+#   include <cstdlib>
 #   include <cstdio>
 #endif
 
 namespace XPG
 {
-    Shader::Shader(GLenum inType) : mHandle(0), mType(inType),
-        mContextVersion(0)
+    Shader::Shader(GLenum inType) : mHandle(0), mType(inType)
     {
     }
 
     Shader::~Shader()
     {
-        if (mHandle) glDeleteShader(mHandle);
+        if (!mContext.isOutdated() && mHandle)
+            glDeleteShader(mHandle);
     }
 
     void Shader::create()
     {
-        if (mContextVersion < getContextVersion())
+        if (mContext.isOutdated())
         {
-            mContextVersion = getContextVersion();
+            mContext.update();
             mHandle = glCreateShader(mType);
         }
     }

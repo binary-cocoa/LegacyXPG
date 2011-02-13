@@ -4,18 +4,6 @@
 
 namespace XPG
 {
-    static int16u contextVersion = 1;
-
-    int16u getContextVersion()
-    {
-        return contextVersion;
-    }
-
-    void newContext()
-    {
-        ++contextVersion;
-    }
-
     const char* OpenGLErrorString()
     {
         switch (glGetError())
@@ -28,6 +16,30 @@ namespace XPG
             CHECK_ENUM(GL_NO_ERROR);
 
             default: return "none";
+        }
+    }
+
+    namespace OpenGL
+    {
+        int32u Context::mMasterVersion = 1;
+
+        void Context::destroy()
+        {
+            ++mMasterVersion;
+        }
+
+        Context::Context() : mVersion(0)
+        {
+        }
+
+        bool Context::isOutdated() const
+        {
+            return mVersion < mMasterVersion;
+        }
+
+        void Context::update()
+        {
+            mVersion = mMasterVersion;
         }
     }
 }

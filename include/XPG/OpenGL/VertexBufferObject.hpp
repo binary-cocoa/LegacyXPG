@@ -30,7 +30,7 @@ namespace XPG
             GLenum mUsage;
             GLuint mTypeSize;
             GLuint mValuesPerUnit;
-            int16u mContextVersion;
+            OpenGL::Context mContext;
     };
 }
 

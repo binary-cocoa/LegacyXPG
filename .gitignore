@@ -3,3 +3,8 @@ projects/obj/
 projects/*.html
 projects/*.depend
 projects/*.layout
+projects/android/bin/
+projects/android/gen/
+projects/android/libs/
+projects/android/obj/
+

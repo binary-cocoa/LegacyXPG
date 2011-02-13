@@ -17,7 +17,7 @@ extern "C"
 JNIEXPORT void JNICALL Java_xpg_mobile_AccessJNI_onLoad(JNIEnv* env,
     jobject obj)
 {
-    XPG::newContext();
+    XPG::OpenGL::Context::destroy();
     if (!theModule) theModule = new TestModule;
     theModule->onLoad();
 }

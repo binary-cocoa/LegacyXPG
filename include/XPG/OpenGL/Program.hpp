@@ -37,7 +37,7 @@ namespace XPG
             GLuint mShaders[MaxShaders];
             size_t mSize;
             bool mLinked;
-            int16u mContextVersion;
+            OpenGL::Context mContext;
     };
 }
 

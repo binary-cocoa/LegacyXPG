@@ -29,7 +29,7 @@ namespace XPG
 
             GLuint mHandle;
             GLenum mType;
-            int16u mContextVersion;
+            OpenGL::Context mContext;
 
             static char* fileToBuffer(const char* inFile);
     };

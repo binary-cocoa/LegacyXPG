@@ -1,6 +1,15 @@
 #include <XPG/Image.hpp>
 #include <png.h>
 
+#include <XPG/Platforms.hpp>
+#ifdef XPG_PLATFORM_ANDROID
+#   include <stdlib.h>
+#   include <stdio.h>
+#else
+#   include <cstdlib>
+#   include <cstdio>
+#endif
+
 namespace XPG
 {
     void Image::loadPNG(FILE* inFile)
