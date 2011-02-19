@@ -56,7 +56,7 @@ namespace XPG
             return;
         }
 
-        glShaderSource(mHandle, 1, const_cast<const GLchar**>(&inBuffer), 0);
+        glShaderSource(mHandle, 1, &inBuffer, 0);
         glCompileShader(mHandle);
 
         GLint compiled;
@@ -64,44 +64,47 @@ namespace XPG
         if (!compiled)
         {
             // TODO: convert to XPG exception
-            GLchar log[2048];
+            GLint logLength;
+            glGetShaderiv(mHandle, GL_INFO_LOG_LENGTH, &logLength);
+            GLchar* log = new GLchar[logLength];
+
             GLsizei length;
-            glGetShaderInfoLog(mHandle, 2048, &length, log);
+            glGetShaderInfoLog(mHandle, logLength, &length, log);
             //printf("-- shader compiler errors --\n%s\n", log);
 
-            glDeleteShader(mHandle);
-            mHandle = 0;
+            delete [] log;
         }
     }
 
     char* Shader::fileToBuffer(const char* inFile)
     {
-        FILE *f;
-        size_t length;
-        size_t r;
-        char* outBuffer;
-
-        if (!(f = fopen(inFile, "r")))
+        FILE* f = fopen(inFile, "r");
+        if (!f)
         {
             // TODO: report error
             return NULL;
         }
 
         fseek(f, 0, SEEK_END);
-        length = ftell(f);
+        size_t length = ftell(f);
 
         fseek(f, 0, SEEK_SET);
 
-        outBuffer = static_cast<char*>(malloc((length + 1) * sizeof(char)));
+        char* outBuffer = new char[length + 1];
         if (!outBuffer)
         {
             // TODO: report error
             return NULL;
         }
 
-        r = fread(outBuffer, sizeof(char), length, f);
+        size_t r = fread(outBuffer, sizeof(char), length, f);
         outBuffer[length] = '\0';
         fclose(f);
+
+        if (r != length && ferror(f))
+        {
+            // TODO: report error
+        }
 
         return outBuffer;
     }

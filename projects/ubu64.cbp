@@ -92,8 +92,8 @@
 		<Unit filename="../source/XPG/OpenGL/Texture2D.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexArrayObject.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexBufferObject.cpp" />
+		<Unit filename="../source/XPG/X11/Display.cpp" />
 		<Unit filename="../source/XPG/image/png.cpp" />
-		<Unit filename="../source/XPG/linux/Display.cpp" />
 		<Unit filename="../source/XPG/unix/Mutex.cpp" />
 		<Unit filename="../source/XPG/unix/Network.cpp" />
 		<Unit filename="../source/XPG/unix/Thread.cpp" />

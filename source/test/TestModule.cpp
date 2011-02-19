@@ -12,7 +12,7 @@ void TestModule::onLoad()
     XPG::TimerStart();
     mNextFrame = XPG::GetTicks();
 
-    static const char vs[] =
+    static const char* vs =
         "uniform mat4 uMVPM;\n"
         "attribute vec3 iPosition;\n"
         "attribute vec4 iColor;\n"
@@ -24,7 +24,7 @@ void TestModule::onLoad()
 
     mVertexShader.loadFromBuffer(vs);
 
-    static const char fs[] =
+    static const char* fs =
         "precision mediump float;\n"
         "varying vec4 vColor;\n"
         "void main() {\n"
