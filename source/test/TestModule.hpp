@@ -28,6 +28,7 @@ class TestModule : public XPG::Module
 
         int64u mNextFrame;
         GLint mUniMVPM;
+        GLint mUniCM;
         mat4f mProjection;
         mat4f mModelView;
         float mRotate;
