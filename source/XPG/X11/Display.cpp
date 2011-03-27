@@ -459,7 +459,9 @@ namespace XPG
         XTextProperty titleProperty;
         Status status;
 
-        char* t = const_cast<char*>(inTitle);
+        size_t length = strlen(inTitle);
+        char* t = new char[length + 1];
+        strcpy(t, inTitle);
 
         status = XStringListToTextProperty(&t, 1, &titleProperty);
         if (status)
@@ -468,6 +470,8 @@ namespace XPG
                 XA_WM_NAME);
             XFree(titleProperty.value);
         }
+
+        delete [] t;
     }
 
     void Context::setIconTitle(const char* inTitle)
@@ -477,7 +481,9 @@ namespace XPG
         XTextProperty titleProperty;
         Status status;
 
-        char* t = const_cast<char*>(inTitle);
+        size_t length = strlen(inTitle);
+        char* t = new char[length + 1];
+        strcpy(t, inTitle);
 
         status = XStringListToTextProperty(&t, 1, &titleProperty);
         if (status)
@@ -486,6 +492,8 @@ namespace XPG
                 XA_WM_ICON_NAME);
             XFree(titleProperty.value);
         }
+
+        delete [] t;
     }
 
     Key::Code getKeyCode(int inIndex)
