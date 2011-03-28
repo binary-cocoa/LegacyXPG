@@ -43,7 +43,7 @@
 			<Add directory="../lib" />
 		</Linker>
 		<Unit filename="../include/XPG/DataTypes.hpp" />
-		<Unit filename="../include/XPG/Display.hpp" />
+		<Unit filename="../include/XPG/Engine.hpp" />
 		<Unit filename="../include/XPG/Event.hpp" />
 		<Unit filename="../include/XPG/Exception.hpp" />
 		<Unit filename="../include/XPG/Image.hpp" />
@@ -65,7 +65,7 @@
 		<Unit filename="../include/XPG/Vector3D.hpp" />
 		<Unit filename="../include/XPG/private/glew.h" />
 		<Unit filename="../include/XPG/private/glxew.h" />
-		<Unit filename="../source/XPG/DisplayBase.cpp" />
+		<Unit filename="../source/XPG/Engine.cpp" />
 		<Unit filename="../source/XPG/Event.cpp" />
 		<Unit filename="../source/XPG/Image.cpp" />
 		<Unit filename="../source/XPG/Module.cpp" />
@@ -77,7 +77,7 @@
 		<Unit filename="../source/XPG/OpenGL/Texture2D.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexArrayObject.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexBufferObject.cpp" />
-		<Unit filename="../source/XPG/X11/Display.cpp" />
+		<Unit filename="../source/XPG/X11/Engine.cpp" />
 		<Unit filename="../source/XPG/image/png.cpp" />
 		<Unit filename="../source/XPG/unix/Mutex.cpp" />
 		<Unit filename="../source/XPG/unix/Network.cpp" />

@@ -1,4 +1,4 @@
-#include <XPG/Display.hpp>
+#include <XPG/Engine.hpp>
 #include <XPG/Image.hpp>
 
 #include "TestModule.hpp"
@@ -9,33 +9,30 @@ using namespace std;
 /// run test code
 int main(int argc, char** argv)
 {
-    XPG::Context::Parameters p;
+    XPG::Engine::Settings es;
     //p.legacyContext = true;
-    p.context.vMajor = 3;
-    p.context.vMinor = 2;
+    es.context.vMajor = 3;
+    es.context.vMinor = 2;
 
-    XPG::Context c;
-    c.create(p);
+    XPG::Engine e(es);
 
-    cout << "context version " << c.details.context.vMajor << '.'
-        << c.details.context.vMinor << endl;
+    cout << "context version " << e.settings.context.vMajor << '.'
+        << e.settings.context.vMinor << endl;
 
-    cout << "shader version " << c.details.shader.vMajor << '.'
-        << c.details.shader.vMinor << endl;
+    cout << "shader version " << e.settings.shader.vMajor << '.'
+        << e.settings.shader.vMinor << endl;
 
     {
-        const char* title = c.details.legacyContext ?
+        const char* title = e.settings.legacyContext ?
             "XPG OpenGL Legacy" : "XPG OpenGL 3";
 
-        c.setWindowTitle(title);
-        c.setIconTitle(title);
+        e.setWindowTitle(title);
+        e.setIconTitle(title);
 
         TestModule tm;
         tm.onLoad();
-        c.runModule(tm);
+        e.runModule(tm);
     }
-
-    c.destroy();
 
     return 0;
 }

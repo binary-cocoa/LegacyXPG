@@ -1,4 +1,4 @@
-#include <XPG/Display.hpp>
+#include <XPG/Engine.hpp>
 #include <XPG/Timer.hpp>
 
 #include <XPG/private/glew.h>
@@ -14,10 +14,8 @@ namespace XPG
 {
     Key::Code getKeyCode(int inIndex);
 
-    void SetGLXFunctionPointers()
+    void setGLXFunctionPointers()
     {
-        static bool done = false;
-        if (done) return;
         glGenVertexArraysAPPLE = (void(*)(GLsizei, const GLuint*))
             glXGetProcAddressARB((GLubyte*)"glGenVertexArrays");
         glBindVertexArrayAPPLE = (void(*)(const GLuint))
@@ -35,37 +33,21 @@ namespace XPG
         glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy,
             GLXFBConfig config))glXGetProcAddressARB
             ((GLubyte*)"glXGetVisualFromFBConfig");
-        done = true;
     }
 
-    struct Context::PrivateData
+    struct Engine::PrivateData
     {
         GLXContext context;
         Display* display;
         Window window;
         long eventMask;
         Atom wmDeleteMessage;
-        bool active;
     };
 
-    Context::Context() : details(mDetails)
+    void Engine::begin()
     {
         mData = new PrivateData;
-        mData->active = false;
-    }
-
-    Context::~Context()
-    {
-        destroy();
-        delete mData;
-    }
-
-    void Context::create(const Parameters& inDetails)
-    {
-        if (mData->active) return;
-        mData->active = true;
-
-        mDetails = inDetails;
+        mActive = true;
 
         XSetWindowAttributes winAttribs;
         GLint winmask;
@@ -86,7 +68,7 @@ namespace XPG
                 0
             };
 
-        SetGLXFunctionPointers();
+        setGLXFunctionPointers();
 
         mData->display = XOpenDisplay(NULL);
 
@@ -99,7 +81,7 @@ namespace XPG
             cerr << "ERROR -- GLX 1.2 or greater is required\n";
             XCloseDisplay(mData->display);
 
-            mData->active = false;
+            mActive = false;
             return;
         }
 
@@ -121,10 +103,10 @@ namespace XPG
             AllocNone);
         winmask = CWBorderPixel | CWBitGravity | CWEventMask| CWColormap;
 
-        int d = mDetails.depth ? mDetails.depth : visualInfo->depth;
+        int d = mSettings.depth ? mSettings.depth : visualInfo->depth;
         mData->window = XCreateWindow(mData->display,
-            DefaultRootWindow(mData->display), 20, 20, mDetails.width,
-            mDetails.height, 0, d, InputOutput, visualInfo->visual, winmask,
+            DefaultRootWindow(mData->display), 20, 20, mSettings.width,
+            mSettings.height, 0, d, InputOutput, visualInfo->visual, winmask,
             &winAttribs);
 
         // Allow XPG to handle the closing of the window.
@@ -135,24 +117,24 @@ namespace XPG
 
         XMapWindow(mData->display, mData->window);
 
-        if (!mDetails.context.vMajor)
+        if (!mSettings.context.vMajor)
         {
-            mDetails.context.vMajor = 3;
-            mDetails.context.vMinor = 3;
+            mSettings.context.vMajor = 3;
+            mSettings.context.vMinor = 3;
         }
 
         /// GL context creation
         GLint attribs[] =
         {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, mDetails.context.vMajor,
-            GLX_CONTEXT_MINOR_VERSION_ARB, mDetails.context.vMinor,
+            GLX_CONTEXT_MAJOR_VERSION_ARB, mSettings.context.vMajor,
+            GLX_CONTEXT_MINOR_VERSION_ARB, mSettings.context.vMinor,
             GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
             0
         };
 
         // Must first check to see if the extension to create an OpenGL 3.x
         // context is even available
-        if (glXCreateContextAttribsARB && !mDetails.legacyContext)
+        if (glXCreateContextAttribsARB && !mSettings.legacyContext)
         {
             // Good to go. Create the 3.x context.
             mData->context = glXCreateContextAttribsARB(mData->display,
@@ -163,7 +145,7 @@ namespace XPG
             // No good. Create a legacy context.
             mData->context = glXCreateContext(mData->display, visualInfo, NULL,
                 True);
-            mDetails.legacyContext = true;
+            mSettings.legacyContext = true;
         }
 
         glXMakeCurrent(mData->display, mData->window, mData->context);
@@ -192,40 +174,40 @@ namespace XPG
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;
-        mDetails.context.vMajor = s[0] - '0';
-        mDetails.context.vMinor = s[2] - '0';
+        mSettings.context.vMajor = s[0] - '0';
+        mSettings.context.vMinor = s[2] - '0';
 
-        if (mDetails.context.vMajor >= 2)
+        if (mSettings.context.vMajor >= 2)
         {
             s = glGetString(GL_SHADING_LANGUAGE_VERSION);
-            mDetails.shader.vMajor = s[0] - '0';
-            mDetails.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
+            mSettings.shader.vMajor = s[0] - '0';
+            mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
 
-        glViewport(0, 0, mDetails.width, mDetails.height);
+        glViewport(0, 0, mSettings.width, mSettings.height);
     }
 
-    void Context::destroy()
+    void Engine::end()
     {
-        if (mData->active)
+        if (mActive)
         {
             glXMakeCurrent(mData->display, None, NULL);
             glXDestroyContext(mData->display, mData->context);
             XDestroyWindow(mData->display, mData->window);
             XCloseDisplay(mData->display);
-            mDetails.width = 0;
-            mDetails.height = 0;
-            mDetails.depth = 0;
-            mData->active = false;
+            mSettings.width = 0;
+            mSettings.height = 0;
+            mSettings.depth = 0;
+            mActive = false;
         }
     }
 
-    void Context::swapBuffers()
+    void Engine::swapBuffers()
     {
         glXSwapBuffers(mData->display, mData->window);
     }
 
-    bool Context::getEvent(Event& inEvent)
+    bool Engine::getEvent(Event& inEvent)
     {
         if (!XEventsQueued(mData->display, QueuedAfterReading))
             return false;
@@ -342,13 +324,13 @@ namespace XPG
                 XWindowAttributes winData;
                 XGetWindowAttributes(mData->display, mData->window,
                     &winData);
-                mDetails.height = winData.height;
-                mDetails.width = winData.width;
-                glViewport(0, 0, mDetails.width, mDetails.height);
+                mSettings.height = winData.height;
+                mSettings.width = winData.width;
+                glViewport(0, 0, mSettings.width, mSettings.height);
                 inEvent.type = Event::WINDOW;
                 inEvent.window.event = WindowEvent::RESIZE;
-                inEvent.window.width = mDetails.width;
-                inEvent.window.height = mDetails.height;
+                inEvent.window.width = mSettings.width;
+                inEvent.window.height = mSettings.height;
                 break;
             }
 
@@ -431,15 +413,15 @@ namespace XPG
         return true;
     }
 
-    void Context::runModule(Module& inModule)
+    void Engine::runModule(Module& inModule)
     {
-        if (!mData->active) return;
+        if (!mActive) return;
 
         Event event;
         event.type = Event::WINDOW;
         event.window.event = WindowEvent::RESIZE;
-        event.window.width = mDetails.width;
-        event.window.height = mDetails.height;
+        event.window.width = mSettings.width;
+        event.window.height = mSettings.height;
         inModule.handleEvent(event);
         inModule.startRunning();
 
@@ -452,9 +434,9 @@ namespace XPG
         }
     }
 
-    void Context::setWindowTitle(const char* inTitle)
+    void Engine::setWindowTitle(const char* inTitle)
     {
-        if (!mData->active || !inTitle) return;
+        if (!mActive || !inTitle) return;
 
         XTextProperty titleProperty;
         Status status;
@@ -474,9 +456,9 @@ namespace XPG
         delete [] t;
     }
 
-    void Context::setIconTitle(const char* inTitle)
+    void Engine::setIconTitle(const char* inTitle)
     {
-        if (!mData->active || !inTitle) return;
+        if (!mActive || !inTitle) return;
 
         XTextProperty titleProperty;
         Status status;
