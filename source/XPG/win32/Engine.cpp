@@ -1,4 +1,4 @@
-#include <XPG/Display.hpp>
+#include <XPG/Engine.hpp>
 #include <XPG/Platforms.hpp>
 #include <XPG/Timer.hpp>
 #include <XPG/private/windows.hpp>
@@ -15,11 +15,11 @@ namespace XPG
     LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
     /// evil globals (working on a way to avoid needing these)
-    static int32u* activeWidth;
-    static int32u* activeHeight;
+    static int16u* activeWidth;
+    static int16u* activeHeight;
     static Event* activeEvent = NULL;
 
-    struct Context::PrivateData
+    struct Engine::PrivateData
     {
         bool active;
         HWND hWnd;
@@ -30,25 +30,15 @@ namespace XPG
         Module* module;
     };
 
-    Context::Context() : details(mDetails)
+    void Engine::begin()
     {
         mData = new PrivateData;
         mData->active = false;
         strcpy(mData->title, "OpenGL 3");
-    }
 
-    Context::~Context()
-    {
-        destroy();
-        delete mData;
-    }
-
-    void Context::create(const Parameters& inDetails)
-    {
         if (mData->active) return;
 
         mData->active = true;
-        mDetails = inDetails;
 
         mData->hInstance = GetModuleHandle(NULL);
         WNDCLASS windowClass;
@@ -72,8 +62,8 @@ namespace XPG
         }
 
         mData->hWnd = CreateWindowEx(dwExStyle, mData->title, mData->title,
-            WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, mDetails.width,
-            mDetails.height, NULL, NULL, mData->hInstance, NULL);
+            WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, mSettings.width,
+            mSettings.height, NULL, NULL, mData->hInstance, NULL);
 
         mData->hdc = GetDC(mData->hWnd);
 
@@ -83,7 +73,7 @@ namespace XPG
         pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL |
             PFD_DRAW_TO_WINDOW;
         pfd.iPixelType = PFD_TYPE_RGBA;
-        pfd.cColorBits = mDetails.depth;
+        pfd.cColorBits = mSettings.depth;
         pfd.cDepthBits = 32;
         pfd.iLayerType = PFD_MAIN_PLANE;
 
@@ -91,23 +81,23 @@ namespace XPG
         if (nPixelFormat == 0)
         {
             cerr << "failed ChoosePixelFormat" << endl;
-            mDetails.width = 0;
-            mDetails.height = 0;
-            mDetails.depth = 0;
+            mSettings.width = 0;
+            mSettings.height = 0;
+            mSettings.depth = 0;
             return;
         }
 
         if (!SetPixelFormat(mData->hdc, nPixelFormat, &pfd))
         {
             cerr << "failed SetPixelFormat" << endl;
-            mDetails.width = 0;
-            mDetails.height = 0;
-            mDetails.depth = 0;
+            mSettings.width = 0;
+            mSettings.height = 0;
+            mSettings.depth = 0;
             return;
         }
 
-        HGLRC tempOpenGLContext = wglCreateContext(mData->hdc);
-        wglMakeCurrent(mData->hdc, tempOpenGLContext);
+        HGLRC tempOpenGLEngine = wglCreateContext(mData->hdc);
+        wglMakeCurrent(mData->hdc, tempOpenGLEngine);
 
         GLenum e = glewInit();
         if (e != GLEW_OK)
@@ -116,31 +106,31 @@ namespace XPG
             return;
         }
 
-        if (!mDetails.context.vMajor)
+        if (!mSettings.context.vMajor)
         {
-            mDetails.context.vMajor = 3;
-            mDetails.context.vMinor = 3;
+            mSettings.context.vMajor = 3;
+            mSettings.context.vMinor = 3;
         }
 
         int attributes[] = {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, mDetails.context.vMajor,
-            WGL_CONTEXT_MINOR_VERSION_ARB, mDetails.context.vMinor,
+            WGL_CONTEXT_MAJOR_VERSION_ARB, mSettings.context.vMajor,
+            WGL_CONTEXT_MINOR_VERSION_ARB, mSettings.context.vMinor,
             //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
             0
         };
 
-        if (!mDetails.legacyContext && wglewIsSupported("WGL_ARB_create_context") == 1)
+        if (!mSettings.legacyContext && wglewIsSupported("WGL_ARB_create_context") == 1)
         {
             mData->hrc = wglCreateContextAttribsARB(mData->hdc, NULL,
                 attributes);
             wglMakeCurrent(NULL, NULL);
-            wglDeleteContext(tempOpenGLContext);
+            wglDeleteContext(tempOpenGLEngine);
             wglMakeCurrent(mData->hdc, mData->hrc);
         }
         else
         {
-            mData->hrc = tempOpenGLContext;
-            mDetails.legacyContext = true;
+            mData->hrc = tempOpenGLEngine;
+            mSettings.legacyContext = true;
         }
 
         ShowWindow(mData->hWnd, SW_SHOW);
@@ -148,18 +138,18 @@ namespace XPG
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;
-        mDetails.context.vMajor = s[0] - '0';
-        mDetails.context.vMinor = s[2] - '0';
+        mSettings.context.vMajor = s[0] - '0';
+        mSettings.context.vMinor = s[2] - '0';
 
-        if (mDetails.context.vMajor >= 2)
+        if (mSettings.context.vMajor >= 2)
         {
             s = glGetString(GL_SHADING_LANGUAGE_VERSION);
-            mDetails.shader.vMajor = s[0] - '0';
-            mDetails.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
+            mSettings.shader.vMajor = s[0] - '0';
+            mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
     }
 
-    void Context::destroy()
+    void Engine::end()
     {
         if (mData->active)
         {
@@ -167,20 +157,22 @@ namespace XPG
             wglDeleteContext(mData->hrc);
             ReleaseDC(mData->hWnd, mData->hdc);
             DestroyWindow(mData->hWnd);
-            mDetails.width = 0;
-            mDetails.height = 0;
-            mDetails.depth = 0;
+            mSettings.width = 0;
+            mSettings.height = 0;
+            mSettings.depth = 0;
             mData->active = false;
             //PostQuitMessage(0);
         }
+
+        delete mData;
     }
 
-    void Context::swapBuffers()
+    void Engine::swapBuffers()
     {
         SwapBuffers(mData->hdc);
     }
 
-    bool Context::getEvent(Event& inEvent)
+    bool Engine::getEvent(Event& inEvent)
     {
         //cout << "dispatchEvents" << endl;
         MSG msg;
@@ -321,8 +313,8 @@ namespace XPG
             default:
             {
                 activeEvent = &inEvent;
-                activeWidth = &mDetails.width;
-                activeHeight = &mDetails.height;
+                activeWidth = &mSettings.width;
+                activeHeight = &mSettings.height;
 
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
@@ -334,17 +326,17 @@ namespace XPG
         return true;
     }
 
-    void Context::runModule(Module& inModule)
+    void Engine::runModule(Module& inModule)
     {
-        if (!mDetails.width) return;
+        if (!mSettings.width) return;
 
         //mData->module = inModule;
 
         Event event;
         event.type = Event::WINDOW;
         event.window.event = WindowEvent::RESIZE;
-        event.window.width = mDetails.width;
-        event.window.height = mDetails.height;
+        event.window.width = mSettings.width;
+        event.window.height = mSettings.height;
         inModule.handleEvent(event);
         inModule.startRunning();
 
@@ -357,19 +349,19 @@ namespace XPG
         }
     }
 
-    void Context::setWindowTitle(const char* inTitle)
+    void Engine::setWindowTitle(const char* inTitle)
     {
         if (!inTitle || strlen(inTitle) > 254) return;
 
         strcpy(mData->title, inTitle);
-        if (mDetails.width)
+        if (mSettings.width)
         {
             SetWindowText(mData->hWnd, mData->title);
             /// TODO: add error checking
         }
     }
 
-    void Context::setIconTitle(const char* inTitle)
+    void Engine::setIconTitle(const char* inTitle)
     {
         /// unavailable in Win32 (?)
     }

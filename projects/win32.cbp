@@ -40,6 +40,9 @@
 			<Add library="opengl32" />
 			<Add library="ws2_32" />
 			<Add library="gdi32" />
+			<Add library="png-win32" />
+			<Add library="z-win32" />
+			<Add directory="..\lib" />
 		</Linker>
 		<Unit filename="..\include\XPG\DataTypes.hpp" />
 		<Unit filename="..\include\XPG\Display.hpp" />
@@ -64,27 +67,10 @@
 		<Unit filename="..\include\XPG\Vector3D.hpp" />
 		<Unit filename="..\include\XPG\private\glew.h" />
 		<Unit filename="..\include\XPG\private\wglew.h" />
-		<Unit filename="..\include\crc32.h" />
-		<Unit filename="..\include\deflate.h" />
-		<Unit filename="..\include\gzguts.h" />
-		<Unit filename="..\include\inffast.h" />
-		<Unit filename="..\include\inffixed.h" />
-		<Unit filename="..\include\inflate.h" />
-		<Unit filename="..\include\inftrees.h" />
-		<Unit filename="..\include\png.h" />
-		<Unit filename="..\include\pngconf.h" />
-		<Unit filename="..\include\pngdebug.h" />
-		<Unit filename="..\include\pnginfo.h" />
-		<Unit filename="..\include\pnglibconf.h" />
-		<Unit filename="..\include\pngpriv.h" />
-		<Unit filename="..\include\pngstruct.h" />
-		<Unit filename="..\include\trees.h" />
-		<Unit filename="..\include\zconf.h" />
-		<Unit filename="..\include\zlib.h" />
-		<Unit filename="..\include\zutil.h" />
-		<Unit filename="..\source\XPG\DisplayBase.cpp" />
+		<Unit filename="..\source\XPG\Engine.cpp" />
 		<Unit filename="..\source\XPG\Event.cpp" />
 		<Unit filename="..\source\XPG\Image.cpp" />
+		<Unit filename="..\source\XPG\Main.cpp" />
 		<Unit filename="..\source\XPG\Module.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Base.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\CubeMap.cpp" />
@@ -95,7 +81,7 @@
 		<Unit filename="..\source\XPG\OpenGL\VertexArrayObject.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\VertexBufferObject.cpp" />
 		<Unit filename="..\source\XPG\image\png.cpp" />
-		<Unit filename="..\source\XPG\win32\Display.cpp" />
+		<Unit filename="..\source\XPG\win32\Engine.cpp" />
 		<Unit filename="..\source\XPG\win32\Mutex.cpp" />
 		<Unit filename="..\source\XPG\win32\Network.cpp" />
 		<Unit filename="..\source\XPG\win32\Thread.cpp" />
@@ -103,112 +89,13 @@
 		<Unit filename="..\source\glew\glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="..\source\png\png.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngerror.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngget.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngmem.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngpread.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngread.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngrio.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngrtran.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngrutil.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngset.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngtrans.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngwio.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngwrite.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngwtran.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\png\pngwutil.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\test\FancyTestModule.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="..\source\test\FancyTestModule.cpp" />
 		<Unit filename="..\source\test\FancyTestModule.h" />
-		<Unit filename="..\source\test\TSphere.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="..\source\test\MainXPG.cpp" />
+		<Unit filename="..\source\test\TSphere.cpp" />
 		<Unit filename="..\source\test\TSphere.h" />
-		<Unit filename="..\source\test\TestModule.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="..\source\test\TestModule.cpp" />
 		<Unit filename="..\source\test\TestModule.hpp" />
-		<Unit filename="..\source\test\android\jni\TestModule.hpp" />
-		<Unit filename="..\source\test\main.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="..\source\zlib\adler32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\compress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\crc32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\deflate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\gzclose.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\gzlib.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\gzread.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\gzwrite.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\infback.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\inffast.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\inflate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\inftrees.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\trees.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\uncompr.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\source\zlib\zutil.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />
