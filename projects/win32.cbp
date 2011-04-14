@@ -42,6 +42,8 @@
 			<Add library="gdi32" />
 			<Add library="png-win32" />
 			<Add library="z-win32" />
+			<Add library="dinput8" />
+			<Add library="dxguid" />
 			<Add directory="..\lib" />
 		</Linker>
 		<Unit filename="..\include\XPG\DataTypes.hpp" />
@@ -81,6 +83,7 @@
 		<Unit filename="..\source\XPG\OpenGL\VertexArrayObject.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\VertexBufferObject.cpp" />
 		<Unit filename="..\source\XPG\image\png.cpp" />
+		<Unit filename="..\source\XPG\win32\DirectInput.hpp" />
 		<Unit filename="..\source\XPG\win32\Engine.cpp" />
 		<Unit filename="..\source\XPG\win32\Mutex.cpp" />
 		<Unit filename="..\source\XPG\win32\Network.cpp" />

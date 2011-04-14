@@ -2,12 +2,15 @@
 #include <XPG/Platforms.hpp>
 #include <XPG/Timer.hpp>
 #include <XPG/private/windows.hpp>
-
 #include <XPG/private/glew.h>
 #include <XPG/private/wglew.h>
 
+#include "DirectInput.hpp"
+
 #include <iostream>
 using namespace std;
+
+#define KEYBOARD_BUFFER_SIZE 128
 
 namespace XPG
 {
@@ -28,6 +31,8 @@ namespace XPG
         HINSTANCE hInstance;
         char title[255];
         Module* module;
+        LPDIRECTINPUT8 di8;
+        LPDIRECTINPUTDEVICE8 did8;
     };
 
     void Engine::begin()
@@ -35,8 +40,6 @@ namespace XPG
         mData = new PrivateData;
         mData->active = false;
         strcpy(mData->title, "OpenGL 3");
-
-        if (mData->active) return;
 
         mData->active = true;
 
@@ -147,12 +150,71 @@ namespace XPG
             mSettings.shader.vMajor = s[0] - '0';
             mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
+
+        // http://msdn.microsoft.com/en-us/library/microsoft.directx_sdk.reference.directinput8create%28v=VS.85%29.aspx
+        HRESULT result = DirectInput8Create(mData->hInstance,
+            DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&mData->di8,
+            NULL);
+
+        if (result != DI_OK)
+        {
+            // TODO: handle DirectInput error
+            cerr << "DirectInput error -- ";
+
+            switch (result)
+            {
+                case DIERR_BETADIRECTINPUTVERSION:
+                    cerr << "DIERR_BETADIRECTINPUTVERSION\n";
+                    break;
+
+                case DIERR_INVALIDPARAM:
+                    cerr << "DIERR_INVALIDPARAM\n";
+                    break;
+
+                case DIERR_OLDDIRECTINPUTVERSION:
+                    cerr << "DIERR_OLDDIRECTINPUTVERSION\n";
+                    break;
+
+                case DIERR_OUTOFMEMORY:
+                    cerr << "DIERR_OUTOFMEMORY\n";
+                    break;
+
+                default:
+                    cerr << "other?\n";
+            }
+
+            mData->did8 = NULL;
+        }
+        else
+        {
+            cerr << "DirectInput OK\n";
+
+            mData->di8->CreateDevice(GUID_SysKeyboard, &mData->did8, NULL);
+            if (mData->did8->SetDataFormat(&c_dfDIKeyboard) != DI_OK) LDB;
+            if (mData->did8->SetCooperativeLevel(mData->hWnd, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) != DI_OK) LDB;
+            DIPROPDWORD dipdw;
+            dipdw.diph.dwSize = sizeof(DIPROPDWORD);
+            dipdw.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+            dipdw.diph.dwObj = 0;
+            dipdw.diph.dwHow = DIPH_DEVICE;
+            dipdw.dwData = KEYBOARD_BUFFER_SIZE;
+
+            mData->did8->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph);
+            mData->did8->Acquire();
+        }
     }
 
     void Engine::end()
     {
         if (mData->active)
         {
+            if (mData->di8)
+            {
+                mData->di8->Release();
+                mData->did8->Unacquire();
+                mData->did8->Release();
+            }
+
             wglMakeCurrent(mData->hdc, 0);
             wglDeleteContext(mData->hrc);
             ReleaseDC(mData->hWnd, mData->hdc);
@@ -174,6 +236,27 @@ namespace XPG
 
     bool Engine::getEvent(Event& inEvent)
     {
+        char keyboard[256];
+        bool keyevent[256];
+
+        mData->did8->GetDeviceState(sizeof(keyboard), (LPVOID)keyboard);
+
+        DIDEVICEOBJECTDATA key_pressed[KEYBOARD_BUFFER_SIZE];
+        DWORD dwItems;
+        HRESULT hRes = DIERR_INPUTLOST;
+
+        while (DI_OK != hRes)
+        {
+            dwItems = KEYBOARD_BUFFER_SIZE;
+            hRes = mData->did8->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),
+                key_pressed, &dwItems, 0);
+
+            if (hRes != DI_OK) mData->did8->Acquire();
+        }
+
+        if (key_pressed[0].dwData & 0x80)
+            cout << key_pressed[0].dwOfs << endl;
+
         //cout << "dispatchEvents" << endl;
         MSG msg;
         if (!PeekMessage(&msg, mData->hWnd, 0, 0, PM_REMOVE)) return false;
