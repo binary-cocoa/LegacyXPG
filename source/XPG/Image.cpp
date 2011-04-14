@@ -18,7 +18,7 @@ namespace XPG
 
     Image::~Image()
     {
-        if (mData) free(mData);
+        free(mData);
     }
 
     void Image::loadFile(const char* inFile)

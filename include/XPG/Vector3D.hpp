@@ -23,35 +23,35 @@ namespace XPG
     template<size_t N, typename T>
     class VectorN
     {
-        public:
-            VectorN<N, T>();
-            VectorN<N, T>(const VectorN<N, T>& inVector);
+    public:
+        VectorN<N, T>();
+        VectorN<N, T>(const VectorN<N, T>& inVector);
 
-            void set(T inValue);
-            void normalizeTo(T inLength);
-            void normalize();
-            void negate();
+        void set(T inValue);
+        void normalizeTo(T inLength);
+        void normalize();
+        void negate();
 
-            inline operator T*() { return mData; }
-            inline operator const T*() const { return mData; }
+        inline operator T*() { return mData; }
+        inline operator const T*() const { return mData; }
 
-            inline T* array() { return mData; }
-            inline const T* array() const { return mData; }
+        inline T* array() { return mData; }
+        inline const T* array() const { return mData; }
 
-            inline T lengthSquared() const
-            {
-                T outLength = (mData[0] * mData[0]);
+        inline T lengthSquared() const
+        {
+            T outLength = (mData[0] * mData[0]);
 
-                for (size_t i = 1; i < (N < 4 ? N : 3); ++i)
-                    outLength += (mData[i] * mData[i]);
+            for (size_t i = 1; i < (N < 4 ? N : 3); ++i)
+                outLength += (mData[i] * mData[i]);
 
-                return outLength;
-            }
+            return outLength;
+        }
 
-            inline T length() const { return sqrt(lengthSquared()); }
+        inline T length() const { return sqrt(lengthSquared()); }
 
-        protected:
-            T mData[N];
+    protected:
+        T mData[N];
     };
 
     template<size_t N, typename T>

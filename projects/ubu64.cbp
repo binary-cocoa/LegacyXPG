@@ -47,6 +47,7 @@
 		<Unit filename="../include/XPG/Event.hpp" />
 		<Unit filename="../include/XPG/Exception.hpp" />
 		<Unit filename="../include/XPG/Image.hpp" />
+		<Unit filename="../include/XPG/Main.hpp" />
 		<Unit filename="../include/XPG/Matrix3D.hpp" />
 		<Unit filename="../include/XPG/Module.hpp" />
 		<Unit filename="../include/XPG/Mutex.hpp" />
@@ -65,6 +66,7 @@
 		<Unit filename="../include/XPG/Vector3D.hpp" />
 		<Unit filename="../include/XPG/private/glew.h" />
 		<Unit filename="../include/XPG/private/glxew.h" />
+		<Unit filename="../source/Main.cpp" />
 		<Unit filename="../source/XPG/Engine.cpp" />
 		<Unit filename="../source/XPG/Event.cpp" />
 		<Unit filename="../source/XPG/Image.cpp" />
@@ -90,6 +92,9 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../source/test/FancyTestModule.h" />
+		<Unit filename="../source/test/MainXPG.cpp">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="../source/test/TSphere.cpp">
 			<Option target="Debug" />
 		</Unit>
@@ -98,9 +103,6 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../source/test/TestModule.hpp" />
-		<Unit filename="../source/test/main.cpp">
-			<Option target="Debug" />
-		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

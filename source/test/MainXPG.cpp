@@ -1,3 +1,4 @@
+#include <XPG/Main.hpp>
 #include <XPG/Engine.hpp>
 #include <XPG/Image.hpp>
 
@@ -7,7 +8,7 @@
 using namespace std;
 
 /// run test code
-int main(int argc, char** argv)
+int MainXPG(int argc, char** argv)
 {
     XPG::Engine::Settings es;
     //p.legacyContext = true;

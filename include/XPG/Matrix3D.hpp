@@ -28,102 +28,102 @@ namespace XPG
     template<typename T>
     class Matrix4x4
     {
-        public:
-            Matrix4x4(const T* inArray = mIdentity);
-            Matrix4x4(const Matrix4x4<T>& inMatrix);
-            Matrix4x4(const Matrix4x4<T>& inLMatrix,
-                const Matrix4x4<T>& inRMatrix);
-            ~Matrix4x4();
+    public:
+        Matrix4x4(const T* inArray = mIdentity);
+        Matrix4x4(const Matrix4x4<T>& inMatrix);
+        Matrix4x4(const Matrix4x4<T>& inLMatrix,
+            const Matrix4x4<T>& inRMatrix);
+        ~Matrix4x4();
 
-            void loadIdentity();
+        void loadIdentity();
 
-            /// model view
-            void rotate(T inDegrees, T inX, T inY, T inZ);
-            void rotateX(T inDegrees);
-            void rotateY(T inDegrees);
-            void rotateZ(T inDegrees);
-            void scale(T inScale);
-            void scaleX(T inScale);
-            void scaleY(T inScale);
-            void scaleZ(T inScale);
-            void scale(T inX, T inY, T inZ);
-            void translate(T inX, T inY, T inZ);
-            void smartMove(T inRX, T inRY, T inRZ, T inTX, T inTY, T inTZ);
+        /// model view
+        void rotate(T inDegrees, T inX, T inY, T inZ);
+        void rotateX(T inDegrees);
+        void rotateY(T inDegrees);
+        void rotateZ(T inDegrees);
+        void scale(T inScale);
+        void scaleX(T inScale);
+        void scaleY(T inScale);
+        void scaleZ(T inScale);
+        void scale(T inX, T inY, T inZ);
+        void translate(T inX, T inY, T inZ);
+        void smartMove(T inRX, T inRY, T inRZ, T inTX, T inTY, T inTZ);
 
-            /// projection
-            void frustum(T inLeft, T inRight, T inBottom, T inTop, T inNear,
-                T inFar);
-            void perspective(T inFieldOfView, T inRatio, T inNear, T inFar,
-                bool inSmartAdjustment = false);
-            void orthographic(T inLeft, T inRight, T inBottom, T inTop,
-                T inNear, T inFar);
-            void orthographic(T inRange, T inRatio);
+        /// projection
+        void frustum(T inLeft, T inRight, T inBottom, T inTop, T inNear,
+            T inFar);
+        void perspective(T inFieldOfView, T inRatio, T inNear, T inFar,
+            bool inSmartAdjustment = false);
+        void orthographic(T inLeft, T inRight, T inBottom, T inTop,
+            T inNear, T inFar);
+        void orthographic(T inRange, T inRatio);
 
-            /// matrix operators
-            Matrix4x4<T>& operator=(const Matrix4x4<T>& inMatrix);
-            void multiply(const Matrix4x4<T>& inLMatrix,
-                const Matrix4x4<T>& inRMatrix);
-            void inverse();
-            void copyInverseTo(Matrix4x4<T>& inMatrix) const;
-            const Matrix4x4<T> inversed() const;
+        /// matrix operators
+        Matrix4x4<T>& operator=(const Matrix4x4<T>& inMatrix);
+        void multiply(const Matrix4x4<T>& inLMatrix,
+            const Matrix4x4<T>& inRMatrix);
+        void inverse();
+        void copyInverseTo(Matrix4x4<T>& inMatrix) const;
+        const Matrix4x4<T> inversed() const;
 
-            /// Allow this object to behave as a simple array.
-            inline operator T*() { return mData; }
-            inline operator const T*() const { return mData; }
+        /// Allow this object to behave as a simple array.
+        inline operator T*() { return mData; }
+        inline operator const T*() const { return mData; }
 
-            /// Allow simply access by row and column.
-            inline T& operator()(size_t inRow, size_t inCol)
-            {
-                return mData[inCol * 4 + inRow];
-            }
+        /// Allow simply access by row and column.
+        inline T& operator()(size_t inRow, size_t inCol)
+        {
+            return mData[inCol * 4 + inRow];
+        }
 
-            inline T operator()(size_t inRow, size_t inCol) const
-            {
-                return mData[inCol * 4 + inRow];
-            }
+        inline T operator()(size_t inRow, size_t inCol) const
+        {
+            return mData[inCol * 4 + inRow];
+        }
 
-            /// simple comparison operators
-            inline bool operator==(const Matrix4x4<T>& inMatrix) const
-            {
-                return !memcmp(mData, inMatrix.mData, 16 * sizeof(T));
-            }
+        /// simple comparison operators
+        inline bool operator==(const Matrix4x4<T>& inMatrix) const
+        {
+            return !memcmp(mData, inMatrix.mData, 16 * sizeof(T));
+        }
 
-            inline bool operator!=(const Matrix4x4<T>& inMatrix) const
-            {
-                return memcmp(mData, inMatrix.mData, 16 * sizeof(T));
-            }
+        inline bool operator!=(const Matrix4x4<T>& inMatrix) const
+        {
+            return memcmp(mData, inMatrix.mData, 16 * sizeof(T));
+        }
 
-            inline Matrix4x4<T>& operator*=(const Matrix4x4<T>& inMatrix)
-            {
-                multiply(Matrix4x4<T>(mData), inMatrix);
-                return *this;
-            }
+        inline Matrix4x4<T>& operator*=(const Matrix4x4<T>& inMatrix)
+        {
+            multiply(Matrix4x4<T>(mData), inMatrix);
+            return *this;
+        }
 
-            inline const Matrix4x4<T> operator*(const Matrix4x4<T>& inMatrix)
-                const
-            {
-                return Matrix4x4<T>(Matrix4x4<T>(mData), inMatrix);
-            }
+        inline const Matrix4x4<T> operator*(const Matrix4x4<T>& inMatrix)
+            const
+        {
+            return Matrix4x4<T>(Matrix4x4<T>(mData), inMatrix);
+        }
 
-        private:
-            inline void copy(const Matrix4x4<T>& inMatrix)
-            {
-                memcpy(mData, inMatrix.mData, 16 * sizeof(T));
-            }
+    private:
+        inline void copy(const Matrix4x4<T>& inMatrix)
+        {
+            memcpy(mData, inMatrix.mData, 16 * sizeof(T));
+        }
 
-            inline T& at(size_t inRow, size_t inCol)
-            {
-                return mData[inCol * 4 + inRow];
-            }
+        inline T& at(size_t inRow, size_t inCol)
+        {
+            return mData[inCol * 4 + inRow];
+        }
 
-            inline T at(size_t inRow, size_t inCol) const
-            {
-                return mData[inCol * 4 + inRow];
-            }
+        inline T at(size_t inRow, size_t inCol) const
+        {
+            return mData[inCol * 4 + inRow];
+        }
 
-            T mData[16]; // stored in column-major order
+        T mData[16]; // stored in column-major order
 
-            static const T mIdentity[16];
+        static const T mIdentity[16];
     };
 
     /// The identity matrix is pre-built so that it can just be copied to newly

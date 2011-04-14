@@ -7,32 +7,32 @@ namespace XPG
 {
     class Thread
     {
-        public:
-            struct Data
-            {
-                Thread* thread;
-                void (*launcher)(Thread*);
-            };
+    public:
+        struct Data
+        {
+            Thread* thread;
+            void (*launcher)(Thread*);
+        };
 
-            Thread();
-            virtual ~Thread();
+        Thread();
+        virtual ~Thread();
 
-            void start();
-            void wait();
+        void start();
+        void wait();
 
-            virtual void run();
+        virtual void run();
 
-            inline bool isRunning() { return mRunning; }
-            inline void stop() { mStop = true; }
+        inline bool isRunning() { return mRunning; }
+        inline void stop() { mStop = true; }
 
-        private:
-            static void startThread(Thread* inThread);
+    private:
+        static void startThread(Thread* inThread);
 
-            volatile bool mRunning;
-            volatile bool mStop;
+        volatile bool mRunning;
+        volatile bool mStop;
 
-            struct PrivateData;
-            PrivateData* mData;
+        struct PrivateData;
+        PrivateData* mData;
     };
 }
 

@@ -23,16 +23,13 @@ namespace XPG
         glDeleteVertexArraysAPPLE = (void(*)(GLsizei, const GLuint*))
             glXGetProcAddressARB((GLubyte*)"glGenVertexArrays");
 
-        glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy,
-            GLXFBConfig config, GLXContext share_context, Bool direct,
-            const int *attrib_list))glXGetProcAddressARB
+        glXCreateContextAttribsARB = (GLXContext(*)(Display*, GLXFBConfig,
+            GLXContext, Bool, const int*))glXGetProcAddressARB
             ((GLubyte*)"glXCreateContextAttribsARB");
-        glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen,
-            const int *attrib_list, int *nelements))
+        glXChooseFBConfig = (GLXFBConfig*(*)(Display*, int, const int*, int*))
             glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");
-        glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy,
-            GLXFBConfig config))glXGetProcAddressARB
-            ((GLubyte*)"glXGetVisualFromFBConfig");
+        glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display*, GLXFBConfig))
+            glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
     }
 
     struct Engine::PrivateData

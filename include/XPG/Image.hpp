@@ -9,32 +9,32 @@ namespace XPG
 {
     class Image
     {
-        public:
-            Image(const char* inFile = NULL);
-            ~Image();
+    public:
+        Image(const char* inFile = NULL);
+        ~Image();
 
-            void loadFile(const char* inFile);
-            void loadIntoTexture(GLenum inTarget = GL_TEXTURE_2D) const;
+        void loadFile(const char* inFile);
+        void loadIntoTexture(GLenum inTarget = GL_TEXTURE_2D) const;
 
-            inline bool isValid() const { return !!mData; }
+        inline bool isValid() const { return !!mData; }
 
-        private:
-            Image(const Image& inImage) {} // disallowed
+    private:
+        Image(const Image& inImage) {} // disallowed
 
-            Image& operator=(const Image& inImage)
-            {
-                // disallowed
-                return *this;
-            }
+        Image& operator=(const Image& inImage)
+        {
+            // disallowed
+            return *this;
+        }
 
-            void loadPNG(FILE* inFile);
+        void loadPNG(FILE* inFile);
 
-            void* mData;
-            GLenum mFormat;
-            int16u mWidth;
-            int16u mHeight;
-            int16u mBitDepth;
-            int16u mChannels;
+        void* mData;
+        GLenum mFormat;
+        int16u mWidth;
+        int16u mHeight;
+        int16u mBitDepth;
+        int16u mChannels;
     };
 }
 

@@ -5,15 +5,15 @@ namespace XPG
 {
     class Mutex
     {
-        public:
-            Mutex();
-            ~Mutex();
+    public:
+        Mutex();
+        ~Mutex();
 
-            void lock();
-            void unlock();
+        void lock();
+        void unlock();
 
-        private:
-            void* mData;
+    private:
+        void* mData;
     };
 }
 
