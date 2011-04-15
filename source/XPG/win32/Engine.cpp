@@ -209,7 +209,7 @@ namespace XPG
                     &bufferSize, sizeof(RAWINPUTHEADER));
 
                 RAWINPUT* raw = (RAWINPUT*)buffer;
-                if (raw->header.dwType == RIM_TYPEKEYBOARD)
+                if (false && raw->header.dwType == RIM_TYPEKEYBOARD)
                 {
                     USHORT keyCode = raw->data.keyboard.MakeCode;
                     cout << keyCode << " - "
@@ -346,6 +346,12 @@ namespace XPG
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::PRESS;
                 inEvent.keyboard.key = convertKeyCode(key);
+
+                unsigned int scanCode = lparam & 0x00ff0000;
+                scanCode >>= 16;
+                cout << "key code -- " << scanCode;
+                if (lparam & (1 << 24)) cout << " -- extended";
+                cout << endl;
                 break;
             }
 
@@ -356,6 +362,14 @@ namespace XPG
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::RELEASE;
                 inEvent.keyboard.key = convertKeyCode(key);
+                break;
+            }
+
+            case WM_SYSKEYDOWN:
+            {
+                int scanCode = lparam & 0x00ff0000;
+                scanCode >>= 16;
+                cout << "key code -- " << scanCode << endl;
                 break;
             }
 
