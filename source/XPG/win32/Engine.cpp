@@ -28,6 +28,7 @@ namespace XPG
         HINSTANCE hInstance;
         char title[255];
         Module* module;
+        RAWINPUTDEVICE rid;
     };
 
     void Engine::begin()
@@ -147,6 +148,22 @@ namespace XPG
             mSettings.shader.vMajor = s[0] - '0';
             mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
+
+        mData->rid.usUsagePage = 1;
+        mData->rid.usUsage = 6;
+        mData->rid.dwFlags = 0;
+        //mData->rid.dwFlags = RIDEV_NOLEGACY;
+        mData->rid.hwndTarget = NULL;
+
+        if (RegisterRawInputDevices(&mData->rid, 1, sizeof(RAWINPUTDEVICE)) == FALSE)
+        {
+            cerr << "error setting up raw input devices\n";
+        }
+        else
+        {
+            cerr << "RID OK\n";
+            cerr << MapVirtualKey(VK_RCONTROL, 0) << endl;
+        }
     }
 
     void Engine::end()
@@ -182,6 +199,55 @@ namespace XPG
 
         switch (msg.message)
         {
+            case WM_INPUT:
+            {
+                UINT bufferSize;
+                GetRawInputData((HRAWINPUT)lparam, RID_INPUT, NULL, &bufferSize,
+                    sizeof(RAWINPUTHEADER));
+                BYTE* buffer = new BYTE[bufferSize];
+                GetRawInputData((HRAWINPUT)lparam, RID_INPUT, (LPVOID)buffer,
+                    &bufferSize, sizeof(RAWINPUTHEADER));
+
+                RAWINPUT* raw = (RAWINPUT*)buffer;
+                if (raw->header.dwType == RIM_TYPEKEYBOARD)
+                {
+                    USHORT keyCode = raw->data.keyboard.MakeCode;
+                    cout << keyCode << " - "
+                        << (raw->data.keyboard.Flags & RI_KEY_BREAK ? 'U' : 'D');
+
+                    switch (keyCode)
+                    {
+                        case 42:
+                        {
+                            cout << " - LSHIFT";
+                            break;
+                        }
+
+                        case 54:
+                        {
+                            cout << " - RSHIFT";
+                            break;
+                        }
+
+                        case 29:
+                        {
+                            if (GetAsyncKeyState(VK_LCONTROL))
+                                cout << " - LCONTROL";
+
+                            if (GetAsyncKeyState(VK_RCONTROL))
+                                cout << " - RCONTROL";
+                        }
+
+                        default: {}
+                    }
+
+                    cout << endl;
+                }
+
+                delete [] buffer;
+                break;
+            }
+
             case WM_MOUSEMOVE:
             {
                 // http://msdn.microsoft.com/en-us/library/ms632654%28v=VS.85%29.aspx
