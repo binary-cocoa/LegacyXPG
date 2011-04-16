@@ -1,4 +1,4 @@
-test-xpg*
+/test*
 projects/obj/
 projects/*.html
 projects/*.depend
@@ -8,4 +8,5 @@ projects/android/bin/
 projects/android/gen/
 projects/android/libs/
 projects/android/obj/
-
+*.o
+*.exe

@@ -11,7 +11,7 @@ using namespace std;
 
 namespace XPG
 {
-    Key::Code convertKeyCode(unsigned int inData);
+    Key::Code convertToKeyCode(unsigned int inCode, bool inExtended);
     LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
     /// evil globals (working on a way to avoid needing these)
@@ -28,7 +28,6 @@ namespace XPG
         HINSTANCE hInstance;
         char title[255];
         Module* module;
-        RAWINPUTDEVICE rid;
     };
 
     void Engine::begin()
@@ -148,22 +147,6 @@ namespace XPG
             mSettings.shader.vMajor = s[0] - '0';
             mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
-
-        mData->rid.usUsagePage = 1;
-        mData->rid.usUsage = 6;
-        mData->rid.dwFlags = 0;
-        //mData->rid.dwFlags = RIDEV_NOLEGACY;
-        mData->rid.hwndTarget = NULL;
-
-        if (RegisterRawInputDevices(&mData->rid, 1, sizeof(RAWINPUTDEVICE)) == FALSE)
-        {
-            cerr << "error setting up raw input devices\n";
-        }
-        else
-        {
-            cerr << "RID OK\n";
-            cerr << MapVirtualKey(VK_RCONTROL, 0) << endl;
-        }
     }
 
     void Engine::end()
@@ -199,55 +182,6 @@ namespace XPG
 
         switch (msg.message)
         {
-            case WM_INPUT:
-            {
-                UINT bufferSize;
-                GetRawInputData((HRAWINPUT)lparam, RID_INPUT, NULL, &bufferSize,
-                    sizeof(RAWINPUTHEADER));
-                BYTE* buffer = new BYTE[bufferSize];
-                GetRawInputData((HRAWINPUT)lparam, RID_INPUT, (LPVOID)buffer,
-                    &bufferSize, sizeof(RAWINPUTHEADER));
-
-                RAWINPUT* raw = (RAWINPUT*)buffer;
-                if (false && raw->header.dwType == RIM_TYPEKEYBOARD)
-                {
-                    USHORT keyCode = raw->data.keyboard.MakeCode;
-                    cout << keyCode << " - "
-                        << (raw->data.keyboard.Flags & RI_KEY_BREAK ? 'U' : 'D');
-
-                    switch (keyCode)
-                    {
-                        case 42:
-                        {
-                            cout << " - LSHIFT";
-                            break;
-                        }
-
-                        case 54:
-                        {
-                            cout << " - RSHIFT";
-                            break;
-                        }
-
-                        case 29:
-                        {
-                            if (GetAsyncKeyState(VK_LCONTROL))
-                                cout << " - LCONTROL";
-
-                            if (GetAsyncKeyState(VK_RCONTROL))
-                                cout << " - RCONTROL";
-                        }
-
-                        default: {}
-                    }
-
-                    cout << endl;
-                }
-
-                delete [] buffer;
-                break;
-            }
-
             case WM_MOUSEMOVE:
             {
                 // http://msdn.microsoft.com/en-us/library/ms632654%28v=VS.85%29.aspx
@@ -335,48 +269,34 @@ namespace XPG
             }
 
             case WM_KEYDOWN:
+            case WM_SYSKEYDOWN:
             {
                 // http://msdn.microsoft.com/en-us/library/ms646280%28VS.85%29.aspx
                 // Bit 30 of lparam indicates last key state.
-                // We do not want to repeat this event.
-                if (lparam & 0x40000000) break;
 
-                unsigned int key = (unsigned int)wparam;
-                //cout << "key down -- " << key << endl;
+                unsigned int key = (lparam & 0x00ff0000) >> 16;
+                bool extended = lparam & (1 << 24);
                 inEvent.type = Event::KEYBOARD;
-                inEvent.keyboard.event = KeyboardEvent::PRESS;
-                inEvent.keyboard.key = convertKeyCode(key);
-
-                unsigned int scanCode = lparam & 0x00ff0000;
-                scanCode >>= 16;
-                cout << "key code -- " << scanCode;
-                if (lparam & (1 << 24)) cout << " -- extended";
-                cout << endl;
+                inEvent.keyboard.event = lparam & 0x40000000 ?
+                    KeyboardEvent::REPEAT : KeyboardEvent::PRESS;
+                inEvent.keyboard.key = convertToKeyCode(key, extended);
                 break;
             }
 
             case WM_KEYUP:
+            case WM_SYSKEYUP:
             {
-                unsigned int key = (unsigned int)wparam;
-                //cout << "key up -- " << key << endl;
+                unsigned int key = (lparam & 0x00ff0000) >> 16;
+                bool extended = lparam & (1 << 24);
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::RELEASE;
-                inEvent.keyboard.key = convertKeyCode(key);
-                break;
-            }
-
-            case WM_SYSKEYDOWN:
-            {
-                int scanCode = lparam & 0x00ff0000;
-                scanCode >>= 16;
-                cout << "key code -- " << scanCode << endl;
+                inEvent.keyboard.key = convertToKeyCode(key, extended);
                 break;
             }
 
             // http://msdn.microsoft.com/en-us/library/ff468861%28v=VS.85%29.aspx
             case WM_SETFOCUS:
             {
-                //cout << "focus" << endl;
                 inEvent.type = Event::WINDOW;
                 inEvent.window.event = WindowEvent::FOCUS;
                 break;
@@ -384,7 +304,6 @@ namespace XPG
 
             case WM_KILLFOCUS:
             {
-                //cout << "blur" << endl;
                 inEvent.type = Event::WINDOW;
                 inEvent.window.event = WindowEvent::BLUR;
                 break;
@@ -448,75 +367,100 @@ namespace XPG
 
     /// /// ///
 
-    Key::Code convertKeyCode(unsigned int inData)
+    Key::Code convertToKeyCode(unsigned int inCode, bool inExtended)
     {
-        switch (inData)
+        switch (inCode)
         {
-            case 65: return Key::A;
-            case 66: return Key::B;
-            case 67: return Key::C;
-            case 68: return Key::D;
-            case 69: return Key::E;
-            case 70: return Key::F;
-            case 71: return Key::G;
-            case 72: return Key::H;
-            case 73: return Key::I;
-            case 74: return Key::J;
-            case 75: return Key::K;
-            case 76: return Key::L;
-            case 77: return Key::M;
-            case 78: return Key::N;
-            case 79: return Key::O;
-            case 80: return Key::P;
-            case 81: return Key::Q;
-            case 82: return Key::R;
-            case 83: return Key::S;
-            case 84: return Key::T;
-            case 85: return Key::U;
-            case 86: return Key::V;
-            case 87: return Key::W;
-            case 88: return Key::X;
-            case 89: return Key::Y;
-            case 90: return Key::Z;
+            case 1: return Key::ESCAPE;
+            case 2: return Key::TR1;
+            case 3: return Key::TR2;
+            case 4: return Key::TR3;
+            case 5: return Key::TR4;
+            case 6: return Key::TR5;
+            case 7: return Key::TR6;
+            case 8: return Key::TR7;
+            case 9: return Key::TR8;
+            case 10: return Key::TR9;
+            case 11: return Key::TR0;
+            case 12: return Key::MINUS;
+            case 13: return Key::EQUALS;
+            case 14: return Key::BACKSPACE;
+            case 15: return Key::TAB;
+            case 16: return Key::Q;
+            case 17: return Key::W;
+            case 18: return Key::E;
+            case 19: return Key::R;
+            case 20: return Key::T;
+            case 21: return Key::Y;
+            case 22: return Key::U;
+            case 23: return Key::I;
+            case 24: return Key::O;
+            case 25: return Key::P;
+            case 26: return Key::LEFT_BRACKET;
+            case 27: return Key::RIGHT_BRACKET;
+            case 28: return inExtended ? Key::KP_ENTER : Key::ENTER;
+            case 29: return inExtended ? Key::RIGHT_CONTROL : Key::LEFT_CONTROL;
+            case 30: return Key::A;
+            case 31: return Key::S;
+            case 32: return Key::D;
+            case 33: return Key::F;
+            case 34: return Key::G;
+            case 35: return Key::H;
+            case 36: return Key::J;
+            case 37: return Key::K;
+            case 38: return Key::L;
+            case 39: return Key::SEMICOLON;
+            case 40: return Key::QUOTE;
+            case 41: return Key::BACK_QUOTE;
+            case 42: return Key::LEFT_SHIFT;
+            case 43: return Key::BACKSLASH;
+            case 44: return Key::Z;
+            case 45: return Key::X;
+            case 46: return Key::C;
+            case 47: return Key::V;
+            case 48: return Key::B;
+            case 49: return Key::N;
+            case 50: return Key::M;
+            case 51: return Key::COMMA;
+            case 52: return Key::PERIOD;
+            case 53: return inExtended ? Key::KP_SLASH : Key::SLASH;
+            case 54: return Key::RIGHT_SHIFT;
+            case 55: return Key::KP_ASTERISK;
+            case 56: return inExtended ? Key::RIGHT_ALT : Key::LEFT_ALT;
+            case 57: return Key::SPACE;
+            case 58: return Key::CAPSLOCK;
+            case 59: return Key::F1;
+            case 60: return Key::F2;
+            case 61: return Key::F3;
+            case 62: return Key::F4;
+            case 63: return Key::F5;
+            case 64: return Key::F6;
+            case 65: return Key::F7;
+            case 66: return Key::F8;
+            case 67: return Key::F9;
+            case 68: return Key::F10;
+            case 69: return inExtended ? Key::NUMLOCK : Key::PAUSE;
+            case 70: return Key::SCROLL_LOCK;
+            case 71: return inExtended ? Key::HOME : Key::KP7;
+            case 72: return inExtended ? Key::UP : Key::KP8;
+            case 73: return inExtended ? Key::PAGE_UP : Key::KP9;
+            case 74: return Key::KP_SLASH;
+            case 75: return inExtended ? Key::LEFT : Key::KP4;
+            case 76: return Key::KP5;
+            case 77: return inExtended ? Key::RIGHT : Key::KP6;
+            case 78: return Key::KP_PLUS;
+            case 79: return inExtended ? Key::END : Key::KP1;
+            case 80: return inExtended ? Key::DOWN : Key::KP2;
+            case 81: return inExtended ? Key::PAGE_DOWN : Key::KP3;
+            case 82: return inExtended ? Key::INSERT : Key::KP0;
+            case 83: return inExtended ? Key::DEL : Key::KP_PERIOD;
 
-            case 48: return Key::TR0;
-            case 49: return Key::TR1;
-            case 50: return Key::TR2;
-            case 51: return Key::TR3;
-            case 52: return Key::TR4;
-            case 53: return Key::TR5;
-            case 54: return Key::TR6;
-            case 55: return Key::TR7;
-            case 56: return Key::TR8;
-            case 57: return Key::TR9;
+            case 87: return Key::F11;
+            case 88: return Key::F12;
 
-            case 27: return Key::ESCAPE;
-            case 192: return Key::BACK_QUOTE;
-            case 189: return Key::MINUS;
-            case 187: return Key::EQUALS;
-            case 8: return Key::BACKSPACE;
-            case 9: return Key::TAB;
-            case 219: return Key::LEFT_BRACKET;
-            case 221: return Key::RIGHT_BRACKET;
-            case 220: return Key::BACKSLASH;
-            case 20: return Key::CAPSLOCK;
-            case 186: return Key::SEMICOLON;
-            case 222: return Key::QUOTE;
-            case 13: return Key::ENTER;
-            case 188: return Key::COMMA;
-            case 190: return Key::PERIOD;
-            case 191: return Key::SLASH;
-
-            case 45: return Key::INSERT;
-            case 46: return Key::DEL;
-            case 36: return Key::HOME;
-            case 35: return Key::END;
-            case 33: return Key::PAGE_UP;
-            case 34: return Key::PAGE_DOWN;
-            case 37: return Key::LEFT;
-            case 39: return Key::RIGHT;
-            case 40: return Key::DOWN;
-            case 38: return Key::UP;
+            case 91: return Key::LEFT_SUPER; // extended
+            case 92: return Key::RIGHT_SUPER; // extended
+            //case 93: //menu key // extended
 
             default: return Key::UNKNOWN;
         }

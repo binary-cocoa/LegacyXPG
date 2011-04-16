@@ -387,7 +387,7 @@ namespace XPG
         /// http://www.opengl.org/sdk/docs/man/xhtml/gluPerspective.xml
         T r = DEG2RAD(inFieldOfView);
         if (inSmartAdjustment && inRatio < SCT(1))
-            r = SCT(2) * atan(tan(r / SCT(2)) / inRatio);
+            r /= inRatio;
         T f = SCT(1) / tan(r / SCT(2));
 
         Matrix4x4<T> transform;

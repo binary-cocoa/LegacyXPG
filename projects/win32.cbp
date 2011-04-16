@@ -17,13 +17,13 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="..\libxpg" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="obj\Release\" />
-				<Option type="2" />
+				<Option output="..\test-xpg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir=".." />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -46,7 +46,6 @@
 			<Add directory="..\lib" />
 		</Linker>
 		<Unit filename="..\include\XPG\DataTypes.hpp" />
-		<Unit filename="..\include\XPG\Display.hpp" />
 		<Unit filename="..\include\XPG\Event.hpp" />
 		<Unit filename="..\include\XPG\Exception.hpp" />
 		<Unit filename="..\include\XPG\Image.hpp" />
