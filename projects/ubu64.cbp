@@ -66,10 +66,10 @@
 		<Unit filename="../include/XPG/Vector3D.hpp" />
 		<Unit filename="../include/XPG/private/glew.h" />
 		<Unit filename="../include/XPG/private/glxew.h" />
-		<Unit filename="../source/Main.cpp" />
 		<Unit filename="../source/XPG/Engine.cpp" />
 		<Unit filename="../source/XPG/Event.cpp" />
 		<Unit filename="../source/XPG/Image.cpp" />
+		<Unit filename="../source/XPG/Main.cpp" />
 		<Unit filename="../source/XPG/Module.cpp" />
 		<Unit filename="../source/XPG/OpenGL/Base.cpp" />
 		<Unit filename="../source/XPG/OpenGL/CubeMap.cpp" />
