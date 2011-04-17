@@ -127,6 +127,7 @@ void TestModule::onDisplay()
     mModelView.translate(0.0f, 0.0f, -10.0f);
     mModelView.rotateX(mRotate);
     mModelView.rotateZ(mRotate);
+    mModelView.scaleX(3.0f);
 
     mat4f mvp(mProjection, mModelView);
     glUniformMatrix4fv(mUniMVPM, 1, GL_FALSE, mvp);

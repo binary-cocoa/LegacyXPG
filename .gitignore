@@ -1,12 +1,18 @@
 /test*
-projects/obj/
-projects/*.html
-projects/*.depend
-projects/*.layout
-projects/*.cbTemp
-projects/android/bin/
-projects/android/gen/
-projects/android/libs/
-projects/android/obj/
 *.o
 *.exe
+
+# Code::Blocks junk files
+/projects/obj/
+/projects/*.html
+/projects/*.depend
+/projects/*.layout
+/projects/*.cbTemp
+
+# Android junk files
+/projects/android/bin/
+/projects/android/gen/
+/projects/android/libs/
+/projects/android/obj/
+/projects/android/.metadata/
+

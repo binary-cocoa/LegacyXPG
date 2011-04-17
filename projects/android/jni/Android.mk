@@ -7,36 +7,36 @@ LOCAL_CFLAGS    := -w -I../../include
 SF := ../../../source
 LOCAL_SRC_FILES := xpgm.cpp \
     TestModule.cpp \
-    $(SF)/zlib/adler32.c \
-    $(SF)/zlib/compress.c \
-    $(SF)/zlib/crc32.c \
-    $(SF)/zlib/deflate.c \
-    $(SF)/zlib/gzclose.c \
-    $(SF)/zlib/gzlib.c \
-    $(SF)/zlib/gzread.c \
-    $(SF)/zlib/gzwrite.c \
-    $(SF)/zlib/infback.c \
-    $(SF)/zlib/inffast.c \
-    $(SF)/zlib/inflate.c \
-    $(SF)/zlib/inftrees.c \
-    $(SF)/zlib/trees.c \
-    $(SF)/zlib/uncompr.c \
-    $(SF)/zlib/zutil.c \
-    $(SF)/png/png.c \
-    $(SF)/png/pngerror.c \
-    $(SF)/png/pngget.c \
-    $(SF)/png/pngmem.c \
-    $(SF)/png/pngpread.c \
-    $(SF)/png/pngread.c \
-    $(SF)/png/pngrio.c \
-    $(SF)/png/pngrtran.c \
-    $(SF)/png/pngrutil.c \
-    $(SF)/png/pngset.c \
-    $(SF)/png/pngtrans.c \
-    $(SF)/png/pngwio.c \
-    $(SF)/png/pngwrite.c \
-    $(SF)/png/pngwtran.c \
-    $(SF)/png/pngwutil.c \
+    zlib/adler32.c \
+    zlib/compress.c \
+    zlib/crc32.c \
+    zlib/deflate.c \
+    zlib/gzclose.c \
+    zlib/gzlib.c \
+    zlib/gzread.c \
+    zlib/gzwrite.c \
+    zlib/infback.c \
+    zlib/inffast.c \
+    zlib/inflate.c \
+    zlib/inftrees.c \
+    zlib/trees.c \
+    zlib/uncompr.c \
+    zlib/zutil.c \
+    libpng/png.c \
+    libpng/pngerror.c \
+    libpng/pngget.c \
+    libpng/pngmem.c \
+    libpng/pngpread.c \
+    libpng/pngread.c \
+    libpng/pngrio.c \
+    libpng/pngrtran.c \
+    libpng/pngrutil.c \
+    libpng/pngset.c \
+    libpng/pngtrans.c \
+    libpng/pngwio.c \
+    libpng/pngwrite.c \
+    libpng/pngwtran.c \
+    libpng/pngwutil.c \
     $(SF)/XPG/Module.cpp \
     $(SF)/XPG/Event.cpp \
     $(SF)/XPG/Image.cpp \
