@@ -4,6 +4,7 @@
 #include <XPG/private/glew.h>
 #include <XPG/private/glxew.h>
 #include <X11/Xatom.h>
+#include <X11/cursorfont.h>
 
 #include <cmath>
 #include <cstdlib>
@@ -354,6 +355,20 @@ namespace XPG
 
             case KeyPress:
             {
+                if(getKeyCode(event.xkey.keycode) == Key::F11)
+                {
+                    toggleFullscreen();
+                    XWindowAttributes winData;
+                    XGetWindowAttributes(mData->display, mData->window,
+                        &winData);
+                    mSettings.height = winData.height;
+                    mSettings.width = winData.width;
+                    inEvent.type = Event::WINDOW;
+                    inEvent.window.event = WindowEvent::RESIZE;
+                    inEvent.window.width = mSettings.width;
+                    inEvent.window.height = mSettings.height;
+                    break;
+                }
                 inEvent.type = Event::KEYBOARD;
                 inEvent.keyboard.event = KeyboardEvent::PRESS;
                 inEvent.keyboard.key = getKeyCode(event.xkey.keycode);
@@ -430,6 +445,65 @@ namespace XPG
             Idle(1);
         }
     }
+
+    void Engine::setFrameless()
+    {
+        Atom property = XInternAtom(mData->display, "_MOTIF_WM_HINTS", True);
+        if(property == 0)
+        {
+            cerr << "_MOTIF_WM_HINTS doesn't exist\n";
+            return;
+        }
+        unsigned long hints[5] = {0,};
+        hints[0] = 2;
+        XChangeProperty(mData->display, mData->window, property, property, 32, PropModeReplace, (unsigned char *)hints, 5);
+        mSettings.frameless = true;
+    }
+    void Engine::toggleCursorVisibility()
+    {
+        mSettings.hideMouse = !mSettings.hideMouse;
+
+        if(mSettings.hideMouse)
+        {
+            Cursor invisibleCursor;
+            Pixmap bitmapNoData;
+            XColor black;
+            static char noData[] = { 0,0,0,0,0,0,0,0 };
+            black.red = black.green = black.blue = 0;
+
+            bitmapNoData = XCreateBitmapFromData(mData->display, mData->window, noData, 8, 8);
+            invisibleCursor = XCreatePixmapCursor(mData->display, bitmapNoData, bitmapNoData,
+                                                        &black, &black, 0, 0);
+            XDefineCursor(mData->display,mData->window, invisibleCursor);
+            XFreeCursor(mData->display, invisibleCursor);
+        }
+        else
+        {
+            Cursor cursor;
+            cursor = XCreateFontCursor(mData->display, XC_left_ptr);
+            XDefineCursor(mData->display, mData->window, cursor);
+            XFreeCursor(mData->display, cursor);
+        }
+
+    };
+    void Engine::toggleFullscreen()
+    {
+        mSettings.fullScreen = !mSettings.fullScreen;
+
+        XEvent xev;
+        xev.xclient.type = ClientMessage;
+        xev.xclient.serial = 0;
+        xev.xclient.send_event = True;
+        xev.xclient.window = mData->window;
+        xev.xclient.message_type = XInternAtom(mData->display, "_NET_WM_STATE", False);
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = mSettings.fullScreen ? 1 : 0;
+        xev.xclient.data.l[1] = XInternAtom(mData->display, "_NET_WM_STATE_FULLSCREEN", False);
+        xev.xclient.data.l[2] = 0;
+
+        XSendEvent(mData->display, DefaultRootWindow(mData->display), False,
+                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+    };
 
     void Engine::setWindowTitle(const char* inTitle)
     {

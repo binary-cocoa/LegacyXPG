@@ -25,7 +25,9 @@ namespace XPG
             int16u height;
             int16u depth;
             bool fullScreen;
+            bool frameless;
             bool legacyContext;
+            bool hideMouse;
             Version context;
             Version shader;
         };
@@ -37,7 +39,9 @@ namespace XPG
         void swapBuffers();
         void setWindowTitle(const char* inTitle);
         void setIconTitle(const char* inTitle);
-
+        void setFrameless();
+        void toggleCursorVisibility();
+        void toggleFullscreen();
         void runModule(Module& inModule);
 
         const Settings& settings;
