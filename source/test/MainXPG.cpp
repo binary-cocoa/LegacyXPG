@@ -12,6 +12,7 @@ int MainXPG(int argc, char** argv)
 {
     XPG::Engine::Settings es;
     //es.legacyContext = true;
+    es.fullScreen = true;
     es.context.vMajor = 3;
     es.context.vMinor = 2;
 
