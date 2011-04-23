@@ -10,6 +10,9 @@ using namespace std;
 /// run test code
 int MainXPG(int argc, char** argv)
 {
+
+    return 0; // block graphics code below
+
     XPG::Engine::Settings es;
     //es.legacyContext = true;
     es.context.vMajor = 3;
