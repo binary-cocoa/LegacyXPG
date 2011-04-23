@@ -6,6 +6,7 @@
 #include <XPG/private/glew.h>
 #include <XPG/private/wglew.h>
 
+#include <cstdlib>
 #include <iostream>
 using namespace std;
 
@@ -43,6 +44,8 @@ namespace XPG
         mData->hInstance = GetModuleHandle(NULL);
         WNDCLASS windowClass;
         DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+        DWORD dwStyle = WS_OVERLAPPEDWINDOW;
+        int cmdShow = SW_SHOW;
 
         windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
         windowClass.lpfnWndProc = (WNDPROC) WndProc;
@@ -61,9 +64,53 @@ namespace XPG
             return;
         }
 
+        if (mSettings.fullScreen && false) // hard full screen
+        {
+            DEVMODE dmScreenSettings;
+            memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+            dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+            dmScreenSettings.dmPelsWidth = mSettings.width;
+            dmScreenSettings.dmPelsHeight = mSettings.height;
+            dmScreenSettings.dmBitsPerPel = mSettings.depth;
+            dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH
+                | DM_PELSHEIGHT;
+
+            if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN)
+                != DISP_CHANGE_SUCCESSFUL)
+            {
+                if (MessageBox(NULL,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?","NeHe GL",MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
+                {
+                    mSettings.fullScreen = false;
+                }
+                else
+                {
+                    MessageBox(NULL,"Program Will Now Close.","ERROR",MB_OK|MB_ICONSTOP);
+                    exit(0);
+                }
+            }
+        }
+
+        if (mSettings.fullScreen)
+        {
+            dwExStyle = WS_EX_APPWINDOW;
+            dwStyle = WS_POPUP;
+            cmdShow = SW_SHOWMAXIMIZED;
+        }
+        else
+        {
+            dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+            dwStyle = WS_OVERLAPPEDWINDOW;
+        }
+
         mData->hWnd = CreateWindowEx(dwExStyle, mData->title, mData->title,
-            WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, mSettings.width,
+            WS_CLIPSIBLINGS | WS_CLIPCHILDREN | dwStyle, 0, 0, mSettings.width,
             mSettings.height, NULL, NULL, mData->hInstance, NULL);
+
+        if (!mData->hWnd)
+        {
+            MessageBox(NULL, "Failed on CreateWindowEx", "ERROR", MB_OK);
+            exit(1);
+        }
 
         mData->hdc = GetDC(mData->hWnd);
 
@@ -133,8 +180,16 @@ namespace XPG
             mSettings.legacyContext = true;
         }
 
-        ShowWindow(mData->hWnd, SW_SHOW);
+        ShowWindow(mData->hWnd, cmdShow);
         UpdateWindow(mData->hWnd);
+
+        if (mSettings.fullScreen)
+        {
+            RECT rc;
+            GetWindowRect(mData->hWnd, &rc);
+            mSettings.width = rc.right - rc.left;
+            mSettings.height = rc.bottom - rc.top;
+        }
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;
@@ -463,6 +518,16 @@ namespace XPG
             //case 93: //menu key // extended
 
             default: return Key::UNKNOWN;
+        }
+    }
+
+    void Engine::toggleFullscreen()
+    {
+        mSettings.fullScreen = !mSettings.fullScreen;
+
+        if (mSettings.fullScreen)
+        {
+
         }
     }
 

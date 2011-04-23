@@ -46,9 +46,11 @@
 			<Add directory="..\lib" />
 		</Linker>
 		<Unit filename="..\include\XPG\DataTypes.hpp" />
+		<Unit filename="..\include\XPG\Engine.hpp" />
 		<Unit filename="..\include\XPG\Event.hpp" />
 		<Unit filename="..\include\XPG\Exception.hpp" />
 		<Unit filename="..\include\XPG\Image.hpp" />
+		<Unit filename="..\include\XPG\Main.hpp" />
 		<Unit filename="..\include\XPG\Matrix3D.hpp" />
 		<Unit filename="..\include\XPG\Module.hpp" />
 		<Unit filename="..\include\XPG\Mutex.hpp" />
