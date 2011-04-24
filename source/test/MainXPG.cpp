@@ -1,18 +1,14 @@
 #include <XPG/Main.hpp>
 #include <XPG/Engine.hpp>
-#include <XPG/Image.hpp>
+#include <XPG/Network/Connection.hpp>
 
 #include "TestModule.hpp"
 
 #include <iostream>
 using namespace std;
 
-/// run test code
-int MainXPG(int argc, char** argv)
+void testEngine()
 {
-
-    return 0; // block graphics code below
-
     XPG::Engine::Settings es;
     //es.legacyContext = true;
     es.fullScreen = true;
@@ -37,6 +33,44 @@ int MainXPG(int argc, char** argv)
         TestModule tm;
         tm.onLoad();
         e.runModule(tm);
+    }
+}
+
+void testServer(const char* inPort)
+{
+    XPG::Connection c;
+    c.listen(inPort);
+
+    char buffer[512] = "";
+    if (c.receive(buffer, sizeof buffer))
+    {
+        buffer[511] = '\0';
+        cout << "received data: " << buffer << endl;
+    }
+}
+
+void testClient(const char* inPort, const char* inHost)
+{
+    XPG::Connection c;
+    c.connect(inHost, inPort);
+
+    char message[] = "Hello, Network!";
+    c.send(message, sizeof message);
+}
+
+int MainXPG(int argc, char** argv)
+{
+    if (argc > 2)
+    {
+        testClient(argv[1], argv[2]);
+    }
+    else if (argc == 2)
+    {
+        testServer(argv[1]);
+    }
+    else
+    {
+        testEngine();
     }
 
     return 0;

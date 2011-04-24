@@ -13,7 +13,7 @@
 #   include "../private/windows.hpp"
 #   include <winsock2.h>
     typedef long ssize_t;
-    typedef int socklen_t;
+    typedef unsigned int socklen_t;
 #elif defined(XPG_PLATFORM_UNIX)
 #   include <unistd.h>
 #   include <sys/socket.h>

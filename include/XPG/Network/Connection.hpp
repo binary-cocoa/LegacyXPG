@@ -13,9 +13,11 @@ namespace XPG
         virtual ~Connection();
 
         void listen(int16u inPort);
+        void listen(const char* inPort);
         void connect(const char* inAddress, int16u inPort);
+        void connect(const char* inAddress, const char* inPort);
         void send(const void* inData, size_t inLength);
-        bool receive(int8u* inBuffer);
+        size_t receive(void* inBuffer, size_t inMaxLength);
 
     private:
         Connection(const Connection& inConnection)
