@@ -11,7 +11,116 @@ using namespace std;
 
 namespace XPG
 {
-    Key::Code convertToKeyCode(unsigned int inCode, bool inExtended);
+    struct KeyMapping
+    {
+        Key::Code normal;
+        Key::Code extended;
+    };
+
+    static const size_t NumMappings = 93;
+    static const KeyMapping KeyTable[NumMappings] = {
+        { Key::Unknown, Key::Unknown },                 // 0
+        { Key::Escape, Key::Escape },                   // 1
+        { Key::TopRow1, Key::TopRow1 },                 // 2
+        { Key::TopRow2, Key::TopRow2 },                 // 3
+        { Key::TopRow3, Key::TopRow3 },                 // 4
+        { Key::TopRow4, Key::TopRow4 },                 // 5
+        { Key::TopRow5, Key::TopRow5 },                 // 6
+        { Key::TopRow6, Key::TopRow6 },                 // 7
+        { Key::TopRow7, Key::TopRow7 },                 // 8
+        { Key::TopRow8, Key::TopRow8 },                 // 9
+        { Key::TopRow9, Key::TopRow9 },                 // 10
+        { Key::TopRow0, Key::TopRow0 },                 // 11
+        { Key::Minus, Key::Minus },                     // 12
+        { Key::Equals, Key::Equals },                   // 13
+        { Key::Backspace, Key::Backspace },             // 14
+        { Key::Tab, Key::Tab },                         // 15
+        { Key::LetterQ, Key::LetterQ },                 // 16
+        { Key::LetterW, Key::LetterW },                 // 17
+        { Key::LetterE, Key::LetterE },                 // 18
+        { Key::LetterR, Key::LetterR },                 // 19
+        { Key::LetterT, Key::LetterT },                 // 20
+        { Key::LetterY, Key::LetterY },                 // 21
+        { Key::LetterU, Key::LetterU },                 // 22
+        { Key::LetterI, Key::LetterI },                 // 23
+        { Key::LetterO, Key::LetterO },                 // 24
+        { Key::LetterP, Key::LetterP },                 // 25
+        { Key::LeftBracket, Key::LeftBracket },         // 26
+        { Key::RightBracket, Key::RightBracket },       // 27
+        { Key::Enter, Key::KeypadEnter },               // 28
+        { Key::LeftControl, Key::RightControl },        // 29
+        { Key::LetterA, Key::LetterA },                 // 30
+        { Key::LetterS, Key::LetterS },                 // 31
+        { Key::LetterD, Key::LetterD },                 // 32
+        { Key::LetterF, Key::LetterF },                 // 33
+        { Key::LetterG, Key::LetterG },                 // 34
+        { Key::LetterH, Key::LetterH },                 // 35
+        { Key::LetterJ, Key::LetterJ },                 // 36
+        { Key::LetterK, Key::LetterK },                 // 37
+        { Key::LetterL, Key::LetterL },                 // 38
+        { Key::Semicolon, Key::Semicolon },             // 39
+        { Key::Quote, Key::Quote },                     // 40
+        { Key::BackQuote, Key::BackQuote },             // 41
+        { Key::LeftShift, Key::LeftShift },             // 42
+        { Key::Backslash, Key::Backslash },             // 43
+        { Key::LetterZ, Key::LetterZ },                 // 44
+        { Key::LetterX, Key::LetterX },                 // 45
+        { Key::LetterC, Key::LetterC },                 // 46
+        { Key::LetterV, Key::LetterV },                 // 47
+        { Key::LetterB, Key::LetterB },                 // 48
+        { Key::LetterN, Key::LetterN },                 // 49
+        { Key::LetterM, Key::LetterM },                 // 50
+        { Key::Comma, Key::Comma },                     // 51
+        { Key::Period, Key::Period },                   // 52
+        { Key::Slash, Key::KeypadSlash },               // 53
+        { Key::RightShift, Key::RightShift },           // 54
+        { Key::KeypadAsterisk, Key::KeypadAsterisk },   // 55
+        { Key::LeftAlt, Key::RightAlt },                // 56
+        { Key::Space, Key::Space },                     // 57
+        { Key::CapsLock, Key::CapsLock },               // 58
+        { Key::F1, Key::F1 },                           // 59
+        { Key::F2, Key::F2 },                           // 60
+        { Key::F3, Key::F3 },                           // 61
+        { Key::F4, Key::F4 },                           // 62
+        { Key::F5, Key::F5 },                           // 63
+        { Key::F6, Key::F6 },                           // 64
+        { Key::F7, Key::F7 },                           // 65
+        { Key::F8, Key::F8 },                           // 66
+        { Key::F9, Key::F9 },                           // 67
+        { Key::F10, Key::F10 },                         // 68
+        { Key::Pause, Key::NumLock },                   // 69
+        { Key::ScrollLock, Key::ScrollLock },           // 70
+        { Key::Keypad7, Key::Home },                    // 71
+        { Key::Keypad8, Key::Up },                      // 72
+        { Key::Keypad9, Key::PageUp },                  // 73
+        { Key::KeypadSlash, Key::KeypadSlash },         // 74
+        { Key::Keypad4, Key::Left },                    // 75
+        { Key::Keypad5, Key::Keypad5 },                 // 76
+        { Key::Keypad6, Key::Right },                   // 77
+        { Key::KeypadPlus, Key::KeypadPlus },           // 78
+        { Key::Keypad1, Key::End },                     // 79
+        { Key::Keypad2, Key::Down },                    // 80
+        { Key::Keypad3, Key::PageDown },                // 81
+        { Key::Keypad0, Key::Insert },                  // 82
+        { Key::KeypadPeriod, Key::Delete },             // 83
+        { Key::Unknown, Key::Unknown },                 // 84
+        { Key::Unknown, Key::Unknown },                 // 85
+        { Key::Unknown, Key::Unknown },                 // 86
+        { Key::F11, Key::F11 },                         // 87
+        { Key::F12, Key::F12 },                         // 88
+        { Key::Unknown, Key::Unknown },                 // 89
+        { Key::Unknown, Key::Unknown },                 // 90
+        { Key::LeftSuper, Key::LeftSuper },             // 91
+        { Key::RightSuper, Key::RightSuper },           // 92
+        };
+
+    static inline Key::Code lookupKey(unsigned int inCode, bool inExtended)
+    {
+        return inCode < NumMappings ?
+            (inExtended ? KeyTable[inCode].extended : KeyTable[inCode].normal)
+            : Key::Unknown;
+    }
+
     LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
     /// evil globals (working on a way to avoid needing these)
@@ -281,7 +390,7 @@ namespace XPG
                 inEvent.type = Event::Keyboard;
                 inEvent.keyboard.event = lparam & 0x40000000 ?
                     KeyboardEvent::Repeat : KeyboardEvent::Press;
-                inEvent.keyboard.key = convertToKeyCode(key, extended);
+                inEvent.keyboard.key = lookupKey(key, extended);
                 break;
             }
 
@@ -292,7 +401,7 @@ namespace XPG
                 bool extended = lparam & (1 << 24);
                 inEvent.type = Event::Keyboard;
                 inEvent.keyboard.event = KeyboardEvent::Release;
-                inEvent.keyboard.key = convertToKeyCode(key, extended);
+                inEvent.keyboard.key = lookupKey(key, extended);
                 break;
             }
 
@@ -368,106 +477,6 @@ namespace XPG
     }
 
     /// /// ///
-
-    /// TODO: Convert this function into a LUT.
-    Key::Code convertToKeyCode(unsigned int inCode, bool inExtended)
-    {
-        switch (inCode)
-        {
-            case 1: return Key::Escape;
-            case 2: return Key::TopRow1;
-            case 3: return Key::TopRow2;
-            case 4: return Key::TopRow3;
-            case 5: return Key::TopRow4;
-            case 6: return Key::TopRow5;
-            case 7: return Key::TopRow6;
-            case 8: return Key::TopRow7;
-            case 9: return Key::TopRow8;
-            case 10: return Key::TopRow9;
-            case 11: return Key::TopRow0;
-            case 12: return Key::Minus;
-            case 13: return Key::Equals;
-            case 14: return Key::Backspace;
-            case 15: return Key::Tab;
-            case 16: return Key::LetterQ;
-            case 17: return Key::LetterW;
-            case 18: return Key::LetterE;
-            case 19: return Key::LetterR;
-            case 20: return Key::LetterT;
-            case 21: return Key::LetterY;
-            case 22: return Key::LetterU;
-            case 23: return Key::LetterI;
-            case 24: return Key::LetterO;
-            case 25: return Key::LetterP;
-            case 26: return Key::LeftBracket;
-            case 27: return Key::RightBracket;
-            case 28: return inExtended ? Key::KeypadEnter : Key::Enter;
-            case 29: return inExtended ? Key::RightControl : Key::LeftControl;
-            case 30: return Key::LetterA;
-            case 31: return Key::LetterS;
-            case 32: return Key::LetterD;
-            case 33: return Key::LetterF;
-            case 34: return Key::LetterG;
-            case 35: return Key::LetterH;
-            case 36: return Key::LetterJ;
-            case 37: return Key::LetterK;
-            case 38: return Key::LetterL;
-            case 39: return Key::Semicolon;
-            case 40: return Key::Quote;
-            case 41: return Key::BackQuote;
-            case 42: return Key::LeftShift;
-            case 43: return Key::Backslash;
-            case 44: return Key::LetterZ;
-            case 45: return Key::LetterX;
-            case 46: return Key::LetterC;
-            case 47: return Key::LetterV;
-            case 48: return Key::LetterB;
-            case 49: return Key::LetterN;
-            case 50: return Key::LetterM;
-            case 51: return Key::Comma;
-            case 52: return Key::Period;
-            case 53: return inExtended ? Key::KeypadSlash : Key::Slash;
-            case 54: return Key::RightShift;
-            case 55: return Key::KeypadAsterisk;
-            case 56: return inExtended ? Key::RightAlt : Key::LeftAlt;
-            case 57: return Key::Space;
-            case 58: return Key::CapsLock;
-            case 59: return Key::F1;
-            case 60: return Key::F2;
-            case 61: return Key::F3;
-            case 62: return Key::F4;
-            case 63: return Key::F5;
-            case 64: return Key::F6;
-            case 65: return Key::F7;
-            case 66: return Key::F8;
-            case 67: return Key::F9;
-            case 68: return Key::F10;
-            case 69: return inExtended ? Key::NumLock : Key::Pause;
-            case 70: return Key::ScrollLock;
-            case 71: return inExtended ? Key::Home : Key::Keypad7;
-            case 72: return inExtended ? Key::Up : Key::Keypad8;
-            case 73: return inExtended ? Key::PageUp : Key::Keypad9;
-            case 74: return Key::KeypadSlash;
-            case 75: return inExtended ? Key::Left : Key::Keypad4;
-            case 76: return Key::Keypad5;
-            case 77: return inExtended ? Key::Right : Key::Keypad6;
-            case 78: return Key::KeypadPlus;
-            case 79: return inExtended ? Key::End : Key::Keypad1;
-            case 80: return inExtended ? Key::Down : Key::Keypad2;
-            case 81: return inExtended ? Key::PageDown : Key::Keypad3;
-            case 82: return inExtended ? Key::Insert : Key::Keypad0;
-            case 83: return inExtended ? Key::Delete : Key::KeypadPeriod;
-
-            case 87: return Key::F11;
-            case 88: return Key::F12;
-
-            case 91: return Key::LeftSuper; // extended
-            case 92: return Key::RightSuper; // extended
-            //case 93: //menu key // extended
-
-            default: return Key::Unknown;
-        }
-    }
 
     /// Only handles events that cannot be caught by PeekMessage. This
     /// generally covers window events.

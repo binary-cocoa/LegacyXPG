@@ -178,7 +178,11 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
 
         case XPG::Event::Keyboard:
         {
-            if (inEvent.keyboard.key == XPG::Key::Escape) stopRunning();
+            if (inEvent.keyboard.key == XPG::Key::Escape)
+                stopRunning();
+            else if (inEvent.keyboard.key == XPG::Key::Space
+                && inEvent.keyboard.event == XPG::KeyboardEvent::Release)
+                mRotate = 0.0f;
             break;
         }
 
