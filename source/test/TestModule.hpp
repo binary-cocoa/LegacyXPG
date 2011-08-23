@@ -6,6 +6,8 @@
 #include <XPG/OpenGL/Program.hpp>
 #include <XPG/OpenGL/VertexBufferObject.hpp>
 
+#include "LiberateTypes.h"
+
 class TestModule : public XPG::Module
 {
     public:
@@ -16,7 +18,7 @@ class TestModule : public XPG::Module
         virtual void onDisplay();
         virtual void handleEvent(const XPG::Event& inEvent);
 
-        void onResize(int32u inWidth, int32u inHeight);
+        void onResize(uint32 inWidth, uint32 inHeight);
 
     private:
         XPG::Program mProgram;
@@ -26,7 +28,7 @@ class TestModule : public XPG::Module
         XPG::VertexBufferObject mColorVBO;
         XPG::VertexBufferObject mIndexVBO;
 
-        int64u mNextFrame;
+        uint64 mNextFrame;
         GLint mUniMVPM;
         GLint mUniCM;
         mat4f mProjection;

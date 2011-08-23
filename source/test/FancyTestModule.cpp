@@ -50,7 +50,7 @@ GLfloat normals[24] = {
     -a, a, -a,
     };
 
-FancyTestModule::FancyTestModule(int16u inMajorVersion)
+FancyTestModule::FancyTestModule(uint16 inMajorVersion)
     : mVS(GL_VERTEX_SHADER), mFS(GL_FRAGMENT_SHADER),
     mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_SHORT), mTS(1), mRotate(0.0f)
 {
@@ -155,7 +155,7 @@ void FancyTestModule::onKeyDown(XPG::Key::Code inKey)
 
     switch (inKey)
     {
-        case Key::ESCAPE:
+        case Key::Escape:
         {
             stopRunning();
             break;
@@ -165,7 +165,7 @@ void FancyTestModule::onKeyDown(XPG::Key::Code inKey)
     }
 }
 
-void FancyTestModule::onResize(int32u inWidth, int32u inHeight)
+void FancyTestModule::onResize(uint32 inWidth, uint32 inHeight)
 {
     mWidth = inWidth;
     mHeight = inHeight;
@@ -236,18 +236,18 @@ void FancyTestModule::onDisplay()
     }
 }
 
-void FancyTestModule::onMouseMove(int32u inX, int32u inY)
+void FancyTestModule::onMouseMove(uint32 inX, uint32 inY)
 {
 #ifndef XPG_PLATFORM_ANDROID
     //cout << inX << ' ' << inY << endl;
-    int32s x = inX;
-    int32s w = mWidth / 2;
+    int32 x = inX;
+    int32 w = mWidth / 2;
     x -= w;
     float v = mRange * static_cast<float>(x) / static_cast<float>(mPixelRange);
     //cout << v;
 
-    int32s y = inY;
-    int32s h = mHeight / 2;
+    int32 y = inY;
+    int32 h = mHeight / 2;
     y -= h;
     v = -mRange * static_cast<float>(y) / static_cast<float>(mPixelRange);
     //cout << ' ' << v << endl;
@@ -258,17 +258,17 @@ void FancyTestModule::handleEvent(const XPG::Event& inEvent)
 {
     switch (inEvent.type)
     {
-        case XPG::Event::WINDOW:
+        case XPG::Event::Window:
         {
             switch (inEvent.window.event)
             {
-                case XPG::WindowEvent::EXIT:
+                case XPG::WindowEvent::Exit:
                 {
                     onExit();
                     break;
                 }
 
-                case XPG::WindowEvent::RESIZE:
+                case XPG::WindowEvent::Resize:
                 {
                     onResize(inEvent.window.width, inEvent.window.height);
                     break;
@@ -283,13 +283,13 @@ void FancyTestModule::handleEvent(const XPG::Event& inEvent)
             break;
         }
 
-        case XPG::Event::KEYBOARD:
+        case XPG::Event::Keyboard:
         {
             onKeyDown(inEvent.keyboard.key);
             break;
         }
 
-        case XPG::Event::MOUSE:
+        case XPG::Event::Mouse:
         {
             onMouseMove(inEvent.mouse.x, inEvent.mouse.y);
             break;

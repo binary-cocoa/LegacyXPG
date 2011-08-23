@@ -8,17 +8,18 @@
 #include <XPG/OpenGL/VertexArrayObject.hpp>
 
 #include "TSphere.h"
+#include "LiberateTypes.h"
 
 class FancyTestModule : public XPG::Module
 {
     public:
-        FancyTestModule(int16u inMajorVersion);
+        FancyTestModule(uint16 inMajorVersion);
         virtual ~FancyTestModule();
 
         void onExit();
         void onKeyDown(XPG::Key::Code inKey);
-        void onMouseMove(int32u inX, int32u inY);
-        void onResize(int32u inWidth, int32u inHeight);
+        void onMouseMove(uint32 inX, uint32 inY);
+        void onResize(uint32 inWidth, uint32 inHeight);
 
         virtual void handleEvent(const XPG::Event& inEvent);
         virtual void onDisplay();
@@ -44,10 +45,10 @@ class FancyTestModule : public XPG::Module
         float mRange;
         float mRatio;
         float mRotate;
-        int32u mWidth;
-        int32u mHeight;
-        int32u mPixelRange;
-        int64u mNextFrame;
+        uint32 mWidth;
+        uint32 mHeight;
+        uint32 mPixelRange;
+        uint64 mNextFrame;
         bool mLegacy;
 };
 

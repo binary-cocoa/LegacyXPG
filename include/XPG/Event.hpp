@@ -9,72 +9,76 @@ namespace XPG
     {
         enum Code
         {
-            UNKNOWN,
+            Unknown,
 
             /// letter keys
-            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W,
-            X, Y, Z,
+            LetterA, LetterB, LetterC, LetterD, LetterE, LetterF, LetterG,
+            LetterH, LetterI, LetterJ, LetterK, LetterL, LetterM, LetterN,
+            LetterO, LetterP, LetterQ, LetterR, LetterS, LetterT, LetterU,
+            LetterV, LetterW, LetterX, LetterY, LetterZ,
 
             /// function keys
             F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 
             /// top row numbers/symbols
-            ESCAPE, BACK_QUOTE, TR1, TR2, TR3, TR4, TR5, TR6, TR7, TR8, TR9,
-            TR0, MINUS, EQUALS, BACKSPACE,
+            Escape, BackQuote, TopRow1, TopRow2, TopRow3, TopRow4, TopRow5,
+            TopRow6, TopRow7, TopRow8, TopRow9, TopRow0, Minus, Equals,
+            Backspace,
 
             /// symbols surrounding letter keys
-            TAB, LEFT_BRACKET, RIGHT_BRACKET, BACKSLASH, CAPSLOCK, SEMICOLON,
-            QUOTE, ENTER, COMMA, PERIOD, SLASH, SPACE,
+            Tab, LeftBracket, RightBracket, Backslash, CapsLock, Semicolon,
+            Quote, Enter, Comma, Period, Slash, Space,
 
             /// mod keys
-            LEFT_SHIFT, RIGHT_SHIFT, LEFT_CONTROL, RIGHT_CONTROL, LEFT_ALT,
-            RIGHT_ALT, LEFT_SUPER, RIGHT_SUPER,
+            LeftShift, RightShift, LeftControl, RightControl, LeftAlt, RightAlt,
+            LeftSuper, RightSuper,
 
             /// control keys
-            INSERT, HOME, PAGE_UP, PAGE_DOWN, END, DEL, UP, DOWN, LEFT,
-            RIGHT, SCROLL_LOCK, PAUSE, PRINT_SCREEN,
+            Insert, Home, PageUp, PageDown, End, Delete, Up, Down, Left, Right,
+            ScrollLock, Pause, PrintScreen,
 
             /// keypad
-            KP0, KP1, KP2, KP3, KP4, KP5, KP6, KP7, KP8, KP9, KP_PERIOD,
-            KP_ENTER, KP_PLUS, KP_MINUS, KP_ASTERISK, KP_SLASH, NUMLOCK
+            Keypad0, Keypad1, Keypad2, Keypad3, Keypad4, Keypad5, Keypad6,
+            Keypad7, Keypad8, Keypad9, KeypadPeriod, KeypadEnter, KeypadPlus,
+            KeypadMinus, KeypadAsterisk, KeypadSlash, NumLock
         };
     }
 
     struct WindowEvent
     {
-        enum { FOCUS, BLUR, RESIZE, EXIT } event;
-        enum { MINIMIZE, MAXIMIZE, RESTORE } resize;
-        int32u width;
-        int32u height;
+        enum { Focus, Blur, Resize, Exit } event;
+        enum { Minimize, Maximize, Restore } resize;
+        uint32 width;
+        uint32 height;
     };
 
     struct MouseEvent
     {
-        enum { MOTION, BUTTON_DOWN, BUTTON_UP, WHEEL_DOWN, WHEEL_UP,
-            LEAVE_WINDOW, ENTER_WINDOW } event;
-        enum { LEFT_BUTTON = 1, RIGHT_BUTTON = 2, MIDDLE_BUTTON = 3 };
-        int8u button;
-        int32u x;
-        int32u y;
+        enum { Motion, ButtonDown, ButtonUp, WheelDown, WheelUp,
+            LeaveWindow, EnterWindow } event;
+        enum { LeftButton = 1, RightButton = 2, MiddleButton = 3 };
+        uint8 button;
+        uint32 x;
+        uint32 y;
     };
 
     struct JoystickEvent
     {
-        enum { AXIS, BUTTON_DOWN, BUTTON_UP, HAT, BALL } event;
-        int8u button;
-        int32s x;
-        int32s y;
+        enum { Axis, ButtonDown, ButtonUp, Hat, Ball } event;
+        uint8 button;
+        int32 x;
+        int32 y;
     };
 
     struct KeyboardEvent
     {
-        enum { PRESS, REPEAT, RELEASE } event;
+        enum { Press, Repeat, Release } event;
         Key::Code key;
     };
 
     struct Event
     {
-        enum { NONE, WINDOW, MOUSE, JOYSTICK, KEYBOARD } type;
+        enum { NoEvent, Window, Mouse, Joystick, Keyboard } type;
         WindowEvent window;
         MouseEvent mouse;
         JoystickEvent joystick;

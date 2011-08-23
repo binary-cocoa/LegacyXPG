@@ -92,6 +92,7 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../source/test/FancyTestModule.h" />
+		<Unit filename="../source/test/LiberateTypes.h" />
 		<Unit filename="../source/test/MainXPG.cpp">
 			<Option target="Debug" />
 		</Unit>

@@ -16,7 +16,7 @@ namespace XPG
     {
         FILE* f = inFile;
 
-        int8u buffer[8];
+        uint8 buffer[8];
         size_t r = fread(buffer, 1, 8, f);
         ++r;
 

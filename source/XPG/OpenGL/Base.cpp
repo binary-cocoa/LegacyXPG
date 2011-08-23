@@ -21,7 +21,7 @@ namespace XPG
 
     namespace OpenGL
     {
-        int32u Context::mMasterVersion = 1;
+        uint32 Context::mMasterVersion = 1;
 
         void Context::destroy()
         {

@@ -38,9 +38,9 @@ namespace XPG
                 void update();
 
             private:
-                static int32u mMasterVersion;
+                static uint32 mMasterVersion;
 
-                int32u mVersion;
+                uint32 mVersion;
         };
     }
 }

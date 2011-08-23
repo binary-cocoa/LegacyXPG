@@ -13,17 +13,17 @@ namespace XPG
         {
             Version();
 
-            int16u vMajor;
-            int16u vMinor;
+            uint16 vMajor;
+            uint16 vMinor;
         };
 
         struct Settings
         {
             Settings();
 
-            int16u width;
-            int16u height;
-            int16u depth;
+            uint16 width;
+            uint16 height;
+            uint16 depth;
             bool fullScreen;
             bool legacyContext;
             Version context;

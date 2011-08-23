@@ -151,17 +151,17 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
 {
     switch (inEvent.type)
     {
-        case XPG::Event::WINDOW:
+        case XPG::Event::Window:
         {
             switch (inEvent.window.event)
             {
-                case XPG::WindowEvent::EXIT:
+                case XPG::WindowEvent::Exit:
                 {
                     stopRunning();
                     break;
                 }
 
-                case XPG::WindowEvent::RESIZE:
+                case XPG::WindowEvent::Resize:
                 {
                     onResize(inEvent.window.width, inEvent.window.height);
                     break;
@@ -176,9 +176,9 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
             break;
         }
 
-        case XPG::Event::KEYBOARD:
+        case XPG::Event::Keyboard:
         {
-            if (inEvent.keyboard.key == XPG::Key::ESCAPE) stopRunning();
+            if (inEvent.keyboard.key == XPG::Key::Escape) stopRunning();
             break;
         }
 
@@ -189,7 +189,7 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
     }
 }
 
-void TestModule::onResize(int32u inWidth, int32u inHeight)
+void TestModule::onResize(uint32 inWidth, uint32 inHeight)
 {
     float ratio = static_cast<float>(inWidth) / static_cast<float>(inHeight);
     mProjection.loadIdentity();

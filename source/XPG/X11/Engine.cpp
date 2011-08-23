@@ -216,34 +216,34 @@ namespace XPG
         {
             case ButtonPress:
             {
-                inEvent.type = Event::MOUSE;
+                inEvent.type = Event::Mouse;
                 switch (event.xbutton.button)
                 {
                     case Button1:
-                        inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                        inEvent.mouse.button = MouseEvent::LEFT_BUTTON;
+                        inEvent.mouse.event = MouseEvent::ButtonDown;
+                        inEvent.mouse.button = MouseEvent::LeftButton;
                         break;
 
                     case Button2:
-                        inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                        inEvent.mouse.button = MouseEvent::MIDDLE_BUTTON;
+                        inEvent.mouse.event = MouseEvent::ButtonDown;
+                        inEvent.mouse.button = MouseEvent::MiddleButton;
                         break;
 
                     case Button3:
-                        inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                        inEvent.mouse.button = MouseEvent::RIGHT_BUTTON;
+                        inEvent.mouse.event = MouseEvent::ButtonDown;
+                        inEvent.mouse.button = MouseEvent::RightButton;
                         break;
 
                     case Button4:
-                        inEvent.mouse.event = MouseEvent::WHEEL_UP;
+                        inEvent.mouse.event = MouseEvent::WheelUp;
                         break;
 
                     case Button5:
-                        inEvent.mouse.event = MouseEvent::WHEEL_DOWN;
+                        inEvent.mouse.event = MouseEvent::WheelDown;
                         break;
 
                     default:
-                        inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
+                        inEvent.mouse.event = MouseEvent::ButtonDown;
                         inEvent.mouse.button = event.xbutton.button;
                 }
 
@@ -252,30 +252,30 @@ namespace XPG
 
             case ButtonRelease:
             {
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_UP;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonUp;
 
                 switch (event.xbutton.button)
                 {
                     case Button1:
-                        inEvent.mouse.button = MouseEvent::LEFT_BUTTON;
+                        inEvent.mouse.button = MouseEvent::LeftButton;
                         break;
 
                     case Button2:
-                        inEvent.mouse.button = MouseEvent::MIDDLE_BUTTON;
+                        inEvent.mouse.button = MouseEvent::MiddleButton;
                         break;
 
                     case Button3:
-                        inEvent.mouse.button = MouseEvent::RIGHT_BUTTON;
+                        inEvent.mouse.button = MouseEvent::RightButton;
                         break;
 
                     case Button4:
                     case Button5:
-                        inEvent.type = Event::NONE;
+                        inEvent.type = Event::NoEvent;
                         break;
 
                     default:
-                        inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
+                        inEvent.mouse.event = MouseEvent::ButtonDown;
                         inEvent.mouse.button = event.xbutton.button;
                 }
 
@@ -284,29 +284,29 @@ namespace XPG
 
             case FocusIn:
             {
-                inEvent.type = Event::WINDOW;
-                inEvent.window.event = WindowEvent::FOCUS;
+                inEvent.type = Event::Window;
+                inEvent.window.event = WindowEvent::Focus;
                 break;
             }
 
             case FocusOut:
             {
-                inEvent.type = Event::WINDOW;
-                inEvent.window.event = WindowEvent::BLUR;
+                inEvent.type = Event::Window;
+                inEvent.window.event = WindowEvent::Blur;
                 break;
             }
 
             case EnterNotify:
             {
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::ENTER_WINDOW;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::EnterWindow;
                 break;
             }
 
             case LeaveNotify:
             {
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::LEAVE_WINDOW;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::LeaveWindow;
                 break;
             }
 
@@ -324,8 +324,8 @@ namespace XPG
                 mSettings.height = winData.height;
                 mSettings.width = winData.width;
                 glViewport(0, 0, mSettings.width, mSettings.height);
-                inEvent.type = Event::WINDOW;
-                inEvent.window.event = WindowEvent::RESIZE;
+                inEvent.type = Event::Window;
+                inEvent.window.event = WindowEvent::Resize;
                 inEvent.window.width = mSettings.width;
                 inEvent.window.height = mSettings.height;
                 break;
@@ -337,16 +337,16 @@ namespace XPG
                     static_cast<Atom>(event.xclient.data.l[0])
                         == mData->wmDeleteMessage)
                 {
-                    inEvent.type = Event::WINDOW;
-                    inEvent.window.event = WindowEvent::EXIT;
+                    inEvent.type = Event::Window;
+                    inEvent.window.event = WindowEvent::Exit;
                 }
                 break;
             }
 
             case MotionNotify:
             {
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::MOTION;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::Motion;
                 inEvent.mouse.x = event.xmotion.x;
                 inEvent.mouse.y = event.xmotion.y;
                 break;
@@ -354,8 +354,8 @@ namespace XPG
 
             case KeyPress:
             {
-                inEvent.type = Event::KEYBOARD;
-                inEvent.keyboard.event = KeyboardEvent::PRESS;
+                inEvent.type = Event::Keyboard;
+                inEvent.keyboard.event = KeyboardEvent::Press;
                 inEvent.keyboard.key = getKeyCode(event.xkey.keycode);
                 break;
             }
@@ -363,7 +363,7 @@ namespace XPG
             case KeyRelease:
             {
                 bool isRepeat = false;
-                inEvent.type = Event::KEYBOARD;
+                inEvent.type = Event::Keyboard;
                 inEvent.keyboard.key = getKeyCode(event.xkey.keycode);
 
                 // X11 sends both a KeyPress and a KeyRelease when repeating
@@ -378,7 +378,7 @@ namespace XPG
                         && e.xkey.time == event.xkey.time
                         && e.xkey.keycode == event.xkey.keycode)
                     {
-                        inEvent.keyboard.event = KeyboardEvent::REPEAT;
+                        inEvent.keyboard.event = KeyboardEvent::Repeat;
 
                         // dispose of the next event
                         XNextEvent(mData->display, &e);
@@ -389,7 +389,7 @@ namespace XPG
 
                 if (!isRepeat)
                 {
-                    inEvent.keyboard.event = KeyboardEvent::RELEASE;
+                    inEvent.keyboard.event = KeyboardEvent::Release;
                 }
 
                 break;
@@ -415,8 +415,8 @@ namespace XPG
         if (!mActive) return;
 
         Event event;
-        event.type = Event::WINDOW;
-        event.window.event = WindowEvent::RESIZE;
+        event.type = Event::Window;
+        event.window.event = WindowEvent::Resize;
         event.window.width = mSettings.width;
         event.window.height = mSettings.height;
         inModule.handleEvent(event);
@@ -479,43 +479,43 @@ namespace XPG
     {
         switch (inIndex)
         {
-            case 38: return Key::A;
-            case 56: return Key::B;
-            case 54: return Key::C;
-            case 40: return Key::D;
-            case 26: return Key::E;
-            case 41: return Key::F;
-            case 42: return Key::G;
-            case 43: return Key::H;
-            case 31: return Key::I;
-            case 44: return Key::J;
-            case 45: return Key::K;
-            case 46: return Key::L;
-            case 58: return Key::M;
-            case 57: return Key::N;
-            case 32: return Key::O;
-            case 33: return Key::P;
-            case 24: return Key::Q;
-            case 27: return Key::R;
-            case 39: return Key::S;
-            case 28: return Key::T;
-            case 30: return Key::U;
-            case 55: return Key::V;
-            case 25: return Key::W;
-            case 53: return Key::X;
-            case 29: return Key::Y;
-            case 52: return Key::Z;
+            case 38: return Key::LetterA;
+            case 56: return Key::LetterB;
+            case 54: return Key::LetterC;
+            case 40: return Key::LetterD;
+            case 26: return Key::LetterE;
+            case 41: return Key::LetterF;
+            case 42: return Key::LetterG;
+            case 43: return Key::LetterH;
+            case 31: return Key::LetterI;
+            case 44: return Key::LetterJ;
+            case 45: return Key::LetterK;
+            case 46: return Key::LetterL;
+            case 58: return Key::LetterM;
+            case 57: return Key::LetterN;
+            case 32: return Key::LetterO;
+            case 33: return Key::LetterP;
+            case 24: return Key::LetterQ;
+            case 27: return Key::LetterR;
+            case 39: return Key::LetterS;
+            case 28: return Key::LetterT;
+            case 30: return Key::LetterU;
+            case 55: return Key::LetterV;
+            case 25: return Key::LetterW;
+            case 53: return Key::LetterX;
+            case 29: return Key::LetterY;
+            case 52: return Key::LetterZ;
 
-            case 19: return Key::TR0;
-            case 10: return Key::TR1;
-            case 11: return Key::TR2;
-            case 12: return Key::TR3;
-            case 13: return Key::TR4;
-            case 14: return Key::TR5;
-            case 15: return Key::TR6;
-            case 16: return Key::TR7;
-            case 17: return Key::TR8;
-            case 18: return Key::TR9;
+            case 19: return Key::TopRow0;
+            case 10: return Key::TopRow1;
+            case 11: return Key::TopRow2;
+            case 12: return Key::TopRow3;
+            case 13: return Key::TopRow4;
+            case 14: return Key::TopRow5;
+            case 15: return Key::TopRow6;
+            case 16: return Key::TopRow7;
+            case 17: return Key::TopRow8;
+            case 18: return Key::TopRow9;
 
             case 67: return Key::F1;
             case 68: return Key::F2;
@@ -530,70 +530,69 @@ namespace XPG
             case 95: return Key::F11;
             case 96: return Key::F12;
 
-            case 9: return Key::ESCAPE;
-            case 49: return Key::BACK_QUOTE;
-            case 20: return Key::MINUS;
-            case 21: return Key::EQUALS;
-            case 22: return Key::BACKSPACE;
-            case 23: return Key::TAB;
-            case 34: return Key::LEFT_BRACKET;
-            case 35: return Key::RIGHT_BRACKET;
-            case 51: return Key::BACKSLASH;
-            case 66: return Key::CAPSLOCK;
-            case 47: return Key::SEMICOLON;
-            case 48: return Key::QUOTE;
-            case 36: return Key::ENTER;
-            case 59: return Key::COMMA;
-            case 60: return Key::PERIOD;
-            case 61: return Key::SLASH;
-            case 65: return Key::SPACE;
+            case 9: return Key::Escape;
+            case 49: return Key::BackQuote;
+            case 20: return Key::Minus;
+            case 21: return Key::Equals;
+            case 22: return Key::Backspace;
+            case 23: return Key::Tab;
+            case 34: return Key::LeftBracket;
+            case 35: return Key::RightBracket;
+            case 51: return Key::Backslash;
+            case 66: return Key::CapsLock;
+            case 47: return Key::Semicolon;
+            case 48: return Key::Quote;
+            case 36: return Key::Enter;
+            case 59: return Key::Comma;
+            case 60: return Key::Period;
+            case 61: return Key::Slash;
+            case 65: return Key::Space;
 
-            case 50: return Key::LEFT_SHIFT;
-            case 62: return Key::RIGHT_SHIFT;
-            case 37: return Key::LEFT_CONTROL;
-            case 105: return Key::RIGHT_CONTROL;
-            case 64: return Key::LEFT_ALT;
-            case 108: return Key::RIGHT_ALT;
-            case 133: return Key::LEFT_SUPER;
-            case 134: return Key::RIGHT_SUPER;
+            case 50: return Key::LeftShift;
+            case 62: return Key::RightShift;
+            case 37: return Key::LeftControl;
+            case 105: return Key::RightControl;
+            case 64: return Key::LeftAlt;
+            case 108: return Key::RightAlt;
+            case 133: return Key::LeftSuper;
+            case 134: return Key::RightSuper;
 
-            case 78: return Key::SCROLL_LOCK;
-            case 127: return Key::PAUSE;
+            case 78: return Key::ScrollLock;
+            case 127: return Key::Pause;
             // need key code for Print Screen, if possible
 
-            case 118: return Key::INSERT;
-            case 110: return Key::HOME;
-            case 112: return Key::PAGE_UP;
-            case 117: return Key::PAGE_DOWN;
-            case 115: return Key::END;
-            case 119: return Key::DEL;
+            case 118: return Key::Insert;
+            case 110: return Key::Home;
+            case 112: return Key::PageUp;
+            case 117: return Key::PageDown;
+            case 115: return Key::End;
+            case 119: return Key::Delete;
 
-            case 111: return Key::UP;
-            case 116: return Key::DOWN;
-            case 113: return Key::LEFT;
-            case 114: return Key::RIGHT;
+            case 111: return Key::Up;
+            case 116: return Key::Down;
+            case 113: return Key::Left;
+            case 114: return Key::Right;
 
-            case 90: return Key::KP0;
-            case 87: return Key::KP1;
-            case 88: return Key::KP2;
-            case 89: return Key::KP3;
-            case 83: return Key::KP4;
-            case 84: return Key::KP5;
-            case 85: return Key::KP6;
-            case 79: return Key::KP7;
-            case 80: return Key::KP8;
-            case 81: return Key::KP9;
+            case 90: return Key::Keypad0;
+            case 87: return Key::Keypad1;
+            case 88: return Key::Keypad2;
+            case 89: return Key::Keypad3;
+            case 83: return Key::Keypad4;
+            case 84: return Key::Keypad5;
+            case 85: return Key::Keypad6;
+            case 79: return Key::Keypad7;
+            case 80: return Key::Keypad8;
+            case 81: return Key::Keypad9;
 
-            case 77: return Key::NUMLOCK;
-            case 106: return Key::KP_SLASH;
-            case 63: return Key::KP_ASTERISK;
-            case 82: return Key::KP_MINUS;
-            case 86: return Key::KP_PLUS;
-            case 104: return Key::KP_ENTER;
-            case 91: return Key::KP_PERIOD;
+            case 77: return Key::NumLock;
+            case 106: return Key::KeypadSlash;
+            case 63: return Key::KeypadAsterisk;
+            case 82: return Key::KeypadMinus;
+            case 86: return Key::KeypadPlus;
+            case 104: return Key::KeypadEnter;
+            case 91: return Key::KeypadPeriod;
 
-            default:
-                return Key::UNKNOWN;
+            default: return Key::Unknown;
         }
     }
 }

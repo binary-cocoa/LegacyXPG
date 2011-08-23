@@ -31,10 +31,10 @@ namespace XPG
 
         void* mData;
         GLenum mFormat;
-        int16u mWidth;
-        int16u mHeight;
-        int16u mBitDepth;
-        int16u mChannels;
+        uint16 mWidth;
+        uint16 mHeight;
+        uint16 mBitDepth;
+        uint16 mChannels;
     };
 }
 
