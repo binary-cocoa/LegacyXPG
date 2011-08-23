@@ -3,19 +3,19 @@
 
 namespace XPG
 {
-   static int64u mStart;
+   static uint64 mStart;
 
     void TimerStart()
     {
         mStart = GetTickCount();
     }
 
-    void Idle(int32u inMilliseconds)
+    void Idle(uint32 inMilliseconds)
     {
         Sleep(inMilliseconds);
     }
 
-    int64u GetTicks()
+    uint64 GetTicks()
     {
         return GetTickCount() - mStart;
     }

@@ -1,8 +1,8 @@
 #include <XPG/Engine.hpp>
 #include <XPG/Platforms.hpp>
 #include <XPG/Timer.hpp>
-#include <XPG/private/windows.hpp>
 
+#include <XPG/private/windows.hpp>
 #include <XPG/private/glew.h>
 #include <XPG/private/wglew.h>
 
@@ -15,8 +15,8 @@ namespace XPG
     LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
     /// evil globals (working on a way to avoid needing these)
-    static int16u* activeWidth;
-    static int16u* activeHeight;
+    static uint16* activeWidth;
+    static uint16* activeHeight;
     static Event* activeEvent = NULL;
 
     struct Engine::PrivateData
@@ -119,7 +119,9 @@ namespace XPG
             0
         };
 
-        if (!mSettings.legacyContext && wglewIsSupported("WGL_ARB_create_context") == 1)
+        if (!mSettings.legacyContext
+            && wglewIsSupported("WGL_ARB_create_context") == 1
+            && wglCreateContextAttribsARB)
         {
             mData->hrc = wglCreateContextAttribsARB(mData->hdc, NULL,
                 attributes);
@@ -185,8 +187,8 @@ namespace XPG
             case WM_MOUSEMOVE:
             {
                 // http://msdn.microsoft.com/en-us/library/ms632654%28v=VS.85%29.aspx
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::MOTION;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::Motion;
                 inEvent.mouse.x = GET_X_LPARAM(lparam);
                 inEvent.mouse.y = GET_Y_LPARAM(lparam);
                 break;
@@ -195,62 +197,62 @@ namespace XPG
             case WM_MBUTTONDOWN:
             {
                 //cout << "mouse MButton down" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                inEvent.mouse.button = MouseEvent::MIDDLE_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonDown;
+                inEvent.mouse.button = MouseEvent::MiddleButton;
                 break;
             }
 
             case WM_MBUTTONUP:
             {
                 //cout << "mouse MButton up" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_UP;
-                inEvent.mouse.button = MouseEvent::MIDDLE_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonUp;
+                inEvent.mouse.button = MouseEvent::MiddleButton;
                 break;
             }
 
             case WM_LBUTTONDOWN:
             {
                 //cout << "mouse LButton down" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                inEvent.mouse.button = MouseEvent::LEFT_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonDown;
+                inEvent.mouse.button = MouseEvent::LeftButton;
                 break;
             }
 
             case WM_LBUTTONUP:
             {
                 //cout << "mouse LButton up" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_UP;
-                inEvent.mouse.button = MouseEvent::LEFT_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonUp;
+                inEvent.mouse.button = MouseEvent::LeftButton;
                 break;
             }
 
             case WM_RBUTTONDOWN:
             {
                 //cout << "mouse RButton down" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_DOWN;
-                inEvent.mouse.button = MouseEvent::RIGHT_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonDown;
+                inEvent.mouse.button = MouseEvent::RightButton;
                 break;
             }
 
             case WM_RBUTTONUP:
             {
                 //cout << "mouse RButton up" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::BUTTON_UP;
-                inEvent.mouse.button = MouseEvent::RIGHT_BUTTON;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::ButtonUp;
+                inEvent.mouse.button = MouseEvent::RightButton;
                 break;
             }
 
             case WM_MOUSELEAVE:
             {
                 //cout << "mouse leave" << endl;
-                inEvent.type = Event::MOUSE;
-                inEvent.mouse.event = MouseEvent::LEAVE_WINDOW;
+                inEvent.type = Event::Mouse;
+                inEvent.mouse.event = MouseEvent::LeaveWindow;
                 break;
             }
 
@@ -259,12 +261,12 @@ namespace XPG
                 //http://msdn.microsoft.com/en-us/library/ms645617%28v=VS.85%29.aspx
                 //cout << "mouse wheel: " << GET_WHEEL_DELTA_WPARAM(wparam)
                 //    << endl;
-                inEvent.type = Event::MOUSE;
+                inEvent.type = Event::Mouse;
                 short w = GET_WHEEL_DELTA_WPARAM(wparam);
                 if (w > 0)
-                    inEvent.mouse.event = MouseEvent::WHEEL_UP;
+                    inEvent.mouse.event = MouseEvent::WheelUp;
                 else if (w < 0)
-                    inEvent.mouse.event = MouseEvent::WHEEL_DOWN;
+                    inEvent.mouse.event = MouseEvent::WheelDown;
                 break;
             }
 
@@ -276,9 +278,9 @@ namespace XPG
 
                 unsigned int key = (lparam & 0x00ff0000) >> 16;
                 bool extended = lparam & (1 << 24);
-                inEvent.type = Event::KEYBOARD;
+                inEvent.type = Event::Keyboard;
                 inEvent.keyboard.event = lparam & 0x40000000 ?
-                    KeyboardEvent::REPEAT : KeyboardEvent::PRESS;
+                    KeyboardEvent::Repeat : KeyboardEvent::Press;
                 inEvent.keyboard.key = convertToKeyCode(key, extended);
                 break;
             }
@@ -288,8 +290,8 @@ namespace XPG
             {
                 unsigned int key = (lparam & 0x00ff0000) >> 16;
                 bool extended = lparam & (1 << 24);
-                inEvent.type = Event::KEYBOARD;
-                inEvent.keyboard.event = KeyboardEvent::RELEASE;
+                inEvent.type = Event::Keyboard;
+                inEvent.keyboard.event = KeyboardEvent::Release;
                 inEvent.keyboard.key = convertToKeyCode(key, extended);
                 break;
             }
@@ -297,15 +299,15 @@ namespace XPG
             // http://msdn.microsoft.com/en-us/library/ff468861%28v=VS.85%29.aspx
             case WM_SETFOCUS:
             {
-                inEvent.type = Event::WINDOW;
-                inEvent.window.event = WindowEvent::FOCUS;
+                inEvent.type = Event::Window;
+                inEvent.window.event = WindowEvent::Focus;
                 break;
             }
 
             case WM_KILLFOCUS:
             {
-                inEvent.type = Event::WINDOW;
-                inEvent.window.event = WindowEvent::BLUR;
+                inEvent.type = Event::Window;
+                inEvent.window.event = WindowEvent::Blur;
                 break;
             }
 
@@ -332,8 +334,8 @@ namespace XPG
         //mData->module = inModule;
 
         Event event;
-        event.type = Event::WINDOW;
-        event.window.event = WindowEvent::RESIZE;
+        event.type = Event::Window;
+        event.window.event = WindowEvent::Resize;
         event.window.width = mSettings.width;
         event.window.height = mSettings.height;
         inModule.handleEvent(event);
@@ -367,68 +369,69 @@ namespace XPG
 
     /// /// ///
 
+    /// TODO: Convert this function into a LUT.
     Key::Code convertToKeyCode(unsigned int inCode, bool inExtended)
     {
         switch (inCode)
         {
-            case 1: return Key::ESCAPE;
-            case 2: return Key::TR1;
-            case 3: return Key::TR2;
-            case 4: return Key::TR3;
-            case 5: return Key::TR4;
-            case 6: return Key::TR5;
-            case 7: return Key::TR6;
-            case 8: return Key::TR7;
-            case 9: return Key::TR8;
-            case 10: return Key::TR9;
-            case 11: return Key::TR0;
-            case 12: return Key::MINUS;
-            case 13: return Key::EQUALS;
-            case 14: return Key::BACKSPACE;
-            case 15: return Key::TAB;
-            case 16: return Key::Q;
-            case 17: return Key::W;
-            case 18: return Key::E;
-            case 19: return Key::R;
-            case 20: return Key::T;
-            case 21: return Key::Y;
-            case 22: return Key::U;
-            case 23: return Key::I;
-            case 24: return Key::O;
-            case 25: return Key::P;
-            case 26: return Key::LEFT_BRACKET;
-            case 27: return Key::RIGHT_BRACKET;
-            case 28: return inExtended ? Key::KP_ENTER : Key::ENTER;
-            case 29: return inExtended ? Key::RIGHT_CONTROL : Key::LEFT_CONTROL;
-            case 30: return Key::A;
-            case 31: return Key::S;
-            case 32: return Key::D;
-            case 33: return Key::F;
-            case 34: return Key::G;
-            case 35: return Key::H;
-            case 36: return Key::J;
-            case 37: return Key::K;
-            case 38: return Key::L;
-            case 39: return Key::SEMICOLON;
-            case 40: return Key::QUOTE;
-            case 41: return Key::BACK_QUOTE;
-            case 42: return Key::LEFT_SHIFT;
-            case 43: return Key::BACKSLASH;
-            case 44: return Key::Z;
-            case 45: return Key::X;
-            case 46: return Key::C;
-            case 47: return Key::V;
-            case 48: return Key::B;
-            case 49: return Key::N;
-            case 50: return Key::M;
-            case 51: return Key::COMMA;
-            case 52: return Key::PERIOD;
-            case 53: return inExtended ? Key::KP_SLASH : Key::SLASH;
-            case 54: return Key::RIGHT_SHIFT;
-            case 55: return Key::KP_ASTERISK;
-            case 56: return inExtended ? Key::RIGHT_ALT : Key::LEFT_ALT;
-            case 57: return Key::SPACE;
-            case 58: return Key::CAPSLOCK;
+            case 1: return Key::Escape;
+            case 2: return Key::TopRow1;
+            case 3: return Key::TopRow2;
+            case 4: return Key::TopRow3;
+            case 5: return Key::TopRow4;
+            case 6: return Key::TopRow5;
+            case 7: return Key::TopRow6;
+            case 8: return Key::TopRow7;
+            case 9: return Key::TopRow8;
+            case 10: return Key::TopRow9;
+            case 11: return Key::TopRow0;
+            case 12: return Key::Minus;
+            case 13: return Key::Equals;
+            case 14: return Key::Backspace;
+            case 15: return Key::Tab;
+            case 16: return Key::LetterQ;
+            case 17: return Key::LetterW;
+            case 18: return Key::LetterE;
+            case 19: return Key::LetterR;
+            case 20: return Key::LetterT;
+            case 21: return Key::LetterY;
+            case 22: return Key::LetterU;
+            case 23: return Key::LetterI;
+            case 24: return Key::LetterO;
+            case 25: return Key::LetterP;
+            case 26: return Key::LeftBracket;
+            case 27: return Key::RightBracket;
+            case 28: return inExtended ? Key::KeypadEnter : Key::Enter;
+            case 29: return inExtended ? Key::RightControl : Key::LeftControl;
+            case 30: return Key::LetterA;
+            case 31: return Key::LetterS;
+            case 32: return Key::LetterD;
+            case 33: return Key::LetterF;
+            case 34: return Key::LetterG;
+            case 35: return Key::LetterH;
+            case 36: return Key::LetterJ;
+            case 37: return Key::LetterK;
+            case 38: return Key::LetterL;
+            case 39: return Key::Semicolon;
+            case 40: return Key::Quote;
+            case 41: return Key::BackQuote;
+            case 42: return Key::LeftShift;
+            case 43: return Key::Backslash;
+            case 44: return Key::LetterZ;
+            case 45: return Key::LetterX;
+            case 46: return Key::LetterC;
+            case 47: return Key::LetterV;
+            case 48: return Key::LetterB;
+            case 49: return Key::LetterN;
+            case 50: return Key::LetterM;
+            case 51: return Key::Comma;
+            case 52: return Key::Period;
+            case 53: return inExtended ? Key::KeypadSlash : Key::Slash;
+            case 54: return Key::RightShift;
+            case 55: return Key::KeypadAsterisk;
+            case 56: return inExtended ? Key::RightAlt : Key::LeftAlt;
+            case 57: return Key::Space;
+            case 58: return Key::CapsLock;
             case 59: return Key::F1;
             case 60: return Key::F2;
             case 61: return Key::F3;
@@ -439,30 +442,30 @@ namespace XPG
             case 66: return Key::F8;
             case 67: return Key::F9;
             case 68: return Key::F10;
-            case 69: return inExtended ? Key::NUMLOCK : Key::PAUSE;
-            case 70: return Key::SCROLL_LOCK;
-            case 71: return inExtended ? Key::HOME : Key::KP7;
-            case 72: return inExtended ? Key::UP : Key::KP8;
-            case 73: return inExtended ? Key::PAGE_UP : Key::KP9;
-            case 74: return Key::KP_SLASH;
-            case 75: return inExtended ? Key::LEFT : Key::KP4;
-            case 76: return Key::KP5;
-            case 77: return inExtended ? Key::RIGHT : Key::KP6;
-            case 78: return Key::KP_PLUS;
-            case 79: return inExtended ? Key::END : Key::KP1;
-            case 80: return inExtended ? Key::DOWN : Key::KP2;
-            case 81: return inExtended ? Key::PAGE_DOWN : Key::KP3;
-            case 82: return inExtended ? Key::INSERT : Key::KP0;
-            case 83: return inExtended ? Key::DEL : Key::KP_PERIOD;
+            case 69: return inExtended ? Key::NumLock : Key::Pause;
+            case 70: return Key::ScrollLock;
+            case 71: return inExtended ? Key::Home : Key::Keypad7;
+            case 72: return inExtended ? Key::Up : Key::Keypad8;
+            case 73: return inExtended ? Key::PageUp : Key::Keypad9;
+            case 74: return Key::KeypadSlash;
+            case 75: return inExtended ? Key::Left : Key::Keypad4;
+            case 76: return Key::Keypad5;
+            case 77: return inExtended ? Key::Right : Key::Keypad6;
+            case 78: return Key::KeypadPlus;
+            case 79: return inExtended ? Key::End : Key::Keypad1;
+            case 80: return inExtended ? Key::Down : Key::Keypad2;
+            case 81: return inExtended ? Key::PageDown : Key::Keypad3;
+            case 82: return inExtended ? Key::Insert : Key::Keypad0;
+            case 83: return inExtended ? Key::Delete : Key::KeypadPeriod;
 
             case 87: return Key::F11;
             case 88: return Key::F12;
 
-            case 91: return Key::LEFT_SUPER; // extended
-            case 92: return Key::RIGHT_SUPER; // extended
+            case 91: return Key::LeftSuper; // extended
+            case 92: return Key::RightSuper; // extended
             //case 93: //menu key // extended
 
-            default: return Key::UNKNOWN;
+            default: return Key::Unknown;
         }
     }
 
@@ -480,8 +483,8 @@ namespace XPG
                 *activeWidth = LOWORD(lparam);
                 *activeHeight = HIWORD(lparam);
 
-                activeEvent->type = Event::WINDOW;
-                activeEvent->window.event = WindowEvent::RESIZE;
+                activeEvent->type = Event::Window;
+                activeEvent->window.event = WindowEvent::Resize;
                 activeEvent->window.width = *activeWidth;
                 activeEvent->window.height = *activeHeight;
 
@@ -491,14 +494,14 @@ namespace XPG
                     case SIZE_MAXIMIZED:
                     {
                         //cout << "maximize" << endl;
-                        activeEvent->window.resize = WindowEvent::MAXIMIZE;
+                        activeEvent->window.resize = WindowEvent::Maximize;
                         break;
                     }
 
                     case SIZE_MINIMIZED:
                     {
                         //cout << "minimize" << endl;
-                        activeEvent->window.resize = WindowEvent::MINIMIZE;
+                        activeEvent->window.resize = WindowEvent::Minimize;
                         break;
                     }
 
@@ -523,8 +526,8 @@ namespace XPG
 
             case WM_CLOSE:
             {
-                activeEvent->type = Event::WINDOW;
-                activeEvent->window.event = WindowEvent::EXIT;
+                activeEvent->type = Event::Window;
+                activeEvent->window.event = WindowEvent::Exit;
                 break;
             }
 
