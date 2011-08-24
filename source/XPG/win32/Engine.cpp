@@ -128,7 +128,7 @@ namespace XPG
     static uint16* activeHeight;
     static Event* activeEvent = NULL;
 
-    struct Engine::PrivateData
+    struct MetaWin32
     {
         bool active;
         HWND hWnd;
@@ -139,30 +139,60 @@ namespace XPG
         Module* module;
     };
 
-    void Engine::begin()
+    static void softFullscreen(MetaWin32& inMeta, bool inFullscreen)
     {
-        mData = new PrivateData;
-        mData->active = false;
-        strcpy(mData->title, "OpenGL 3");
+        DWORD dwExStyle = WS_EX_APPWINDOW;
+        DWORD dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+        UINT uFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED;
+        int cmdShow = SW_SHOW;
 
-        if (mData->active) return;
+        if (inFullscreen)
+        {
+            cmdShow = SW_SHOWMAXIMIZED;
+            dwStyle |= WS_POPUP;
+        }
+        else
+        {
+            dwExStyle |= WS_EX_WINDOWEDGE;
+            dwStyle |= WS_OVERLAPPEDWINDOW;
+        }
 
-        mData->active = true;
+        if (!SetWindowLongPtr(inMeta.hWnd, GWL_EXSTYLE, dwExStyle))
+            cerr << "first SWLP failed\n";
+        if (!SetWindowLongPtr(inMeta.hWnd, GWL_STYLE, dwStyle))
+            cerr << "second SWLP failed\n";
+        if (!SetWindowPos(inMeta.hWnd, HWND_TOPMOST, 0, 0, 500,
+            500, uFlags))
+            cerr << "SWP failed\n";
 
-        mData->hInstance = GetModuleHandle(NULL);
+        //ShowWindow(inMeta.hWnd, cmdShow);
+        //UpdateWindow(inMeta.hWnd);
+    }
+
+    Engine::Engine(const Settings& inSettings) : mSettings(inSettings)
+    {
+        MetaWin32* meta = new MetaWin32;
+        mMeta = meta;
+
+        meta->active = false;
+        strcpy(meta->title, "OpenGL 3");
+
+        if (meta->active) return;
+
+        meta->active = true;
+
+        meta->hInstance = GetModuleHandle(NULL);
         WNDCLASS windowClass;
-        DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-
         windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
         windowClass.lpfnWndProc = (WNDPROC) WndProc;
         windowClass.cbClsExtra = 0;
         windowClass.cbWndExtra = 0;
-        windowClass.hInstance = mData->hInstance;
+        windowClass.hInstance = meta->hInstance;
         windowClass.hIcon = LoadIcon(NULL, IDI_WINLOGO);
         windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
         windowClass.hbrBackground = NULL;
         windowClass.lpszMenuName = NULL;
-        windowClass.lpszClassName = mData->title;
+        windowClass.lpszClassName = meta->title;
 
         if (!RegisterClass(&windowClass))
         {
@@ -170,11 +200,25 @@ namespace XPG
             return;
         }
 
-        mData->hWnd = CreateWindowEx(dwExStyle, mData->title, mData->title,
-            WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, mSettings.width,
-            mSettings.height, NULL, NULL, mData->hInstance, NULL);
+        int cmdShow = SW_SHOW;
+        DWORD dwExStyle = WS_EX_APPWINDOW;
+        DWORD dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+        if (mSettings.fullscreen == Fullscreen::Soft)
+        {
+            dwStyle |= WS_POPUP;
+            cmdShow = SW_SHOWMAXIMIZED;
+        }
+        else
+        {
+            dwExStyle |= WS_EX_WINDOWEDGE;
+            dwStyle |= WS_OVERLAPPEDWINDOW;
+        }
 
-        mData->hdc = GetDC(mData->hWnd);
+        meta->hWnd = CreateWindowEx(dwExStyle, meta->title, meta->title,
+            dwStyle, CW_USEDEFAULT, 0, mSettings.width,
+            mSettings.height, NULL, NULL, meta->hInstance, NULL);
+
+        meta->hdc = GetDC(meta->hWnd);
 
         PIXELFORMATDESCRIPTOR pfd;
         memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -186,7 +230,7 @@ namespace XPG
         pfd.cDepthBits = 32;
         pfd.iLayerType = PFD_MAIN_PLANE;
 
-        int nPixelFormat = ChoosePixelFormat(mData->hdc, &pfd);
+        int nPixelFormat = ChoosePixelFormat(meta->hdc, &pfd);
         if (nPixelFormat == 0)
         {
             cerr << "failed ChoosePixelFormat" << endl;
@@ -196,7 +240,7 @@ namespace XPG
             return;
         }
 
-        if (!SetPixelFormat(mData->hdc, nPixelFormat, &pfd))
+        if (!SetPixelFormat(meta->hdc, nPixelFormat, &pfd))
         {
             cerr << "failed SetPixelFormat" << endl;
             mSettings.width = 0;
@@ -205,8 +249,8 @@ namespace XPG
             return;
         }
 
-        HGLRC tempOpenGLEngine = wglCreateContext(mData->hdc);
-        wglMakeCurrent(mData->hdc, tempOpenGLEngine);
+        HGLRC tempOpenGLEngine = wglCreateContext(meta->hdc);
+        wglMakeCurrent(meta->hdc, tempOpenGLEngine);
 
         GLenum e = glewInit();
         if (e != GLEW_OK)
@@ -232,20 +276,28 @@ namespace XPG
             && wglewIsSupported("WGL_ARB_create_context") == 1
             && wglCreateContextAttribsARB)
         {
-            mData->hrc = wglCreateContextAttribsARB(mData->hdc, NULL,
+            meta->hrc = wglCreateContextAttribsARB(meta->hdc, NULL,
                 attributes);
             wglMakeCurrent(NULL, NULL);
             wglDeleteContext(tempOpenGLEngine);
-            wglMakeCurrent(mData->hdc, mData->hrc);
+            wglMakeCurrent(meta->hdc, meta->hrc);
         }
         else
         {
-            mData->hrc = tempOpenGLEngine;
+            meta->hrc = tempOpenGLEngine;
             mSettings.legacyContext = true;
         }
 
-        ShowWindow(mData->hWnd, SW_SHOW);
-        UpdateWindow(mData->hWnd);
+        ShowWindow(meta->hWnd, cmdShow);
+        UpdateWindow(meta->hWnd);
+
+        if (mSettings.fullscreen == Fullscreen::Soft)
+        {
+            RECT rc;
+            GetWindowRect(meta->hWnd, &rc);
+            mSettings.width = rc.right - rc.left;
+            mSettings.height = rc.bottom - rc.top;
+        }
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;
@@ -260,34 +312,37 @@ namespace XPG
         }
     }
 
-    void Engine::end()
+    Engine::~Engine()
     {
-        if (mData->active)
+        MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
+        if (meta->active)
         {
-            wglMakeCurrent(mData->hdc, 0);
-            wglDeleteContext(mData->hrc);
-            ReleaseDC(mData->hWnd, mData->hdc);
-            DestroyWindow(mData->hWnd);
+            wglMakeCurrent(meta->hdc, 0);
+            wglDeleteContext(meta->hrc);
+            ReleaseDC(meta->hWnd, meta->hdc);
+            DestroyWindow(meta->hWnd);
             mSettings.width = 0;
             mSettings.height = 0;
             mSettings.depth = 0;
-            mData->active = false;
+            meta->active = false;
             //PostQuitMessage(0);
         }
 
-        delete mData;
+        delete meta;
     }
 
     void Engine::swapBuffers()
     {
-        SwapBuffers(mData->hdc);
+        MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
+        SwapBuffers(meta->hdc);
     }
 
     bool Engine::getEvent(Event& inEvent)
     {
+        MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
         //cout << "dispatchEvents" << endl;
         MSG msg;
-        if (!PeekMessage(&msg, mData->hWnd, 0, 0, PM_REMOVE)) return false;
+        if (!PeekMessage(&msg, meta->hWnd, 0, 0, PM_REMOVE)) return false;
         WPARAM wparam = msg.wParam;
         LPARAM lparam = msg.lParam;
 
@@ -440,7 +495,7 @@ namespace XPG
     {
         if (!mSettings.width) return;
 
-        //mData->module = inModule;
+        //meta->module = inModule;
 
         Event event;
         event.type = Event::Window;
@@ -461,12 +516,13 @@ namespace XPG
 
     void Engine::setWindowTitle(const char* inTitle)
     {
+        MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
         if (!inTitle || strlen(inTitle) > 254) return;
 
-        strcpy(mData->title, inTitle);
+        strcpy(meta->title, inTitle);
         if (mSettings.width)
         {
-            SetWindowText(mData->hWnd, mData->title);
+            SetWindowText(meta->hWnd, meta->title);
             /// TODO: add error checking
         }
     }
@@ -474,6 +530,35 @@ namespace XPG
     void Engine::setIconTitle(const char* inTitle)
     {
         /// unavailable in Win32 (?)
+    }
+
+    void Engine::setFullscreen(Fullscreen::Mode inMode)
+    {
+        MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
+        switch (inMode)
+        {
+            case Fullscreen::Hard:
+            {
+                return; // not yet supported
+                break;
+            }
+
+            case Fullscreen::Soft:
+            {
+                if (mSettings.fullscreen == Fullscreen::Off)
+                    softFullscreen(*meta, true);
+                break;
+            }
+
+            case Fullscreen::Off:
+            {
+                if (mSettings.fullscreen == Fullscreen::Soft)
+                    softFullscreen(*meta, false);
+                break;
+            }
+
+            default: {} // lolwut
+        }
     }
 
     /// /// ///
