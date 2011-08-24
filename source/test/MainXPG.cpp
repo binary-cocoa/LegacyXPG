@@ -11,7 +11,7 @@ using namespace std;
 int MainXPG(int argc, char** argv)
 {
     XPG::Engine::Settings es;
-    es.fullscreen = XPG::Fullscreen::Soft;
+    //es.fullscreen = XPG::Fullscreen::Soft;
     es.legacyContext = true;
     es.context.vMajor = 3;
     es.context.vMinor = 2;

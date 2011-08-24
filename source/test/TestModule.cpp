@@ -191,6 +191,7 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
             else if (inEvent.keyboard.key == XPG::Key::F11
                 && inEvent.keyboard.event == XPG::KeyboardEvent::Press)
             {
+                //std::cerr << "herro\n";
                 XPG::Fullscreen::Mode mode = XPG::Fullscreen::Soft;
                 if (mEngine.settings().fullscreen == XPG::Fullscreen::Soft)
                     mode = XPG::Fullscreen::Off;

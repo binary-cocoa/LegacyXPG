@@ -127,6 +127,7 @@ namespace XPG
     static uint16* activeWidth;
     static uint16* activeHeight;
     static Event* activeEvent = NULL;
+    static bool activeSuccess = false;
 
     struct MetaWin32
     {
@@ -145,11 +146,17 @@ namespace XPG
         DWORD dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
         UINT uFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED;
         int cmdShow = SW_SHOW;
+        HWND target = 0;
+        int x = 640;
+        int y = 360;
 
         if (inFullscreen)
         {
+            target = HWND_TOPMOST;
             cmdShow = SW_SHOWMAXIMIZED;
             dwStyle |= WS_POPUP;
+            x = GetSystemMetrics(SM_CXSCREEN);
+            y = GetSystemMetrics(SM_CYSCREEN);
         }
         else
         {
@@ -161,12 +168,8 @@ namespace XPG
             cerr << "first SWLP failed\n";
         if (!SetWindowLongPtr(inMeta.hWnd, GWL_STYLE, dwStyle))
             cerr << "second SWLP failed\n";
-        if (!SetWindowPos(inMeta.hWnd, HWND_TOPMOST, 0, 0, 500,
-            500, uFlags))
+        if (!SetWindowPos(inMeta.hWnd, target, 0, 0, x, y, SWP_SHOWWINDOW))
             cerr << "SWP failed\n";
-
-        //ShowWindow(inMeta.hWnd, cmdShow);
-        //UpdateWindow(inMeta.hWnd);
     }
 
     Engine::Engine(const Settings& inSettings) : mSettings(inSettings)
@@ -329,6 +332,7 @@ namespace XPG
         }
 
         delete meta;
+        mMeta = NULL;
     }
 
     void Engine::swapBuffers()
@@ -485,6 +489,7 @@ namespace XPG
                 DispatchMessage(&msg);
 
                 activeEvent = NULL;
+                return activeSuccess;
             }
         }
 
@@ -500,6 +505,7 @@ namespace XPG
         Event event;
         event.type = Event::Window;
         event.window.event = WindowEvent::Resize;
+        event.window.resize = WindowEvent::Regular;
         event.window.width = mSettings.width;
         event.window.height = mSettings.height;
         inModule.handleEvent(event);
@@ -559,6 +565,8 @@ namespace XPG
 
             default: {} // lolwut
         }
+
+        mSettings.fullscreen = inMode;
     }
 
     /// /// ///
@@ -569,6 +577,8 @@ namespace XPG
     {
         if (!activeEvent)
             return DefWindowProc(hWnd, msg, wparam, lparam);
+
+        activeSuccess = false;
 
         switch (msg)
         {
@@ -589,6 +599,7 @@ namespace XPG
                     {
                         //cout << "maximize" << endl;
                         activeEvent->window.resize = WindowEvent::Maximize;
+                        activeSuccess = true;
                         break;
                     }
 
@@ -596,12 +607,15 @@ namespace XPG
                     {
                         //cout << "minimize" << endl;
                         activeEvent->window.resize = WindowEvent::Minimize;
+                        activeSuccess = true;
                         break;
                     }
 
                     case SIZE_RESTORED:
                     {
                         //cout << "restore" << endl;
+                        //activeEvent->window.resize = WindowEvent::Restore;
+                        //activeSuccess = true;
                         break;
                     }
 
@@ -622,6 +636,7 @@ namespace XPG
             {
                 activeEvent->type = Event::Window;
                 activeEvent->window.event = WindowEvent::Exit;
+                activeSuccess = true;
                 break;
             }
 
