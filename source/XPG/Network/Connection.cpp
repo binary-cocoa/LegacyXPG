@@ -57,7 +57,7 @@ namespace XPG
             {
                 mSocket = socket(mP->ai_family, mP->ai_socktype,
                     mP->ai_protocol);
-                if (mSocket == -1)
+                if (mSocket == INVALID_SOCKET)
                 {
                     cerr << "Connection::connect -- socket\n";
                     continue;
@@ -107,7 +107,7 @@ namespace XPG
             for (mP = mServInfo; mP; mP = mP->ai_next)
             {
                 mSocket = socket(mP->ai_family, mP->ai_socktype, mP->ai_protocol);
-                if (mSocket == -1)
+                if (mSocket == INVALID_SOCKET)
                 {
                     mSocket = 0;
                     cerr << "Connection::connect -- socket\n";
@@ -127,7 +127,7 @@ namespace XPG
             return;
         }
 
-        int numBytes = sendto(mSocket, inData, inLength, 0, mP->ai_addr,
+        int numBytes = sendto(mSocket, (const char*)inData, inLength, 0, mP->ai_addr,
             mP->ai_addrlen);
 
         if (numBytes == -1)
@@ -143,7 +143,7 @@ namespace XPG
     {
         sockaddr_storage their_addr;
         socklen_t addr_len = sizeof their_addr;
-        int numBytes = recvfrom(mSocket, inBuffer, inMaxLength, 0,
+        int numBytes = recvfrom(mSocket, (char*)inBuffer, inMaxLength, 0,
             (sockaddr*)&their_addr, &addr_len);
 
         if (numBytes == -1)
@@ -155,8 +155,11 @@ namespace XPG
         if (numBytes > 0)
         {
             char s[INET6_ADDRSTRLEN];
+#ifndef XPG_PLATFORM_WINDOWS
+            cout << "received packet from " << inet_ntoa(their_addr) << endl;
             cout << "received packet from " << inet_ntop(their_addr.ss_family,
                 get_in_addr((sockaddr*)&their_addr), s, sizeof s) << endl;
+#endif
             cout << "packet is " << numBytes << " long" << endl;
             return numBytes;
         }

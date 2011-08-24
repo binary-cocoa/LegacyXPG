@@ -32,9 +32,9 @@ namespace XPG
         }
 
         SOCKET mSocket;
-        addrinfo mHints;
-        addrinfo* mServInfo;
-        addrinfo* mP;
+        struct addrinfo mHints;
+        struct addrinfo* mServInfo;
+        struct addrinfo* mP;
     };
 }
 

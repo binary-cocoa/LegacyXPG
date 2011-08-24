@@ -12,8 +12,9 @@
 #if defined(XPG_PLATFORM_WINDOWS)
 #   include "../private/windows.hpp"
 #   include <winsock2.h>
+#   include <ws2tcpip.h>
+#   define inet_ntop inet_ntoa
     typedef long ssize_t;
-    typedef unsigned int socklen_t;
 #elif defined(XPG_PLATFORM_UNIX)
 #   include <unistd.h>
 #   include <sys/socket.h>

@@ -11,7 +11,7 @@ void testEngine()
 {
     XPG::Engine::Settings es;
     //es.legacyContext = true;
-    es.fullScreen = true;
+    //es.fullScreen = true;
     es.context.vMajor = 3;
     es.context.vMinor = 2;
 
@@ -60,6 +60,12 @@ void testClient(const char* inPort, const char* inHost)
 
 int MainXPG(int argc, char** argv)
 {
+    static WSADATA wsad;
+    if (WSAStartup(MAKEWORD(2, 2), &wsad))
+    {
+        cerr << "WSAStartup failed\n";
+        return 1;
+    }
     if (argc > 2)
     {
         testClient(argv[1], argv[2]);
@@ -72,6 +78,8 @@ int MainXPG(int argc, char** argv)
     {
         testEngine();
     }
+
+    WSACleanup();
 
     return 0;
 }
