@@ -1,9 +1,10 @@
 #include "TestModule.hpp"
 #include <XPG/Timer.hpp>
 
-TestModule::TestModule() : mVertexShader(GL_VERTEX_SHADER),
+TestModule::TestModule(XPG::Engine& inEngine) : mVertexShader(GL_VERTEX_SHADER),
     mFragmentShader(GL_FRAGMENT_SHADER),
-    mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_SHORT), mRotate(0.0f)
+    mIndexVBO(GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_SHORT), mEngine(inEngine),
+    mRotate(0.0f)
 {
 }
 
@@ -127,7 +128,7 @@ void TestModule::onDisplay()
     mModelView.translate(0.0f, 0.0f, -10.0f);
     mModelView.rotateX(mRotate);
     mModelView.rotateZ(mRotate);
-    mModelView.scaleX(3.0f);
+    //mModelView.scaleX(3.0f);
 
     mat4f mvp(mProjection, mModelView);
     glUniformMatrix4fv(mUniMVPM, 1, GL_FALSE, mvp);
@@ -179,10 +180,23 @@ void TestModule::handleEvent(const XPG::Event& inEvent)
         case XPG::Event::Keyboard:
         {
             if (inEvent.keyboard.key == XPG::Key::Escape)
+            {
                 stopRunning();
+            }
             else if (inEvent.keyboard.key == XPG::Key::Space
                 && inEvent.keyboard.event == XPG::KeyboardEvent::Release)
+            {
                 mRotate = 0.0f;
+            }
+            else if (inEvent.keyboard.key == XPG::Key::F11
+                && inEvent.keyboard.event == XPG::KeyboardEvent::Press)
+            {
+                XPG::Fullscreen::Mode mode = XPG::Fullscreen::Soft;
+                if (mEngine.settings().fullscreen == XPG::Fullscreen::Soft)
+                    mode = XPG::Fullscreen::Off;
+
+                mEngine.setFullscreen(mode);
+            }
             break;
         }
 

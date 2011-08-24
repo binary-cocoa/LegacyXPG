@@ -151,13 +151,12 @@ namespace XPG
         Key::RightSuper, // 134
         };
 
-    static inline Key::Code lookupKey(int inCode)
+    static inline Key::Code lookupKey(size_t inCode)
     {
-        return inCode >= 0 && inCode < NumMappings ? KeyTable[inCode]
-            : Key::Unknown;
+        return inCode < NumMappings ? KeyTable[inCode] : Key::Unknown;
     }
 
-    void setGLXFunctionPointers()
+    static void setGLXFunctionPointers()
     {
         glGenVertexArraysAPPLE = (void(*)(GLsizei, const GLuint*))
             glXGetProcAddressARB((GLubyte*)"glGenVertexArrays");
@@ -175,8 +174,9 @@ namespace XPG
             glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
     }
 
-    struct Engine::PrivateData
+    struct MetaX11
     {
+        bool active;
         GLXContext context;
         Display* display;
         Window window;
@@ -184,10 +184,31 @@ namespace XPG
         Atom wmDeleteMessage;
     };
 
-    void Engine::begin()
+    static void softFullscreen(MetaX11& inMeta, bool inFullscreen)
     {
-        mData = new PrivateData;
-        mActive = true;
+        XEvent xev;
+        xev.xclient.type = ClientMessage;
+        xev.xclient.serial = 0;
+        xev.xclient.send_event = True;
+        xev.xclient.window = inMeta.window;
+        xev.xclient.message_type = XInternAtom(inMeta.display, "_NET_WM_STATE",
+            False);
+        xev.xclient.format = 32;
+        xev.xclient.data.l[0] = inFullscreen ? 1 : 0;
+        xev.xclient.data.l[1] = XInternAtom(inMeta.display,
+            "_NET_WM_STATE_FULLSCREEN", False);
+        xev.xclient.data.l[2] = 0;
+
+        XSendEvent(inMeta.display, DefaultRootWindow(inMeta.display), False,
+            SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+    }
+
+    Engine::Engine(const Settings& inSettings) : mSettings(inSettings)
+    {
+        MetaX11* meta = new MetaX11;
+        mMeta = meta;
+
+        meta->active = true;
 
         XSetWindowAttributes winAttribs;
         GLint winmask;
@@ -210,52 +231,52 @@ namespace XPG
 
         setGLXFunctionPointers();
 
-        mData->display = XOpenDisplay(NULL);
+        meta->display = XOpenDisplay(NULL);
 
-        glXQueryVersion(mData->display, &MajorGLX, &MinorGLX);
+        glXQueryVersion(meta->display, &MajorGLX, &MinorGLX);
         cout << "supported GLX version: " << MajorGLX << '.' << MinorGLX
             << endl;
 
         if(MajorGLX == 1 && MinorGLX < 2)
         {
             cerr << "ERROR -- GLX 1.2 or greater is required\n";
-            XCloseDisplay(mData->display);
+            XCloseDisplay(meta->display);
 
-            mActive = false;
+            meta->active = false;
             return;
         }
 
-        fbConfigs = glXChooseFBConfig(mData->display,
-            DefaultScreen(mData->display), fbAttribs, &numConfigs);
-        visualInfo = glXGetVisualFromFBConfig(mData->display, fbConfigs[0]);
+        fbConfigs = glXChooseFBConfig(meta->display,
+            DefaultScreen(meta->display), fbAttribs, &numConfigs);
+        visualInfo = glXGetVisualFromFBConfig(meta->display, fbConfigs[0]);
 
         /// X window creation
-        mData->eventMask = ExposureMask | VisibilityChangeMask |
+        meta->eventMask = ExposureMask | VisibilityChangeMask |
             KeyPressMask | PointerMotionMask | StructureNotifyMask
             | ButtonPressMask | ButtonReleaseMask | FocusChangeMask
             | EnterWindowMask | LeaveWindowMask | KeyReleaseMask;
-        winAttribs.event_mask = mData->eventMask;
+        winAttribs.event_mask = meta->eventMask;
 
         winAttribs.border_pixel = 0;
         winAttribs.bit_gravity = StaticGravity;
-        winAttribs.colormap = XCreateColormap(mData->display,
-            RootWindow(mData->display, visualInfo->screen), visualInfo->visual,
+        winAttribs.colormap = XCreateColormap(meta->display,
+            RootWindow(meta->display, visualInfo->screen), visualInfo->visual,
             AllocNone);
         winmask = CWBorderPixel | CWBitGravity | CWEventMask| CWColormap;
 
         int d = mSettings.depth ? mSettings.depth : visualInfo->depth;
-        mData->window = XCreateWindow(mData->display,
-            DefaultRootWindow(mData->display), 20, 20, mSettings.width,
+        meta->window = XCreateWindow(meta->display,
+            DefaultRootWindow(meta->display), 20, 20, mSettings.width,
             mSettings.height, 0, d, InputOutput, visualInfo->visual, winmask,
             &winAttribs);
 
         // Allow XPG to handle the closing of the window.
-        mData->wmDeleteMessage = XInternAtom(mData->display, "WM_DELETE_WINDOW",
+        meta->wmDeleteMessage = XInternAtom(meta->display, "WM_DELETE_WINDOW",
             False);
-        XSetWMProtocols(mData->display, mData->window,
-            &mData->wmDeleteMessage, 1);
+        XSetWMProtocols(meta->display, meta->window,
+            &meta->wmDeleteMessage, 1);
 
-        XMapWindow(mData->display, mData->window);
+        XMapWindow(meta->display, meta->window);
 
         if (!mSettings.context.vMajor)
         {
@@ -277,18 +298,18 @@ namespace XPG
         if (glXCreateContextAttribsARB && !mSettings.legacyContext)
         {
             // Good to go. Create the 3.x context.
-            mData->context = glXCreateContextAttribsARB(mData->display,
+            meta->context = glXCreateContextAttribsARB(meta->display,
                 fbConfigs[0], 0, True, attribs);
         }
         else
         {
             // No good. Create a legacy context.
-            mData->context = glXCreateContext(mData->display, visualInfo, NULL,
+            meta->context = glXCreateContext(meta->display, visualInfo, NULL,
                 True);
             mSettings.legacyContext = true;
         }
 
-        glXMakeCurrent(mData->display, mData->window, mData->context);
+        glXMakeCurrent(meta->display, meta->window, meta->context);
 
         GLenum e = glewInit();
         if (e != GLEW_OK)
@@ -323,37 +344,42 @@ namespace XPG
             mSettings.shader.vMajor = s[0] - '0';
             mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
         }
-
-        glViewport(0, 0, mSettings.width, mSettings.height);
     }
 
-    void Engine::end()
+    Engine::~Engine()
     {
-        if (mActive)
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+
+        if (meta->active)
         {
-            glXMakeCurrent(mData->display, None, NULL);
-            glXDestroyContext(mData->display, mData->context);
-            XDestroyWindow(mData->display, mData->window);
-            XCloseDisplay(mData->display);
+            glXMakeCurrent(meta->display, None, NULL);
+            glXDestroyContext(meta->display, meta->context);
+            XDestroyWindow(meta->display, meta->window);
+            XCloseDisplay(meta->display);
             mSettings.width = 0;
             mSettings.height = 0;
             mSettings.depth = 0;
-            mActive = false;
+            meta->active = false;
         }
+
+        delete meta;
+        mMeta = NULL;
     }
 
     void Engine::swapBuffers()
     {
-        glXSwapBuffers(mData->display, mData->window);
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+        glXSwapBuffers(meta->display, meta->window);
     }
 
     bool Engine::getEvent(Event& inEvent)
     {
-        if (!XEventsQueued(mData->display, QueuedAfterReading))
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+        if (!XEventsQueued(meta->display, QueuedAfterReading))
             return false;
 
         XEvent event;
-        XNextEvent(mData->display, &event);
+        XNextEvent(meta->display, &event);
 
         switch(event.type)
         {
@@ -462,7 +488,7 @@ namespace XPG
             case ConfigureNotify:
             {
                 XWindowAttributes winData;
-                XGetWindowAttributes(mData->display, mData->window,
+                XGetWindowAttributes(meta->display, meta->window,
                     &winData);
                 mSettings.height = winData.height;
                 mSettings.width = winData.width;
@@ -478,7 +504,7 @@ namespace XPG
             {
                 if (event.xclient.format == 32 &&
                     static_cast<Atom>(event.xclient.data.l[0])
-                        == mData->wmDeleteMessage)
+                        == meta->wmDeleteMessage)
                 {
                     inEvent.type = Event::Window;
                     inEvent.window.event = WindowEvent::Exit;
@@ -513,10 +539,10 @@ namespace XPG
                 // a key. The code below distinguishes between a true key
                 // release and a key repeat. If it is a key repeat, it
                 // properly disposes of the subsequent KeyPress message.
-                if (XEventsQueued(mData->display, QueuedAfterReading))
+                if (XEventsQueued(meta->display, QueuedAfterReading))
                 {
                     XEvent e;
-                    XPeekEvent(mData->display, &e);
+                    XPeekEvent(meta->display, &e);
                     if (e.type == KeyPress
                         && e.xkey.time == event.xkey.time
                         && e.xkey.keycode == event.xkey.keycode)
@@ -524,7 +550,7 @@ namespace XPG
                         inEvent.keyboard.event = KeyboardEvent::Repeat;
 
                         // dispose of the next event
-                        XNextEvent(mData->display, &e);
+                        XNextEvent(meta->display, &e);
 
                         isRepeat = true;
                     }
@@ -555,7 +581,8 @@ namespace XPG
 
     void Engine::runModule(Module& inModule)
     {
-        if (!mActive) return;
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+        if (!meta->active) return;
 
         Event event;
         event.type = Event::Window;
@@ -576,7 +603,9 @@ namespace XPG
 
     void Engine::setWindowTitle(const char* inTitle)
     {
-        if (!mActive || !inTitle) return;
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+
+        if (!meta->active || !inTitle) return;
 
         XTextProperty titleProperty;
         Status status;
@@ -588,7 +617,7 @@ namespace XPG
         status = XStringListToTextProperty(&t, 1, &titleProperty);
         if (status)
         {
-            XSetTextProperty(mData->display, mData->window, &titleProperty,
+            XSetTextProperty(meta->display, meta->window, &titleProperty,
                 XA_WM_NAME);
             XFree(titleProperty.value);
         }
@@ -598,7 +627,9 @@ namespace XPG
 
     void Engine::setIconTitle(const char* inTitle)
     {
-        if (!mActive || !inTitle) return;
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+
+        if (!meta->active || !inTitle) return;
 
         XTextProperty titleProperty;
         Status status;
@@ -610,11 +641,47 @@ namespace XPG
         status = XStringListToTextProperty(&t, 1, &titleProperty);
         if (status)
         {
-            XSetTextProperty(mData->display, mData->window, &titleProperty,
+            XSetTextProperty(meta->display, meta->window, &titleProperty,
                 XA_WM_ICON_NAME);
             XFree(titleProperty.value);
         }
 
         delete [] t;
+    }
+
+    void Engine::setFullscreen(Fullscreen::Mode inMode)
+    {
+        MetaX11* meta = reinterpret_cast<MetaX11*>(mMeta);
+
+        switch (inMode)
+        {
+            case Fullscreen::Hard:
+            {
+                return; // not yet supported
+                break;
+            }
+
+            case Fullscreen::Soft:
+            {
+                if (mSettings.fullscreen == Fullscreen::Off)
+                    softFullscreen(*meta, true);
+                break;
+            }
+
+            case Fullscreen::Off:
+            {
+                if (mSettings.fullscreen == Fullscreen::Soft)
+                    softFullscreen(*meta, false);
+                break;
+            }
+
+            default: {} // lolwut
+        }
+
+        mSettings.fullscreen = inMode;
+        XWindowAttributes winData;
+        XGetWindowAttributes(meta->display, meta->window, &winData);
+        mSettings.height = winData.height;
+        mSettings.width = winData.width;
     }
 }

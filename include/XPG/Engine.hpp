@@ -6,28 +6,34 @@
 
 namespace XPG
 {
+    namespace Fullscreen
+    {
+        enum Mode { Off, Soft, Hard };
+    }
+
     class Engine
     {
     public:
         struct Version
         {
-            Version();
-
             uint16 vMajor;
             uint16 vMinor;
+
+            Version() : vMajor(0), vMinor(0) {}
         };
 
         struct Settings
         {
-            Settings();
-
             uint16 width;
             uint16 height;
             uint16 depth;
-            bool fullScreen;
+            Fullscreen::Mode fullscreen;
             bool legacyContext;
             Version context;
             Version shader;
+
+            Settings() : width(640), height(360), depth(0),
+                fullscreen(Fullscreen::Off), legacyContext(false) {}
         };
 
         Engine(const Settings& inSettings = Settings());
@@ -37,19 +43,14 @@ namespace XPG
         void swapBuffers();
         void setWindowTitle(const char* inTitle);
         void setIconTitle(const char* inTitle);
+        void setFullscreen(Fullscreen::Mode inMode);
 
         void runModule(Module& inModule);
 
-        const Settings& settings;
+        inline const Settings& settings() const { return mSettings; }
 
     private:
-        void begin();
-        void end();
-
-        struct PrivateData;
-
-        PrivateData* mData;
-        bool mActive;
+        void* mMeta;
         Settings mSettings;
     };
 }

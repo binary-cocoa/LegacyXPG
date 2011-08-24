@@ -1,7 +1,7 @@
 #ifndef TESTMODULE_HPP
 #define TESTMODULE_HPP
 
-#include <XPG/Module.hpp>
+#include <XPG/Engine.hpp>
 #include <XPG/OpenGL/Shader.hpp>
 #include <XPG/OpenGL/Program.hpp>
 #include <XPG/OpenGL/VertexBufferObject.hpp>
@@ -11,7 +11,7 @@
 class TestModule : public XPG::Module
 {
     public:
-        TestModule();
+        TestModule(XPG::Engine& inEngine);
         virtual ~TestModule();
 
         virtual void onLoad();
@@ -27,6 +27,7 @@ class TestModule : public XPG::Module
         XPG::VertexBufferObject mVertexVBO;
         XPG::VertexBufferObject mColorVBO;
         XPG::VertexBufferObject mIndexVBO;
+        XPG::Engine& mEngine;
 
         uint64 mNextFrame;
         GLint mUniMVPM;

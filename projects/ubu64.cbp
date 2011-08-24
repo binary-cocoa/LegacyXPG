@@ -66,7 +66,6 @@
 		<Unit filename="../include/XPG/Vector3D.hpp" />
 		<Unit filename="../include/XPG/private/glew.h" />
 		<Unit filename="../include/XPG/private/glxew.h" />
-		<Unit filename="../source/XPG/Engine.cpp" />
 		<Unit filename="../source/XPG/Event.cpp" />
 		<Unit filename="../source/XPG/Image.cpp" />
 		<Unit filename="../source/XPG/Main.cpp" />
