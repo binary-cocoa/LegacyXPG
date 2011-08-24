@@ -12,7 +12,150 @@ using namespace std;
 
 namespace XPG
 {
-    Key::Code getKeyCode(int inIndex);
+    static const size_t NumMappings = 135;
+    static Key::Code KeyTable[NumMappings] = {
+        Key::Unknown, // 0
+        Key::Unknown, // 1
+        Key::Unknown, // 2
+        Key::Unknown, // 3
+        Key::Unknown, // 4
+        Key::Unknown, // 5
+        Key::Unknown, // 6
+        Key::Unknown, // 7
+        Key::Unknown, // 8
+        Key::Escape, // 9
+        Key::TopRow1, // 10
+        Key::TopRow2, // 11
+        Key::TopRow3, // 12
+        Key::TopRow4, // 13
+        Key::TopRow5, // 14
+        Key::TopRow6, // 15
+        Key::TopRow7, // 16
+        Key::TopRow8, // 17
+        Key::TopRow9, // 18
+        Key::TopRow0, // 19
+        Key::Minus, // 20
+        Key::Equals, // 21
+        Key::Backspace, // 22
+        Key::Tab, // 23
+        Key::LetterQ, // 24
+        Key::LetterW, // 25
+        Key::LetterE, // 26
+        Key::LetterR, // 27
+        Key::LetterT, // 28
+        Key::LetterY, // 29
+        Key::LetterU, // 30
+        Key::LetterI, // 31
+        Key::LetterO, // 32
+        Key::LetterP, // 33
+        Key::LeftBracket, // 34
+        Key::RightBracket, // 35
+        Key::Enter, // 36
+        Key::LeftControl, // 37
+        Key::LetterA, // 38
+        Key::LetterS, // 39
+        Key::LetterD, // 40
+        Key::LetterF, // 41
+        Key::LetterG, // 42
+        Key::LetterH, // 43
+        Key::LetterJ, // 44
+        Key::LetterK, // 45
+        Key::LetterL, // 46
+        Key::Semicolon, // 47
+        Key::Quote, // 48
+        Key::BackQuote, // 49
+        Key::LeftShift, // 50
+        Key::Backslash, // 51
+        Key::LetterZ, // 52
+        Key::LetterX, // 53
+        Key::LetterC, // 54
+        Key::LetterV, // 55
+        Key::LetterB, // 56
+        Key::LetterN, // 57
+        Key::LetterM, // 58
+        Key::Comma, // 59
+        Key::Period, // 60
+        Key::Slash, // 61
+        Key::RightShift, // 62
+        Key::KeypadAsterisk, // 63
+        Key::LeftAlt, // 64
+        Key::Space, // 65
+        Key::CapsLock, // 66
+        Key::F1, // 67
+        Key::F2, // 68
+        Key::F3, // 69
+        Key::F4, // 70
+        Key::F5, // 71
+        Key::F6, // 72
+        Key::F7, // 73
+        Key::F8, // 74
+        Key::F9, // 75
+        Key::F10, // 76
+        Key::NumLock, // 77
+        Key::ScrollLock, // 78
+        Key::Keypad7, // 79
+        Key::Keypad8, // 80
+        Key::Keypad9, // 81
+        Key::KeypadMinus, // 82
+        Key::Keypad4, // 83
+        Key::Keypad5, // 84
+        Key::Keypad6, // 85
+        Key::KeypadPlus, // 86
+        Key::Keypad1, // 87
+        Key::Keypad2, // 88
+        Key::Keypad3, // 89
+        Key::Keypad0, // 90
+        Key::KeypadPeriod, // 91
+        Key::Unknown, // 92
+        Key::Unknown, // 93
+        Key::Unknown, // 94
+        Key::F11, // 95
+        Key::F12, // 96
+        Key::Unknown, // 97
+        Key::Unknown, // 98
+        Key::Unknown, // 99
+        Key::Unknown, // 100
+        Key::Unknown, // 101
+        Key::Unknown, // 102
+        Key::Unknown, // 103
+        Key::KeypadEnter, // 104
+        Key::RightControl, // 105
+        Key::KeypadSlash, // 106
+        Key::Unknown, // 107
+        Key::RightAlt, // 108
+        Key::Unknown, // 109
+        Key::Home, // 110
+        Key::Up, // 111
+        Key::PageUp, // 112
+        Key::Left, // 113
+        Key::Right, // 114
+        Key::End, // 115
+        Key::Down, // 116
+        Key::PageDown, // 117
+        Key::Insert, // 118
+        Key::Delete, // 119
+        Key::Unknown, // 120
+        Key::Unknown, // 121
+        Key::Unknown, // 122
+        Key::Unknown, // 123
+        Key::Unknown, // 124
+        Key::Unknown, // 125
+        Key::Unknown, // 126
+        Key::Pause, // 127
+        Key::Unknown, // 128
+        Key::Unknown, // 129
+        Key::Unknown, // 130
+        Key::Unknown, // 131
+        Key::Unknown, // 132
+        Key::LeftSuper, // 133
+        Key::RightSuper, // 134
+        };
+
+    static inline Key::Code lookupKey(int inCode)
+    {
+        return inCode >= 0 && inCode < NumMappings ? KeyTable[inCode]
+            : Key::Unknown;
+    }
 
     void setGLXFunctionPointers()
     {
@@ -356,7 +499,7 @@ namespace XPG
             {
                 inEvent.type = Event::Keyboard;
                 inEvent.keyboard.event = KeyboardEvent::Press;
-                inEvent.keyboard.key = getKeyCode(event.xkey.keycode);
+                inEvent.keyboard.key = lookupKey(event.xkey.keycode);
                 break;
             }
 
@@ -364,7 +507,7 @@ namespace XPG
             {
                 bool isRepeat = false;
                 inEvent.type = Event::Keyboard;
-                inEvent.keyboard.key = getKeyCode(event.xkey.keycode);
+                inEvent.keyboard.key = lookupKey(event.xkey.keycode);
 
                 // X11 sends both a KeyPress and a KeyRelease when repeating
                 // a key. The code below distinguishes between a true key
@@ -473,126 +616,5 @@ namespace XPG
         }
 
         delete [] t;
-    }
-
-    Key::Code getKeyCode(int inIndex)
-    {
-        switch (inIndex)
-        {
-            case 38: return Key::LetterA;
-            case 56: return Key::LetterB;
-            case 54: return Key::LetterC;
-            case 40: return Key::LetterD;
-            case 26: return Key::LetterE;
-            case 41: return Key::LetterF;
-            case 42: return Key::LetterG;
-            case 43: return Key::LetterH;
-            case 31: return Key::LetterI;
-            case 44: return Key::LetterJ;
-            case 45: return Key::LetterK;
-            case 46: return Key::LetterL;
-            case 58: return Key::LetterM;
-            case 57: return Key::LetterN;
-            case 32: return Key::LetterO;
-            case 33: return Key::LetterP;
-            case 24: return Key::LetterQ;
-            case 27: return Key::LetterR;
-            case 39: return Key::LetterS;
-            case 28: return Key::LetterT;
-            case 30: return Key::LetterU;
-            case 55: return Key::LetterV;
-            case 25: return Key::LetterW;
-            case 53: return Key::LetterX;
-            case 29: return Key::LetterY;
-            case 52: return Key::LetterZ;
-
-            case 19: return Key::TopRow0;
-            case 10: return Key::TopRow1;
-            case 11: return Key::TopRow2;
-            case 12: return Key::TopRow3;
-            case 13: return Key::TopRow4;
-            case 14: return Key::TopRow5;
-            case 15: return Key::TopRow6;
-            case 16: return Key::TopRow7;
-            case 17: return Key::TopRow8;
-            case 18: return Key::TopRow9;
-
-            case 67: return Key::F1;
-            case 68: return Key::F2;
-            case 69: return Key::F3;
-            case 70: return Key::F4;
-            case 71: return Key::F5;
-            case 72: return Key::F6;
-            case 73: return Key::F7;
-            case 74: return Key::F8;
-            case 75: return Key::F9;
-            case 76: return Key::F10;
-            case 95: return Key::F11;
-            case 96: return Key::F12;
-
-            case 9: return Key::Escape;
-            case 49: return Key::BackQuote;
-            case 20: return Key::Minus;
-            case 21: return Key::Equals;
-            case 22: return Key::Backspace;
-            case 23: return Key::Tab;
-            case 34: return Key::LeftBracket;
-            case 35: return Key::RightBracket;
-            case 51: return Key::Backslash;
-            case 66: return Key::CapsLock;
-            case 47: return Key::Semicolon;
-            case 48: return Key::Quote;
-            case 36: return Key::Enter;
-            case 59: return Key::Comma;
-            case 60: return Key::Period;
-            case 61: return Key::Slash;
-            case 65: return Key::Space;
-
-            case 50: return Key::LeftShift;
-            case 62: return Key::RightShift;
-            case 37: return Key::LeftControl;
-            case 105: return Key::RightControl;
-            case 64: return Key::LeftAlt;
-            case 108: return Key::RightAlt;
-            case 133: return Key::LeftSuper;
-            case 134: return Key::RightSuper;
-
-            case 78: return Key::ScrollLock;
-            case 127: return Key::Pause;
-            // need key code for Print Screen, if possible
-
-            case 118: return Key::Insert;
-            case 110: return Key::Home;
-            case 112: return Key::PageUp;
-            case 117: return Key::PageDown;
-            case 115: return Key::End;
-            case 119: return Key::Delete;
-
-            case 111: return Key::Up;
-            case 116: return Key::Down;
-            case 113: return Key::Left;
-            case 114: return Key::Right;
-
-            case 90: return Key::Keypad0;
-            case 87: return Key::Keypad1;
-            case 88: return Key::Keypad2;
-            case 89: return Key::Keypad3;
-            case 83: return Key::Keypad4;
-            case 84: return Key::Keypad5;
-            case 85: return Key::Keypad6;
-            case 79: return Key::Keypad7;
-            case 80: return Key::Keypad8;
-            case 81: return Key::Keypad9;
-
-            case 77: return Key::NumLock;
-            case 106: return Key::KeypadSlash;
-            case 63: return Key::KeypadAsterisk;
-            case 82: return Key::KeypadMinus;
-            case 86: return Key::KeypadPlus;
-            case 104: return Key::KeypadEnter;
-            case 91: return Key::KeypadPeriod;
-
-            default: return Key::Unknown;
-        }
     }
 }
