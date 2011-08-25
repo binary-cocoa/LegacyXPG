@@ -11,6 +11,11 @@ namespace XPG
         enum Mode { Off, Soft, Hard };
     }
 
+    namespace Context
+    {
+        enum Profile { Legacy, GL32, Custom };
+    }
+
     class Engine
     {
     public:
@@ -28,12 +33,12 @@ namespace XPG
             uint16 height;
             uint16 depth;
             Fullscreen::Mode fullscreen;
-            bool legacyContext;
+            Context::Profile profile;
             Version context;
             Version shader;
 
             Settings() : width(640), height(360), depth(0),
-                fullscreen(Fullscreen::Off), legacyContext(false) {}
+                fullscreen(Fullscreen::Off), profile(Context::GL32) {}
         };
 
         Engine(const Settings& inSettings = Settings());

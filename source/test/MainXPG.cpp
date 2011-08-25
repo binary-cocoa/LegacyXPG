@@ -12,7 +12,7 @@ int MainXPG(int argc, char** argv)
 {
     XPG::Engine::Settings es;
     //es.fullscreen = XPG::Fullscreen::Soft;
-    es.legacyContext = true;
+    es.profile = XPG::Context::Legacy;
     es.context.vMajor = 3;
     es.context.vMinor = 2;
 
@@ -25,7 +25,7 @@ int MainXPG(int argc, char** argv)
         << e.settings().shader.vMinor << endl;
 
     {
-        const char* title = e.settings().legacyContext ?
+        const char* title = e.settings().profile == XPG::Context::Legacy ?
             "XPG OpenGL Legacy" : "XPG OpenGL 3";
 
         e.setWindowTitle(title);

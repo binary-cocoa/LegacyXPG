@@ -127,7 +127,6 @@ namespace XPG
     static uint16* activeWidth;
     static uint16* activeHeight;
     static Event* activeEvent = NULL;
-    static bool activeSuccess = false;
 
     struct MetaWin32
     {
@@ -262,10 +261,10 @@ namespace XPG
             return;
         }
 
-        if (!mSettings.context.vMajor)
+        if (mSettings.profile == Context::GL32)
         {
             mSettings.context.vMajor = 3;
-            mSettings.context.vMinor = 3;
+            mSettings.context.vMinor = 2;
         }
 
         int attributes[] = {
@@ -275,7 +274,7 @@ namespace XPG
             0
         };
 
-        if (!mSettings.legacyContext
+        if (mSettings.profile != Context::Legacy
             && wglewIsSupported("WGL_ARB_create_context") == 1
             && wglCreateContextAttribsARB)
         {
@@ -288,7 +287,7 @@ namespace XPG
         else
         {
             meta->hrc = tempOpenGLEngine;
-            mSettings.legacyContext = true;
+            mSettings.profile = Context::Legacy;
         }
 
         ShowWindow(meta->hWnd, cmdShow);
@@ -312,6 +311,11 @@ namespace XPG
             s = glGetString(GL_SHADING_LANGUAGE_VERSION);
             mSettings.shader.vMajor = s[0] - '0';
             mSettings.shader.vMinor = (s[2] - '0') * 10 + (s[3] - '0');
+        }
+        else
+        {
+            mSettings.shader.vMajor = 0;
+            mSettings.shader.vMinor = 0;
         }
     }
 
@@ -344,6 +348,7 @@ namespace XPG
     bool Engine::getEvent(Event& inEvent)
     {
         MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
+        inEvent.type = Event::NoEvent;
         //cout << "dispatchEvents" << endl;
         MSG msg;
         if (!PeekMessage(&msg, meta->hWnd, 0, 0, PM_REMOVE)) return false;
@@ -489,7 +494,6 @@ namespace XPG
                 DispatchMessage(&msg);
 
                 activeEvent = NULL;
-                return activeSuccess;
             }
         }
 
@@ -578,8 +582,6 @@ namespace XPG
         if (!activeEvent)
             return DefWindowProc(hWnd, msg, wparam, lparam);
 
-        activeSuccess = false;
-
         switch (msg)
         {
             case WM_SIZE:
@@ -599,7 +601,6 @@ namespace XPG
                     {
                         //cout << "maximize" << endl;
                         activeEvent->window.resize = WindowEvent::Maximize;
-                        activeSuccess = true;
                         break;
                     }
 
@@ -607,7 +608,6 @@ namespace XPG
                     {
                         //cout << "minimize" << endl;
                         activeEvent->window.resize = WindowEvent::Minimize;
-                        activeSuccess = true;
                         break;
                     }
 
@@ -636,7 +636,6 @@ namespace XPG
             {
                 activeEvent->type = Event::Window;
                 activeEvent->window.event = WindowEvent::Exit;
-                activeSuccess = true;
                 break;
             }
 
