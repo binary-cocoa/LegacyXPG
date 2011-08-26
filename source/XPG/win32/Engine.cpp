@@ -131,6 +131,7 @@ namespace XPG
     struct MetaWin32
     {
         bool active;
+        bool dispatchResize;
         HWND hWnd;
         HGLRC hrc;
         HDC hdc;
@@ -143,7 +144,6 @@ namespace XPG
     {
         DWORD dwExStyle = WS_EX_APPWINDOW;
         DWORD dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-        UINT uFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED;
         int cmdShow = SW_SHOW;
         HWND target = 0;
         int x = 640;
@@ -169,6 +169,8 @@ namespace XPG
             cerr << "second SWLP failed\n";
         if (!SetWindowPos(inMeta.hWnd, target, 0, 0, x, y, SWP_SHOWWINDOW))
             cerr << "SWP failed\n";
+
+        inMeta.dispatchResize = true;
     }
 
     Engine::Engine(const Settings& inSettings) : mSettings(inSettings)
@@ -177,6 +179,7 @@ namespace XPG
         mMeta = meta;
 
         meta->active = false;
+        meta->dispatchResize = false;
         strcpy(meta->title, "OpenGL 3");
 
         if (meta->active) return;
@@ -349,7 +352,24 @@ namespace XPG
     {
         MetaWin32* meta = reinterpret_cast<MetaWin32*>(mMeta);
         inEvent.type = Event::NoEvent;
-        //cout << "dispatchEvents" << endl;
+
+        if (meta->dispatchResize)
+        {
+            meta->dispatchResize = false;
+            inEvent.type = Event::Window;
+            inEvent.window.event = WindowEvent::Resize;
+            inEvent.window.resize = WindowEvent::Regular;
+
+            RECT rc;
+            GetWindowRect(meta->hWnd, &rc);
+            mSettings.width = rc.right - rc.left;
+            mSettings.height = rc.bottom - rc.top;
+
+            inEvent.window.width = mSettings.width;
+            inEvent.window.height = mSettings.height;
+            return true;
+        }
+
         MSG msg;
         if (!PeekMessage(&msg, meta->hWnd, 0, 0, PM_REMOVE)) return false;
         WPARAM wparam = msg.wParam;
@@ -591,6 +611,7 @@ namespace XPG
 
                 activeEvent->type = Event::Window;
                 activeEvent->window.event = WindowEvent::Resize;
+                activeEvent->window.resize = WindowEvent::Regular;
                 activeEvent->window.width = *activeWidth;
                 activeEvent->window.height = *activeHeight;
 
@@ -614,7 +635,7 @@ namespace XPG
                     case SIZE_RESTORED:
                     {
                         //cout << "restore" << endl;
-                        //activeEvent->window.resize = WindowEvent::Restore;
+                        activeEvent->window.resize = WindowEvent::Restore;
                         //activeSuccess = true;
                         break;
                     }
