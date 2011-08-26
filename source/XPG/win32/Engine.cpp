@@ -132,6 +132,8 @@ namespace XPG
     {
         bool active;
         bool dispatchResize;
+        int formerWidth;
+        int formerHeight;
         HWND hWnd;
         HGLRC hrc;
         HDC hdc;
@@ -146,14 +148,20 @@ namespace XPG
         DWORD dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
         int cmdShow = SW_SHOW;
         HWND target = 0;
-        int x = 640;
-        int y = 360;
+        int x = inMeta.formerWidth;
+        int y = inMeta.formerHeight;
 
         if (inFullscreen)
         {
             target = HWND_TOPMOST;
             cmdShow = SW_SHOWMAXIMIZED;
             dwStyle |= WS_POPUP;
+
+            RECT rc;
+            GetWindowRect(inMeta.hWnd, &rc);
+            inMeta.formerWidth = rc.right - rc.left;
+            inMeta.formerHeight = rc.bottom - rc.top;
+
             x = GetSystemMetrics(SM_CXSCREEN);
             y = GetSystemMetrics(SM_CYSCREEN);
         }
@@ -180,6 +188,9 @@ namespace XPG
 
         meta->active = false;
         meta->dispatchResize = false;
+        meta->formerWidth = 640;
+        meta->formerHeight = 360;
+
         strcpy(meta->title, "OpenGL 3");
 
         if (meta->active) return;
