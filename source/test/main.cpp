@@ -2,6 +2,7 @@
 #include <XPG/Image.hpp>
 
 #include "TestModule.hpp"
+#include "TestGL32Module.hpp"
 
 #include <iostream>
 using namespace std;
@@ -29,9 +30,17 @@ int main(int argc, char** argv)
         e.setWindowTitle(title);
         e.setIconTitle(title);
 
-        TestModule tm(e);
-        tm.onLoad();
-        e.runModule(tm);
+        if (e.settings().profile == XPG::Context::Legacy)
+        {
+            TestModule tm(e);
+            tm.onLoad();
+            e.runModule(tm);
+        }
+        else
+        {
+            TestGL32Module tm(e);
+            e.runModule(tm);
+        }
     }
 
     return 0;

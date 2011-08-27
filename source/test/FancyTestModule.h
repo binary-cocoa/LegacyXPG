@@ -8,7 +8,7 @@
 #include <XPG/OpenGL/VertexArrayObject.hpp>
 
 #include "TSphere.h"
-#include "LiberateTypes.h"
+#include "LiberateTypes.hpp"
 
 class FancyTestModule : public XPG::Module
 {

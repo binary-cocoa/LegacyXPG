@@ -11,12 +11,12 @@ namespace XPG
             friend class Program;
 
             Shader(GLenum inType);
-            ~Shader();
+            virtual ~Shader();
 
             void loadFromFile(const char* inFile);
             void loadFromBuffer(const char* inBuffer);
 
-        private:
+        protected:
             Shader(const Shader& inShader) {} // no copying
 
             Shader& operator=(const Shader& inShader)
@@ -24,6 +24,8 @@ namespace XPG
                 // no copying
                 return *this;
             }
+
+        private:
 
             GLuint mHandle;
             GLenum mType;

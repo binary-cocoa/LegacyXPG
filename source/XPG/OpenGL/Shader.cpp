@@ -59,7 +59,7 @@ namespace XPG
 
             GLsizei length;
             glGetShaderInfoLog(mHandle, logLength, &length, log);
-            //printf("-- shader compiler errors --\n%s\n", log);
+            printf("-- shader compiler errors --\n%s\n", log);
 
             delete [] log;
         }
