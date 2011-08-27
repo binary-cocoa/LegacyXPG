@@ -23,7 +23,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
         "    float i = float(gl_InstanceID);\n"
         "    v.x += sin(pi * i / 8) * i / 2.0;\n"
         "    v.y += cos(pi * i / 8) * i / 2.0;\n"
-        //"    v.z += 2.5 * i;\n"
+        "    v.z += sin(pi * i / 8);\n"
         "    gl_Position = uMVPM * v;\n"
         "}\n"
         ;
