@@ -18,10 +18,15 @@ namespace XPG
             virtual ~VertexBufferObject();
 
             inline void bind() const { glBindBuffer(mTarget, mHandle); }
+            inline bool isBuffer() const
+            {
+                return glIsBuffer(mHandle) == GL_TRUE;
+            }
+
             void loadData(const GLvoid* inData, GLuint inSize,
                 GLuint inValuesPerUnit = 1);
             void editData(const GLvoid* inData, GLuint inFirst,
-                GLuint inVertexCount = 1); // untested
+                GLuint inVertexCount = 1);
             void enableVAA(GLuint inIndex);
             void disableVAA();
 

@@ -58,7 +58,8 @@ namespace XPG
         mIndex = inIndex;
 
         bind();
-        glVertexAttribPointer(inIndex, mValuesPerUnit, mType, GL_FALSE, 0, 0);
+        glVertexAttribPointer(mIndex, mValuesPerUnit, mType, GL_FALSE, 0, 0);
+
         glEnableVertexAttribArray(mIndex);
     }
 

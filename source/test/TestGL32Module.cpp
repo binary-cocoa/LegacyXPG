@@ -83,23 +83,42 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
 
     mNextFrame = XPG::GetTicks();
 
+    std::cerr << "mVertexVBO is " << (mVertexVBO.isBuffer() ? "indeed" : "not")
+        << " a buffer.\n";
+
+    std::cerr << "mColorVBO is " << (mColorVBO.isBuffer() ? "indeed" : "not")
+        << " a buffer.\n";
+
+    std::cerr << "mProgram is " << (mProgram.isProgram() ? "indeed" : "not")
+        << " a program.\n";
+
+    std::cerr << "mProgram " << (mProgram.validate() ? "passed" : "failed")
+        << " validation\n";
+
     glEnable(GL_DEPTH_TEST);
 
     glClearColor(0.0f, 0.2f, 0.0f, 1.0f);
+
+    mVertexVBO.enableVAA(0);
+    mColorVBO.enableVAA(1);
 }
 
 TestGL32Module::~TestGL32Module()
 {
     glDisable(GL_DEPTH_TEST);
+
+    mColorVBO.disableVAA();
+    mVertexVBO.disableVAA();
 }
 
 void TestGL32Module::onUpdate()
 {
+    //std::cerr << mNextFrame << '\n';
     mRotate += 1.0f;
     if (mRotate > 180.0f) mRotate -= 360.0f;
 
     mModelViewMatrix.loadIdentity();
-    mModelViewMatrix.translate(0.0f, 0.0f, -40.0f);
+    mModelViewMatrix.translate(0.0f, 0.0f, -50.0f);
     mModelViewMatrix.rotateX(mRotate);
     mModelViewMatrix.rotateY(mRotate);
 
@@ -117,11 +136,10 @@ void TestGL32Module::onDisplay()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUniformMatrix4fv(mUniformMatrix, 1, GL_FALSE, mModelViewProjectionMatrix);
-    mVertexVBO.enableVAA(0);
-    mColorVBO.enableVAA(1);
+
     mIndexVBO.drawInstanced(300);
-    mColorVBO.disableVAA();
-    mVertexVBO.disableVAA();
+    //mIndexVBO.draw();
+
 }
 
 void TestGL32Module::onKeyDown(XPG::Key::Code inKey)
@@ -150,10 +168,11 @@ void TestGL32Module::onKeyDown(XPG::Key::Code inKey)
 
 void TestGL32Module::onResize(uint32 inWidth, uint32 inHeight)
 {
+    std::cerr << "resize -- " << inWidth << " x " << inHeight << "\n";
+    glViewport(0, 0, inWidth, inHeight);
+
     float ratio = static_cast<float>(inWidth) / static_cast<float>(inHeight);
     mProjectionMatrix.loadIdentity();
     mProjectionMatrix.perspective(30.0f, ratio, 1.0f, 1000.0f, true);
     mModelViewProjectionMatrix.multiply(mProjectionMatrix, mModelViewMatrix);
-
-    glViewport(0, 0, inWidth, inHeight);
 }

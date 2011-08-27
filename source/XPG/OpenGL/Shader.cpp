@@ -14,6 +14,7 @@ namespace XPG
     Shader::Shader(GLenum inType) : mHandle(0), mType(inType)
     {
         mHandle = glCreateShader(mType);
+        if (!mHandle) printf("Failed to make shader!\n");
     }
 
     Shader::~Shader()
