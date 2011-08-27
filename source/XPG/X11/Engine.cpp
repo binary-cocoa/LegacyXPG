@@ -278,10 +278,10 @@ namespace XPG
 
         XMapWindow(meta->display, meta->window);
 
-        if (!mSettings.context.vMajor)
+        if (mSettings.profile == Context::GL32)
         {
             mSettings.context.vMajor = 3;
-            mSettings.context.vMinor = 3;
+            mSettings.context.vMinor = 2;
         }
 
         /// GL context creation
@@ -295,7 +295,7 @@ namespace XPG
 
         // Must first check to see if the extension to create an OpenGL 3.x
         // context is even available
-        if (glXCreateContextAttribsARB && !mSettings.legacyContext)
+        if (glXCreateContextAttribsARB && mSettings.profile != Context::Legacy)
         {
             // Good to go. Create the 3.x context.
             meta->context = glXCreateContextAttribsARB(meta->display,
@@ -306,7 +306,7 @@ namespace XPG
             // No good. Create a legacy context.
             meta->context = glXCreateContext(meta->display, visualInfo, NULL,
                 True);
-            mSettings.legacyContext = true;
+            mSettings.profile = Context::Legacy;
         }
 
         glXMakeCurrent(meta->display, meta->window, meta->context);

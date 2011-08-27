@@ -32,6 +32,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-DGLEW_NO_GLU" />
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
@@ -47,7 +48,6 @@
 		<Unit filename="../include/XPG/Event.hpp" />
 		<Unit filename="../include/XPG/Exception.hpp" />
 		<Unit filename="../include/XPG/Image.hpp" />
-		<Unit filename="../include/XPG/Main.hpp" />
 		<Unit filename="../include/XPG/Matrix3D.hpp" />
 		<Unit filename="../include/XPG/Module.hpp" />
 		<Unit filename="../include/XPG/Mutex.hpp" />
@@ -68,7 +68,6 @@
 		<Unit filename="../include/XPG/private/glxew.h" />
 		<Unit filename="../source/XPG/Event.cpp" />
 		<Unit filename="../source/XPG/Image.cpp" />
-		<Unit filename="../source/XPG/Main.cpp" />
 		<Unit filename="../source/XPG/Module.cpp" />
 		<Unit filename="../source/XPG/OpenGL/Base.cpp" />
 		<Unit filename="../source/XPG/OpenGL/CubeMap.cpp" />
@@ -87,22 +86,16 @@
 		<Unit filename="../source/glew/glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../source/test/FancyTestModule.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="../source/test/FancyTestModule.cpp" />
 		<Unit filename="../source/test/FancyTestModule.h" />
-		<Unit filename="../source/test/LiberateTypes.h" />
-		<Unit filename="../source/test/MainXPG.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="../source/test/TSphere.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="../source/test/LiberateTypes.hpp" />
+		<Unit filename="../source/test/TSphere.cpp" />
 		<Unit filename="../source/test/TSphere.h" />
-		<Unit filename="../source/test/TestModule.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="../source/test/TestGL32Module.cpp" />
+		<Unit filename="../source/test/TestGL32Module.hpp" />
+		<Unit filename="../source/test/TestModule.cpp" />
 		<Unit filename="../source/test/TestModule.hpp" />
+		<Unit filename="../source/test/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

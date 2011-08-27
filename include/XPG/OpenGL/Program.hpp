@@ -3,7 +3,6 @@
 
 #include "Base.hpp"
 
-#include <XPG/Platforms.hpp>
 #ifdef XPG_PLATFORM_ANDROID
 #   include <stdlib.h>
 #else
@@ -12,7 +11,7 @@
 
 namespace XPG
 {
-    const size_t MaxShaders = 3;
+    const size_t MaxShaders = 16;
 
     class Shader;
 
@@ -24,9 +23,8 @@ namespace XPG
 
             void attachShader(const Shader& inShader);
             void bindAttribLocation(GLuint inIndex, const GLchar* inName);
-            void link();
             GLint getUniformLocation(const GLchar* inName);
-            void clear();
+            void link();
 
             inline void use() { glUseProgram(mHandle); }
 
@@ -37,7 +35,6 @@ namespace XPG
             GLuint mShaders[MaxShaders];
             size_t mSize;
             bool mLinked;
-            OpenGL::Context mContext;
     };
 }
 

@@ -15,22 +15,25 @@ namespace XPG
 
             VertexBufferObject(GLenum inTarget = GL_ARRAY_BUFFER,
                 GLenum inType = GL_FLOAT, GLenum inUsage = GL_STATIC_DRAW);
-            ~VertexBufferObject();
+            virtual ~VertexBufferObject();
 
             inline void bind() const { glBindBuffer(mTarget, mHandle); }
             void loadData(const GLvoid* inData, GLuint inSize,
                 GLuint inValuesPerUnit = 1);
+            void editData(const GLvoid* inData, GLuint inFirst,
+                GLuint inVertexCount = 1); // untested
+            void enableVAA(GLuint inIndex);
+            void disableVAA();
 
-        private:
-            void create();
-
+        protected:
             GLuint mHandle;
+            GLuint mIndex;
             GLenum mTarget;
             GLenum mType;
             GLenum mUsage;
             GLuint mTypeSize;
             GLuint mValuesPerUnit;
-            OpenGL::Context mContext;
+            GLuint mSize;
     };
 }
 

@@ -25,11 +25,8 @@ namespace XPG
                 return *this;
             }
 
-            void create();
-
             GLuint mHandle;
             GLenum mType;
-            OpenGL::Context mContext;
 
             static char* fileToBuffer(const char* inFile);
     };

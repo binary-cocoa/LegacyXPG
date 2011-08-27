@@ -5,28 +5,19 @@ namespace XPG
 {
     Program::Program() : mHandle(0), mSize(0), mLinked(false)
     {
+        mHandle = glCreateProgram();
     }
 
     Program::~Program()
     {
-        clear();
-    }
+        for (size_t i = 0; i < mSize; ++i)
+            glDetachShader(mHandle, mShaders[i]);
 
-    void Program::create()
-    {
-        if (mContext.isOutdated())
-        {
-            mContext.update();
-            mHandle = glCreateProgram();
-            mSize = 0;
-            mLinked = false;
-        }
+        glDeleteProgram(mHandle);
     }
 
     void Program::attachShader(const Shader& inShader)
     {
-        create();
-
         if (mLinked)
         {
             // More shaders cannot be attached if the program is already linked.
@@ -46,7 +37,6 @@ namespace XPG
 
     void Program::bindAttribLocation(GLuint inIndex, const GLchar* inName)
     {
-        create();
         glBindAttribLocation(mHandle, inIndex, inName);
     }
 
@@ -82,22 +72,5 @@ namespace XPG
     GLint Program::getUniformLocation(const GLchar* inName)
     {
         return glGetUniformLocation(mHandle, inName);
-    }
-
-    void Program::clear()
-    {
-        if (mContext.isOutdated()) return;
-
-        for (size_t i = 0; i < mSize; ++i)
-            glDetachShader(mHandle, mShaders[i]);
-
-        mSize = 0;
-        mLinked = false;
-
-        if (mHandle)
-        {
-            glDeleteProgram(mHandle);
-            mHandle = 0;
-        }
     }
 }

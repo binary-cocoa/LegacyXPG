@@ -141,7 +141,6 @@ FancyTestModule::FancyTestModule(uint16 inMajorVersion)
 
 FancyTestModule::~FancyTestModule()
 {
-    mProgram.clear();
 }
 
 void FancyTestModule::onExit()

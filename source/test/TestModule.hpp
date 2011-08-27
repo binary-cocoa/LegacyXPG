@@ -6,7 +6,7 @@
 #include <XPG/OpenGL/Program.hpp>
 #include <XPG/OpenGL/VertexBufferObject.hpp>
 
-#include "LiberateTypes.h"
+#include "LiberateTypes.hpp"
 
 class TestModule : public XPG::Module
 {

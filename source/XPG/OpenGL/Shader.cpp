@@ -13,21 +13,12 @@ namespace XPG
 {
     Shader::Shader(GLenum inType) : mHandle(0), mType(inType)
     {
+        mHandle = glCreateShader(mType);
     }
 
     Shader::~Shader()
     {
-        if (!mContext.isOutdated() && mHandle)
-            glDeleteShader(mHandle);
-    }
-
-    void Shader::create()
-    {
-        if (mContext.isOutdated())
-        {
-            mContext.update();
-            mHandle = glCreateShader(mType);
-        }
+        glDeleteShader(mHandle);
     }
 
     void Shader::loadFromFile(const char* inFile)
@@ -48,8 +39,6 @@ namespace XPG
 
     void Shader::loadFromBuffer(const char* inBuffer)
     {
-        create();
-
         if (!mHandle)
         {
             // TODO: report error

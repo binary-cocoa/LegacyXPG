@@ -18,28 +18,4 @@ namespace XPG
             default: return "none";
         }
     }
-
-    namespace OpenGL
-    {
-        uint32 Context::mMasterVersion = 1;
-
-        void Context::destroy()
-        {
-            ++mMasterVersion;
-        }
-
-        Context::Context() : mVersion(0)
-        {
-        }
-
-        bool Context::isOutdated() const
-        {
-            return mVersion < mMasterVersion;
-        }
-
-        void Context::update()
-        {
-            mVersion = mMasterVersion;
-        }
-    }
 }

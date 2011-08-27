@@ -11,9 +11,8 @@ int main(int argc, char** argv)
 {
     XPG::Engine::Settings es;
     //es.fullscreen = XPG::Fullscreen::Soft;
-    es.profile = XPG::Context::Legacy;
-    es.context.vMajor = 3;
-    es.context.vMinor = 2;
+    //es.profile = XPG::Context::Legacy;
+    es.profile = XPG::Context::GL32;
 
     XPG::Engine e(es);
 

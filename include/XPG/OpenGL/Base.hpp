@@ -24,25 +24,6 @@
 namespace XPG
 {
     const char* OpenGLErrorString();
-
-    namespace OpenGL
-    {
-        class Context
-        {
-            public:
-                static void destroy();
-
-                Context();
-
-                bool isOutdated() const;
-                void update();
-
-            private:
-                static uint32 mMasterVersion;
-
-                uint32 mVersion;
-        };
-    }
 }
 
 #endif
