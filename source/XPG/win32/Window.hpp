@@ -3,6 +3,8 @@
 
 #include <XPG/Engine.hpp>
 #include <XPG/private/windows.hpp>
+#include <XPG/private/glew.h>
+#include <XPG/private/wglew.h>
 
 namespace XPG
 {
@@ -10,6 +12,7 @@ namespace XPG
     {
         public:
             Window(HINSTANCE inHINSTANCE, Engine::Settings& inSettings,
+                bool inLegacy,
                 Fullscreen::Mode inMode = Fullscreen::Off,
                 const char* inTitle = NULL);
             virtual ~Window();
@@ -39,7 +42,8 @@ namespace XPG
             }
 
         protected:
-            virtual void setupDC();
+            void setupLegacyDC();
+            void setupNormalDC();
 
             LPTSTR mClassName;
             HINSTANCE mHINSTANCE;

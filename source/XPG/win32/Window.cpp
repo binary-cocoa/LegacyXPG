@@ -1,7 +1,69 @@
 #include "Window.hpp"
 
+#include <cstdlib>
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 using namespace std;
+
+ostream& operator<<(ostream& inStream, const PIXELFORMATDESCRIPTOR& inPFD)
+{
+    inStream << dec
+        << "nSize: " << inPFD.nSize
+        << "\nnVersion: " << inPFD.nVersion
+        << "\ndwFlags:";
+
+#define CheckFlag(n) if (inPFD.dwFlags & (n)) inStream << ' ' << #n
+
+    CheckFlag(PFD_DRAW_TO_WINDOW);
+    CheckFlag(PFD_DRAW_TO_BITMAP);
+    CheckFlag(PFD_SUPPORT_GDI);
+    CheckFlag(PFD_SUPPORT_OPENGL);
+    CheckFlag(PFD_GENERIC_ACCELERATED);
+    CheckFlag(PFD_GENERIC_FORMAT);
+    CheckFlag(PFD_NEED_PALETTE);
+    CheckFlag(PFD_NEED_SYSTEM_PALETTE);
+    CheckFlag(PFD_DOUBLEBUFFER);
+    CheckFlag(PFD_STEREO);
+    CheckFlag(PFD_SWAP_LAYER_BUFFERS);
+
+#undef CheckFlag(n)
+
+    inStream << "\niPixelType: " << (int)inPFD.iPixelType;
+
+#define CheckFlag2(n) if (inPFD.iPixelType & (n)) inStream << ' ' << #n
+
+    CheckFlag2(PFD_TYPE_RGBA);
+    CheckFlag2(PFD_TYPE_COLORINDEX);
+
+#undef CheckFlag2(n)
+
+    inStream << "\ncColorBits: " << (int)inPFD.cColorBits
+        << "\ncRedBits: " << (int)inPFD.cRedBits
+        << "\ncRedShift: " << (int)inPFD.cRedShift
+        << "\ncGreenBits: " << (int)inPFD.cGreenBits
+        << "\ncGreenShift: " << (int)inPFD.cGreenShift
+        << "\ncBlueBits: " << (int)inPFD.cBlueBits
+        << "\ncBlueShift: " << (int)inPFD.cBlueShift
+        << "\ncAlphaBits: " << (int)inPFD.cAlphaBits
+        << "\ncAlphaShift: " << (int)inPFD.cAlphaShift
+        << "\ncAccumBits: " << (int)inPFD.cAccumBits
+        << "\ncAccumRedBits: " << (int)inPFD.cAccumRedBits
+        << "\ncAccumGreenBits: " << (int)inPFD.cAccumGreenBits
+        << "\ncAccumBlueBits: " << (int)inPFD.cAccumBlueBits
+        << "\ncAccumAlphaBits: " << (int)inPFD.cAccumAlphaBits
+        << "\ncDepthBits: " << (int)inPFD.cDepthBits
+        << "\ncStencilBits: " << (int)inPFD.cStencilBits
+        << "\ncAuxBuffers: " << (int)inPFD.cAuxBuffers
+        << "\niLayerType: " << (int)inPFD.iLayerType
+        << "\nbReserved: " << (int)inPFD.bReserved
+        << "\ndwLayerMask: " << hex << inPFD.dwLayerMask
+        << "\ndwVisibleMask: " << inPFD.dwVisibleMask
+        << "\ndwDamageMask: " << inPFD.dwDamageMask
+        << dec;
+    return inStream;
+}
+
 namespace XPG
 {
     struct KeyMapping
@@ -191,11 +253,14 @@ namespace XPG
     }
 
     Window::Window(HINSTANCE inHINSTANCE, Engine::Settings& inSettings,
+        bool inLegacy,
         Fullscreen::Mode inMode, const char* inTitle)
         : mHINSTANCE(inHINSTANCE), mSettings(inSettings), mHWND(0), mHGLRC(0),
         mHDC(0), mFormerWidth(640), mFormerHeight(360)
     {
         if (!inTitle || !*inTitle) inTitle = "XPG Application";
+
+        cerr << mSettings.context.vMajor << '\n';
 
         // I avoided using a quick memcpy/strcpy because this needs to be able
         // to convert properly between ASCII and UTF when the time comes.
@@ -245,7 +310,10 @@ namespace XPG
 
         mHDC = GetDC(mHWND);
 
-        setupDC();
+        if (inLegacy)
+            setupLegacyDC();
+        else
+            setupNormalDC();
 
         const GLubyte* s = glGetString(GL_VERSION);
         //cout << "GL version: " << s << endl;
@@ -484,7 +552,7 @@ namespace XPG
         SetWindowText(mHWND, inTitle);
     }
 
-    void Window::setupDC()
+    void Window::setupLegacyDC()
     {
         PIXELFORMATDESCRIPTOR pfd;
         memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -511,5 +579,119 @@ namespace XPG
 
         mHGLRC = wglCreateContext(mHDC);
         wglMakeCurrent(mHDC, mHGLRC);
+    }
+
+    void Window::setupNormalDC()
+    {
+        if (!wglChoosePixelFormatARB || !wglCreateContextAttribsARB)
+        {
+            setupLegacyDC();
+            return;
+        }
+
+        UINT nPixCount = 0;
+        int nPixelFormat[32] = {};
+
+        int pixAttribs[] = {
+            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+            WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+            WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+            //WGL_COLOR_BITS_ARB, 32,
+            WGL_RED_BITS_ARB, 8,
+            WGL_GREEN_BITS_ARB, 8,
+            WGL_BLUE_BITS_ARB, 8,
+            WGL_ALPHA_BITS_ARB, 8,
+            WGL_DEPTH_BITS_ARB, 24,
+            WGL_STENCIL_BITS_ARB, 8,
+            WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+            0, 0 };
+
+        if (wglChoosePixelFormatARB(mHDC, pixAttribs, NULL, 32, nPixelFormat,
+            &nPixCount) == FALSE || !nPixCount)
+        {
+            std::cerr << "wglChoosePixelFormatARB failed\n";
+            exit(1);
+        }
+
+        if (!nPixCount)
+        {
+            std::cerr << "wglChoosePixelFormatARB returned no valid formats\n";
+            mHDC = 0;
+            exit(1);
+        }
+
+        cerr << "we got " << nPixCount << " formats\n";
+
+        ofstream fout("formats.txt");
+        for (UINT i = 0; i < nPixCount; ++i)
+        {
+            cerr << "logging #" << i << '\n';
+            PIXELFORMATDESCRIPTOR p;
+            memset(&p, 0, sizeof(PIXELFORMATDESCRIPTOR));
+            if (DescribePixelFormat(mHDC, nPixelFormat[i],
+                sizeof(PIXELFORMATDESCRIPTOR), &p))
+            {
+                fout << "\n\nformat #" << i << "\n" << p;
+            }
+            else
+            {
+                fout << "\n\nformat #" << i << " failed";
+            }
+
+            if (!fout) cerr << "file stream broke\n";
+        }
+        fout.close();
+
+        PIXELFORMATDESCRIPTOR pfd;
+        memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+
+//        pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+//        pfd.nVersion = 1;
+//        pfd.dwFlags = PFD_DOUBLEBUFFER
+//            | PFD_SUPPORT_OPENGL
+//            | PFD_DRAW_TO_WINDOW
+//            ;
+//        pfd.iPixelType = PFD_TYPE_RGBA;
+//        pfd.cColorBits = mSettings.depth;
+//        pfd.cDepthBits = 24;
+//        pfd.iLayerType = PFD_MAIN_PLANE;
+//
+//        int nPixelFormat = ChoosePixelFormat(mHDC, &pfd);
+
+        DescribePixelFormat(mHDC, nPixelFormat[0],
+            sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+
+        if (SetPixelFormat(mHDC, nPixelFormat[0], &pfd) == FALSE)
+        {
+            std::cerr << "SetPixelFormat failed\n";
+            exit(1);
+        }
+
+        cout << pfd << endl;
+
+        std::cerr << "attempting " << mSettings.context.vMajor << '\n';
+        if (mSettings.profile == Context::GL32)
+        {
+            mSettings.context.vMajor = 3;
+            mSettings.context.vMinor = 2;
+        }
+        std::cerr << "attempting " << mSettings.context.vMajor << '\n';
+
+        GLint attribs[] = {
+            WGL_CONTEXT_MAJOR_VERSION_ARB, mSettings.context.vMajor,
+            WGL_CONTEXT_MINOR_VERSION_ARB, mSettings.context.vMinor,
+            //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+            0, 0 };
+
+        mHGLRC = wglCreateContextAttribsARB(mHDC, 0, attribs);
+        if (!mHGLRC)
+        {
+            std::cerr << "wglCreateContextAttribsARB failed\n";
+            return;
+        }
+
+        //wglMakeCurrent(mHDC, mHGLRC);
+        wglMakeContextCurrentARB(mHDC, mHDC, mHGLRC);
     }
 }

@@ -93,8 +93,6 @@
 		<Unit filename="..\source\XPG\win32\Timer.cpp" />
 		<Unit filename="..\source\XPG\win32\Window.cpp" />
 		<Unit filename="..\source\XPG\win32\Window.hpp" />
-		<Unit filename="..\source\XPG\win32\WindowGL3.cpp" />
-		<Unit filename="..\source\XPG\win32\WindowGL3.hpp" />
 		<Unit filename="..\source\glew\glew.c">
 			<Option compilerVar="CC" />
 		</Unit>

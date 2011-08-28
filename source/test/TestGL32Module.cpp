@@ -97,7 +97,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
 
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0.0f, 0.2f, 0.0f, 1.0f);
+    glClearColor(0.4f, 0.0f, 0.0f, 1.0f);
 
     mVertexVBO.enableVAA(0);
     mColorVBO.enableVAA(1);

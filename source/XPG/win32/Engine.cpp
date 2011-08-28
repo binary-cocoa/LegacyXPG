@@ -42,7 +42,9 @@ namespace XPG
 
         HINSTANCE hi = GetModuleHandle(NULL);
 
-        Window* w = new Window(hi, mSettings,
+        Version v = mSettings.context;
+        Context::Profile p = mSettings.profile;
+        Window* w = new Window(hi, mSettings, true,
             mSettings.fullscreen, meta->title);
 
         GLenum e = glewInit();
@@ -55,7 +57,8 @@ namespace XPG
         if (mSettings.profile != Context::Legacy)
         {
             delete w;
-            w = new WindowGL3(hi, mSettings, mSettings.fullscreen, meta->title);
+            w = new Window(hi, mSettings, false, mSettings.fullscreen,
+                meta->title);
         }
 
         meta->window = w;
