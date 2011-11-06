@@ -47,6 +47,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
     mProgram.attachShader(mFragmentShader);
     mProgram.bindAttribLocation(0, "iVertex");
     mProgram.bindAttribLocation(1, "iColor");
+    mProgram.bindFragDataLocation(0, "oColor");
     mProgram.link();
     mUniformMatrix = mProgram.getUniformLocation("uMVPM");
 

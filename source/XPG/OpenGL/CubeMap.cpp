@@ -10,16 +10,13 @@ namespace XPG
     {
     }
 
-    void CubeMap::loadFromImages(const Image* inImages[])
+    void CubeMap::loadFromImages(const Image& inPositiveX,
+        const Image& inNegativeX,
+        const Image& inPositiveY,
+        const Image& inNegativeY,
+        const Image& inPositiveZ,
+        const Image& inNegativeZ)
     {
-        static const GLenum cubeFaces[6] = {
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-            GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
-
         const GLenum params1[] = {
             GL_TEXTURE_MAG_FILTER, GL_LINEAR,
             GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE,
@@ -31,15 +28,22 @@ namespace XPG
             GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR,
             0 };
 
-        for (size_t i = 0; i < 6; ++i)
-            if (!inImages[i] || !inImages[i]->isValid())
-                return;
+        if (!inPositiveX.isValid() || !inNegativeX.isValid()
+            || !inPositiveY.isValid() || !inNegativeY.isValid()
+            || !inPositiveZ.isValid() || !inNegativeZ.isValid())
+        {
+            return;
+        }
 
         bind();
         setTexParams(params1);
 
-        for (size_t i = 0; i < 6; ++i)
-            inImages[i]->loadIntoTexture(cubeFaces[i]);
+        inPositiveX.loadIntoTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+        inNegativeX.loadIntoTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
+        inPositiveY.loadIntoTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
+        inNegativeY.loadIntoTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
+        inPositiveZ.loadIntoTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+        inNegativeZ.loadIntoTexture(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
 
          glGenerateMipmap(mTarget);
          setTexParams(params2);

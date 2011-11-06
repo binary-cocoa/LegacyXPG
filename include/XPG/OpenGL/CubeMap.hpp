@@ -12,7 +12,12 @@ namespace XPG
             CubeMap();
             virtual ~CubeMap();
 
-            void loadFromImages(const Image* inImages[]);
+            void loadFromImages(const Image& inPositiveX,
+                const Image& inNegativeX,
+                const Image& inPositiveY,
+                const Image& inNegativeY,
+                const Image& inPositiveZ,
+                const Image& inNegativeZ);
     };
 }
 

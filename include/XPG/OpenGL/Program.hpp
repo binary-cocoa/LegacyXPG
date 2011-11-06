@@ -23,6 +23,7 @@ namespace XPG
 
             void attachShader(const Shader& inShader);
             void bindAttribLocation(GLuint inIndex, const GLchar* inName);
+            void bindFragDataLocation(GLuint inColorNumber, const char* inName);
             GLint getUniformLocation(const GLchar* inName);
             void link();
 

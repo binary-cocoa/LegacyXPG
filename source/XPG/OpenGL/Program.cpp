@@ -40,6 +40,11 @@ namespace XPG
         glBindAttribLocation(mHandle, inIndex, inName);
     }
 
+    void Program::bindFragDataLocation(GLuint inColorNumber, const char* inName)
+    {
+        glBindFragDataLocation(mHandle, inColorNumber, inName);
+    }
+
     void Program::link()
     {
         if (mLinked)

@@ -130,9 +130,7 @@ FancyTestModule::FancyTestModule(uint16 inMajorVersion)
         u = mProgram.getUniformLocation("cubeMap");
         glUniform1i(u, 0);
         XPG::Image img("test.png");
-        XPG::Image* ip = &img;
-        const XPG::Image* images[] = { ip, ip, ip, ip, ip, ip };
-        mCubeMap.loadFromImages(images);
+        mCubeMap.loadFromImages(img, img, img, img, img, img);
     }
 
     mCubeMap.bind();

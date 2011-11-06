@@ -60,6 +60,7 @@
 		<Unit filename="../include/XPG/OpenGL/ShortIndexVBO.hpp" />
 		<Unit filename="../include/XPG/OpenGL/Texture.hpp" />
 		<Unit filename="../include/XPG/OpenGL/Texture2D.hpp" />
+		<Unit filename="../include/XPG/OpenGL/TextureArray.hpp" />
 		<Unit filename="../include/XPG/OpenGL/VertexArrayObject.hpp" />
 		<Unit filename="../include/XPG/OpenGL/VertexBufferObject.hpp" />
 		<Unit filename="../include/XPG/OpenGL/VertexShader.hpp" />
@@ -80,6 +81,7 @@
 		<Unit filename="../source/XPG/OpenGL/ShortIndexVBO.cpp" />
 		<Unit filename="../source/XPG/OpenGL/Texture.cpp" />
 		<Unit filename="../source/XPG/OpenGL/Texture2D.cpp" />
+		<Unit filename="../source/XPG/OpenGL/TextureArray.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexArrayObject.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexBufferObject.cpp" />
 		<Unit filename="../source/XPG/OpenGL/VertexShader.cpp" />

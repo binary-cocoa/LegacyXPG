@@ -15,8 +15,12 @@ namespace XPG
 
         void loadFile(const char* inFile);
         void loadIntoTexture(GLenum inTarget = GL_TEXTURE_2D) const;
+        void loadIntoTexture(GLenum inTarget, GLsizei inIndex) const;
 
-        inline bool isValid() const { return !!mData; }
+        inline bool isValid() const { return mData; }
+
+        inline uint16 width() const { return mWidth; }
+        inline uint16 height() const { return mHeight; }
 
     private:
         Image(const Image& inImage) {} // disallowed

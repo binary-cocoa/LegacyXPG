@@ -3,6 +3,7 @@
 
 #include "TestModule.hpp"
 #include "TestGL32Module.hpp"
+#include "FancyTestModule.h"
 
 #include <iostream>
 using namespace std;
@@ -12,7 +13,7 @@ int main(int argc, char** argv)
 {
     XPG::Engine::Settings es;
     //es.fullscreen = XPG::Fullscreen::Soft;
-    //es.profile = XPG::Context::Legacy;
+    es.profile = XPG::Context::Legacy;
     es.profile = XPG::Context::GL32;
 
     XPG::Engine e(es);

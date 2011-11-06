@@ -30,6 +30,6 @@ void main(void)
         lightColor.rgb += vec3(fSpec, fSpec, fSpec);
     }
     
-    gl_FragColor = CM * lightColor;
+    gl_FragColor = lightColor;
 }
 

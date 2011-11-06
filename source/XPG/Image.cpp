@@ -11,7 +11,7 @@
 
 namespace XPG
 {
-    Image::Image(const char* inFile) : mData(NULL)
+    Image::Image(const char* inFile) : mData(NULL), mWidth(0), mHeight(0)
     {
         loadFile(inFile);
     }
@@ -44,6 +44,14 @@ namespace XPG
         if (!mData) return;
 
         glTexImage2D(inTarget, 0, GL_RGBA, mWidth, mHeight, 0, mFormat,
+            GL_UNSIGNED_BYTE, mData);
+    }
+
+    void Image::loadIntoTexture(GLenum inTarget, GLsizei inIndex) const
+    {
+        if (!mData) return;
+
+        glTexSubImage3D(inTarget, 0, 0, 0, inIndex, mWidth, mHeight, 1, mFormat,
             GL_UNSIGNED_BYTE, mData);
     }
 }
