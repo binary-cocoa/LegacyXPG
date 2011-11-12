@@ -583,7 +583,8 @@ namespace XPG
 
     void Window::setupNormalDC()
     {
-        if (!wglChoosePixelFormatARB || !wglCreateContextAttribsARB)
+        if (!wglChoosePixelFormatARB || !wglCreateContextAttribsARB
+            || !wglGetPixelFormatAttribivARB)
         {
             setupLegacyDC();
             return;

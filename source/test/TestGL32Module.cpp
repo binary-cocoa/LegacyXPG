@@ -13,7 +13,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
         "in vec3 iVertex;\n"
         "in vec3 iColor;\n"
 
-        "out vec3 vColor;"
+        "out vec3 vColor;\n"
 
         "void main()\n"
         "{\n"
@@ -30,11 +30,8 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
 
     const char* fs =
         "#version 150\n"
-
         "in vec3 vColor;\n"
-
         "out vec4 oColor;\n"
-
         "void main()\n"
         "{\n"
         "    oColor = vec4(vColor, 1.0);\n"
@@ -47,6 +44,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
     mProgram.attachShader(mFragmentShader);
     mProgram.bindAttribLocation(0, "iVertex");
     mProgram.bindAttribLocation(1, "iColor");
+    mProgram.bindFragDataLocation(0, "oColor");
     mProgram.link();
     mUniformMatrix = mProgram.getUniformLocation("uMVPM");
 
@@ -82,18 +80,6 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
     //mModelViewMatrix.translate(0.0f, 0.0f, -10.0f);
 
     mNextFrame = XPG::GetTicks();
-
-    std::cerr << "mVertexVBO is " << (mVertexVBO.isBuffer() ? "indeed" : "not")
-        << " a buffer.\n";
-
-    std::cerr << "mColorVBO is " << (mColorVBO.isBuffer() ? "indeed" : "not")
-        << " a buffer.\n";
-
-    std::cerr << "mProgram is " << (mProgram.isProgram() ? "indeed" : "not")
-        << " a program.\n";
-
-    std::cerr << "mProgram " << (mProgram.validate() ? "passed" : "failed")
-        << " validation\n";
 
     glEnable(GL_DEPTH_TEST);
 
