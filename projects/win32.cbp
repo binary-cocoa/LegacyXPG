@@ -33,6 +33,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-DGLEW_STATIC" />
+			<Add option="-DGLEW_NO_GLU" />
 			<Add directory="..\include" />
 		</Compiler>
 		<Linker>
@@ -89,6 +90,8 @@
 		<Unit filename="..\source\XPG\win32\Network.cpp" />
 		<Unit filename="..\source\XPG\win32\Thread.cpp" />
 		<Unit filename="..\source\XPG\win32\Timer.cpp" />
+		<Unit filename="..\source\XPG\win32\Window.cpp" />
+		<Unit filename="..\source\XPG\win32\Window.hpp" />
 		<Unit filename="..\source\glew\glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
