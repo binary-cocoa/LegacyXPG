@@ -73,12 +73,16 @@
 		<Unit filename="..\source\XPG\Module.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Base.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\CubeMap.cpp" />
+		<Unit filename="..\source\XPG\OpenGL\FragmentShader.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Program.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Shader.cpp" />
+		<Unit filename="..\source\XPG\OpenGL\ShortIndexVBO.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Texture.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\Texture2D.cpp" />
+		<Unit filename="..\source\XPG\OpenGL\TextureArray.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\VertexArrayObject.cpp" />
 		<Unit filename="..\source\XPG\OpenGL\VertexBufferObject.cpp" />
+		<Unit filename="..\source\XPG\OpenGL\VertexShader.cpp" />
 		<Unit filename="..\source\XPG\image\png.cpp" />
 		<Unit filename="..\source\XPG\win32\Engine.cpp" />
 		<Unit filename="..\source\XPG\win32\Mutex.cpp" />
@@ -90,8 +94,13 @@
 		</Unit>
 		<Unit filename="..\source\test\FancyTestModule.cpp" />
 		<Unit filename="..\source\test\FancyTestModule.h" />
+		<Unit filename="..\source\test\LiberateTypes.hpp" />
+		<Unit filename="..\source\test\SmartModule.cpp" />
+		<Unit filename="..\source\test\SmartModule.hpp" />
 		<Unit filename="..\source\test\TSphere.cpp" />
 		<Unit filename="..\source\test\TSphere.h" />
+		<Unit filename="..\source\test\TestGL32Module.cpp" />
+		<Unit filename="..\source\test\TestGL32Module.hpp" />
 		<Unit filename="..\source\test\TestModule.cpp" />
 		<Unit filename="..\source\test\TestModule.hpp" />
 		<Unit filename="..\source\test\main.cpp" />
