@@ -6,14 +6,14 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
     mRotate(0.0f)
 {
     const char* vs =
-        "#version 150\n"
+        "#version 140\n"
 
         "uniform mat4 uMVPM;\n"
 
         "in vec3 iVertex;\n"
         "in vec3 iColor;\n"
 
-        "out vec3 vColor;"
+        "out vec3 vColor;\n"
 
         "void main()\n"
         "{\n"
@@ -29,7 +29,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
         ;
 
     const char* fs =
-        "#version 150\n"
+        "#version 140\n"
 
         "in vec3 vColor;\n"
 
@@ -47,7 +47,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
     mProgram.attachShader(mFragmentShader);
     mProgram.bindAttribLocation(0, "iVertex");
     mProgram.bindAttribLocation(1, "iColor");
-    mProgram.bindFragDataLocation(0, "oColor");
+    //mProgram.bindFragDataLocation(0, "oColor");
     mProgram.link();
     mUniformMatrix = mProgram.getUniformLocation("uMVPM");
 
@@ -86,7 +86,7 @@ TestGL32Module::TestGL32Module(XPG::Engine& inEngine) : mEngine(inEngine),
 
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0.0f, 0.2f, 0.0f, 1.0f);
+    glClearColor(0.4f, 0.0f, 0.0f, 1.0f);
 }
 
 TestGL32Module::~TestGL32Module()
@@ -120,7 +120,7 @@ void TestGL32Module::onDisplay()
     glUniformMatrix4fv(mUniformMatrix, 1, GL_FALSE, mModelViewProjectionMatrix);
     mVertexVBO.enableVAA(0);
     mColorVBO.enableVAA(1);
-    mIndexVBO.drawInstanced(300);
+    mIndexVBO.drawInstanced(120);
     mColorVBO.disableVAA();
     mVertexVBO.disableVAA();
 }
@@ -151,6 +151,7 @@ void TestGL32Module::onKeyDown(XPG::Key::Code inKey)
 
 void TestGL32Module::onResize(uint32 inWidth, uint32 inHeight)
 {
+    std::cerr << "resize to " << inWidth << " x " << inHeight << '\n';
     float ratio = static_cast<float>(inWidth) / static_cast<float>(inHeight);
     mProjectionMatrix.loadIdentity();
     mProjectionMatrix.perspective(30.0f, ratio, 1.0f, 1000.0f, true);

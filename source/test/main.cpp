@@ -31,7 +31,7 @@ int main(int argc, char** argv)
         e.setWindowTitle(title);
         e.setIconTitle(title);
 
-        if (e.settings().profile == XPG::Context::Legacy)
+        if (false && e.settings().profile == XPG::Context::Legacy)
         {
             TestModule tm(e);
             tm.onLoad();

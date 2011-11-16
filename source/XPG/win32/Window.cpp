@@ -441,11 +441,11 @@ namespace XPG
             *a++ = WGL_CONTEXT_MAJOR_VERSION_ARB;
             *a++ = 3;
             *a++ = WGL_CONTEXT_MINOR_VERSION_ARB;
-            *a++ = 2;
-            *a++ = WGL_CONTEXT_FLAGS_ARB;
-            *a++ = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-            *a++ = WGL_CONTEXT_PROFILE_MASK_ARB;
-            *a++ = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+            *a++ = 1;
+            //*a++ = WGL_CONTEXT_FLAGS_ARB;
+            //*a++ = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            //*a++ = WGL_CONTEXT_PROFILE_MASK_ARB;
+            //*a++ = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
 
             mRC = wglCreateContextAttribsARB(mDC, NULL, attributes);
 

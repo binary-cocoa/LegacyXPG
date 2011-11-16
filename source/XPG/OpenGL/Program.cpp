@@ -1,6 +1,8 @@
 #include <XPG/OpenGL/Program.hpp>
 #include <XPG/OpenGL/Shader.hpp>
 
+#include <iostream>
+
 namespace XPG
 {
     Program::Program() : mHandle(0), mSize(0), mLinked(false)
@@ -21,11 +23,13 @@ namespace XPG
         if (mLinked)
         {
             // More shaders cannot be attached if the program is already linked.
+            LDB;
             return;
         }
 
         if (mSize >= MaxShaders)
         {
+            LDB;
             return;
         }
 
@@ -50,12 +54,14 @@ namespace XPG
         if (mLinked)
         {
             // TODO: report error through XPG exception
+            LDB;
             return;
         }
 
         if (mSize < 2 || !mHandle)
         {
             // TODO: report error through XPG exception
+            LDB;
             return;
         }
 
@@ -67,6 +73,7 @@ namespace XPG
         if (!linked)
         {
             // TODO: report error through XPG exception
+            LDB;
             return;
         }
 
