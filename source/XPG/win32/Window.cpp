@@ -680,9 +680,9 @@ namespace XPG
         std::cerr << "attempting " << mSettings.context.vMajor << '\n';
 
         GLint attribs[] = {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, mSettings.context.vMajor,
-            WGL_CONTEXT_MINOR_VERSION_ARB, mSettings.context.vMinor,
-            //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+            //WGL_CONTEXT_MAJOR_VERSION_ARB, mSettings.context.vMajor,
+            //WGL_CONTEXT_MINOR_VERSION_ARB, mSettings.context.vMinor,
+            WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
             0, 0 };
 
         mHGLRC = wglCreateContextAttribsARB(mHDC, 0, attribs);
